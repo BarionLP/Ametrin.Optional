@@ -49,6 +49,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     public bool Equals(T? other)
         => _hasValue ? other is not null && _value!.Equals(other) : other is null;
 
+    public override string ToString() => _hasValue ? _value!.ToString() ?? "NullString" : "None";
     public override int GetHashCode() => HashCode.Combine(_hasValue, _value);
     public override bool Equals(object? obj) => obj switch
     {
