@@ -1,6 +1,30 @@
-﻿using System.Runtime.CompilerServices;
+﻿namespace Ametrin.Optional;
 
-namespace Ametrin.Optional;
+public static class Option
+{
+    public static Option<T> None<T>() => default;
+    public static Option<T> Some<T>(T value)
+        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Option with null value") : new(value, true);
+
+    public static Option<T> Of<T>(T? value)
+        => value is null ? default : new(value, true);
+    public static Option<T> Of<T>(T? value) where T : struct
+        => value.HasValue ? new(value.Value, true) : default;
+
+    public static T? OrNull<T>(this Option<T> option) where T : class
+        => option._hasValue ? option._value! : null;
+    public static T OrDefault<T>(this Option<T> option) where T : struct
+        => option._hasValue ? option._value! : default;
+
+    public static Option<string> WhereNotEmpty(this Option<string> option)
+        => option.WhereNot(string.IsNullOrEmpty);
+
+    public static Option<string> WhereNotWhiteSpace(this Option<string> option)
+        => option.WhereNot(string.IsNullOrWhiteSpace);
+
+    public static Option<T> WhereExists<T>(this Option<T> option) where T : FileSystemInfo
+        => option.Where(static info => info.Exists);
+}
 
 public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 {
@@ -18,10 +42,10 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     public Option<T> WhereNot(Func<T, bool> predicate)
         => _hasValue ? !predicate(_value!) ? this : default : this;
 
-    public Option<TResult> Select<TResult>(Func<T, TResult> map)
-        => _hasValue ? map(_value!) : default;
-    public Option<TResult> Select<TResult>(Func<T, Option<TResult>> map)
-        => _hasValue ? map(_value!) : default;
+    public Option<TResult> Select<TResult>(Func<T, TResult> selector)
+        => _hasValue ? selector(_value!) : default;
+    public Option<TResult> Select<TResult>(Func<T, Option<TResult>> selector)
+        => _hasValue ? selector(_value!) : default;
 
     public Option<TResult> Cast<TResult>()
         => _hasValue && _value is TResult casted ? casted : default;
@@ -65,19 +89,4 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     public static bool operator !=(Option<T> left, T right) => !(left == right);
 
     public static implicit operator Option<T>(T? value) => Option.Of(value);
-}
-
-public static class Option
-{
-    public static Option<T> None<T>() => default;
-    public static Option<T> Some<T>(T value)
-        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Option with null value") : new(value, true);
-
-    public static Option<T> Of<T>(T? value)
-        => value is null ? default : new(value, true);
-    public static Option<T> Of<T>(T? value) where T : struct
-        => value.HasValue ? new(value.Value, true) : default;
-
-    public static T? OrNull<T>(this Option<T> option) where T : class
-        => option._hasValue ? option._value! : null;
 }

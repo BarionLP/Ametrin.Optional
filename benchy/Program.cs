@@ -16,4 +16,9 @@ Result<int, Exception> lole2 = new Exception();
 
 Result<int> lolrd = default;
 
+(lolo, lolo2).Consume(
+    (a, b) => Console.WriteLine($"{a} {b}"),
+    () => Console.WriteLine("Fail")
+);
+
 BenchmarkRunner.Run<Benchmarks>();

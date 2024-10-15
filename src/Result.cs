@@ -21,10 +21,10 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public Result<TValue> WhereNot(Func<TValue, bool> predicate, string error = "Failed")
         => _hasValue ? !predicate(_value!) ? this : error : this;
 
-    public Result<TResult> Select<TResult>(Func<TValue, TResult> map)
-        => _hasValue ? map(_value!) : _error;
-    public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> map)
-        => _hasValue ? map(_value!) : _error;
+    public Result<TResult> Select<TResult>(Func<TValue, TResult> selector)
+        => _hasValue ? selector(_value!) : _error;
+    public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
+        => _hasValue ? selector(_value!) : _error;
 
     public Result<TResult> Cast<TResult>(string error = "typemissmatch")
         => _hasValue && _value is TResult casted ? casted : error;
@@ -90,10 +90,10 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
     public Result<TValue, TError> WhereNot(Func<TValue, bool> predicate, TError error)
         => _hasValue ? !predicate(_value!) ? this : error : this;
 
-    public Result<TResult, TError> Select<TResult>(Func<TValue, TResult> map)
-        => _hasValue ? map(_value!) : _error;
-    public Result<TResult, TError> Select<TResult>(Func<TValue, Result<TResult, TError>> map)
-        => _hasValue ? map(_value!) : _error;
+    public Result<TResult, TError> Select<TResult>(Func<TValue, TResult> selector)
+        => _hasValue ? selector(_value!) : _error;
+    public Result<TResult, TError> Select<TResult>(Func<TValue, Result<TResult, TError>> selector)
+        => _hasValue ? selector(_value!) : _error;
 
     public Result<TResult, TError> Cast<TResult>(TError error)
         => _hasValue && _value is TResult casted ? casted : error;
