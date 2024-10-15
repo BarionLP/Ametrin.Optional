@@ -2,32 +2,47 @@ using System.Runtime.CompilerServices;
 
 namespace Ametrin.Optional;
 
+
+public static class Result
+{
+    public static Result<T> Fail<T>(Exception? error = null) => new(error);
+    public static Result<T> Some<T>(T value)
+        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
+
+    public static Result<TValue, TError> Fail<TValue, TError>(TError error) => new(error);
+    public static Result<TValue, TError> Some<TValue, TError>(TValue value)
+        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
+
+    public static T? OrNull<T>(this Result<T> option) where T : class
+        => option._hasValue ? option._value : null;
+}
+
 public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<TValue>
 {
     internal readonly TValue _value;
-    internal readonly string _error = "Failed";
+    internal readonly Exception _error;
     internal readonly bool _hasValue = false;
 
-    public Result() : this(string.Empty) { }
+    public Result() : this(null) { }
     public Result(Result<TValue> other)
-        : this(other._value, other._error ,other._hasValue) { }
-    internal Result(TValue value) : this(value, "", true) { }
-    internal Result(string error) : this(default!, string.IsNullOrWhiteSpace(error) ? "Failed" : error, false) { }
-    internal Result(TValue value, string error, bool hasValue)
+        : this(other._value, other._error, other._hasValue) { }
+    internal Result(TValue value) : this(value, default!, true) { }
+    internal Result(Exception? error = null) : this(default!, error ?? new Exception(), false) { }
+    internal Result(TValue value, Exception error, bool hasValue)
         => (_value, _error, _hasValue) = (value, error, hasValue);
 
-    public Result<TValue> Where(Func<TValue, bool> predicate, string error = "Failed")
-        => _hasValue ? predicate(_value!) ? this : error : this;
-    public Result<TValue> WhereNot(Func<TValue, bool> predicate, string error = "Failed")
-        => _hasValue ? !predicate(_value!) ? this : error : this;
+    public Result<TValue> Where(Func<TValue, bool> predicate, Exception? error = null)
+        => _hasValue ? predicate(_value!) ? this : error ?? new Exception() : this;
+    public Result<TValue> WhereNot(Func<TValue, bool> predicate, Exception? error = null)
+        => _hasValue ? !predicate(_value!) ? this : error ?? new Exception() : this;
 
     public Result<TResult> Select<TResult>(Func<TValue, TResult> map)
         => _hasValue ? map(_value!) : _error;
     public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> map)
         => _hasValue ? map(_value!) : _error;
 
-    public Result<TResult> Cast<TResult>(string error = "typemissmatch")
-        => _hasValue && _value is TResult casted ? casted : error;
+    public Result<TResult> Cast<TResult>(Exception? error = null)
+        => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
 
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
     public TValue Or(TValue other) => _hasValue ? _value! : other;
@@ -52,7 +67,7 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public bool Equals(TValue? other)
         => _hasValue ? other is not null && _value!.Equals(other) : other is null;
 
-    public override string ToString() => _hasValue ? _value?.ToString() ?? "NullString" : _error ?? "Failed";
+    public override string ToString() => _hasValue ? _value?.ToString() ?? "NullString" : _error.Message ?? "Failed";
     public override int GetHashCode() => HashCode.Combine(_hasValue, _value);
     public override bool Equals(object? obj) => obj switch
     {
@@ -68,7 +83,7 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public static bool operator !=(Result<TValue> left, TValue right) => !(left == right);
 
     public static implicit operator Result<TValue>(TValue value) => Result.Some(value);
-    public static implicit operator Result<TValue>(string error) => Result.Fail<TValue>(error);
+    public static implicit operator Result<TValue>(Exception? error) => Result.Fail<TValue>(error);
 }
 
 public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEquatable<TValue>
@@ -79,7 +94,7 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
 
     public Result() : this(default(TError)!) { }
     public Result(Result<TValue, TError> other)
-        : this(other._value, other._error ,other._hasValue) { }
+        : this(other._value, other._error, other._hasValue) { }
     internal Result(TValue value) : this(value, default!, true) { }
     internal Result(TError error) : this(default!, error, false) { }
     internal Result(TValue value, TError error, bool hasValue)
@@ -138,18 +153,4 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
 
     public static implicit operator Result<TValue, TError>(TValue value) => Result.Some<TValue, TError>(value);
     public static implicit operator Result<TValue, TError>(TError error) => Result.Fail<TValue, TError>(error);
-}
-
-public static class Result
-{
-    public static Result<T> Fail<T>(string error = "Failed") => new(error);
-    public static Result<T> Some<T>(T value)
-        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
-        
-    public static Result<TValue, TError> Fail<TValue, TError>(TError error) => new(error);
-    public static Result<TValue, TError> Some<TValue, TError>(TValue value)
-        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
-
-    public static T? OrNull<T>(this Result<T> option) where T : class
-        => option._hasValue ? option._value : null;
 }
