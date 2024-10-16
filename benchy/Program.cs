@@ -14,7 +14,7 @@ Option<int> lolo2 = default;
 Result<int> lolr2 = "Error";
 Result<int, Exception> lole2 = new Exception();
 
-Result<int> lolrd = default;
+// Result<int> lolrd = default; // this is bad
 
 (lolo, lolo2).Consume(
     (a, b) => Console.WriteLine($"{a} {b}"),

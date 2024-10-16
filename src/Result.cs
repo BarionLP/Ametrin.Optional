@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Ametrin.Optional;
 
 public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<TValue>
@@ -10,7 +8,7 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
 
     public Result() : this(string.Empty) { }
     public Result(Result<TValue> other)
-        : this(other._value, other._error ,other._hasValue) { }
+        : this(other._value, other._error, other._hasValue) { }
     internal Result(TValue value) : this(value, "", true) { }
     internal Result(string error) : this(default!, string.IsNullOrWhiteSpace(error) ? "Failed" : error, false) { }
     internal Result(TValue value, string error, bool hasValue)
@@ -79,7 +77,7 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
 
     public Result() : this(default(TError)!) { }
     public Result(Result<TValue, TError> other)
-        : this(other._value, other._error ,other._hasValue) { }
+        : this(other._value, other._error, other._hasValue) { }
     internal Result(TValue value) : this(value, default!, true) { }
     internal Result(TError error) : this(default!, error, false) { }
     internal Result(TValue value, TError error, bool hasValue)
@@ -145,7 +143,7 @@ public static class Result
     public static Result<T> Fail<T>(string error = "Failed") => new(error);
     public static Result<T> Some<T>(T value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
-        
+
     public static Result<TValue, TError> Fail<TValue, TError>(TError error) => new(error);
     public static Result<TValue, TError> Some<TValue, TError>(TValue value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
