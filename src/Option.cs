@@ -11,6 +11,11 @@ public static class Option
     public static Option<T> Of<T>(T? value) where T : struct
         => value.HasValue ? new(value.Value, true) : default;
 
+
+    public static Option<T> ToOption<T>(this T? value) where T : class => Of(value);
+    public static Option<T> ToOption<T>(this T? value) where T : struct => Of(value);
+    public static Option<T> ToOption<T>(this object? value) => value is T t ? Some(t) : default;
+
     public static T? OrNull<T>(this Option<T> option) where T : class
         => option._hasValue ? option._value! : null;
     public static T OrDefault<T>(this Option<T> option) where T : struct
