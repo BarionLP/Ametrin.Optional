@@ -54,7 +54,9 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     public Option<TResult> Cast<TResult>()
         => _hasValue && _value is TResult casted ? casted : default;
 
+#if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
+#endif
     public T Or(T other) => _hasValue ? _value! : other;
     public T Or(Func<T> factory) => _hasValue ? _value! : factory();
     public T OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Option was None");

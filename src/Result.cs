@@ -42,7 +42,9 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public Result<TResult> Cast<TResult>(Exception? error = null)
         => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
 
+#if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
+#endif
     public TValue Or(TValue other) => _hasValue ? _value! : other;
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
@@ -111,7 +113,9 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
     public Result<TResult, TError> Cast<TResult>(TError error)
         => _hasValue && _value is TResult casted ? casted : error;
 
+#if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
+#endif
     public TValue Or(TValue other) => _hasValue ? _value! : other;
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
