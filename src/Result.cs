@@ -21,6 +21,8 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     internal readonly Exception _error;
     internal readonly bool _hasValue = false;
 
+    public Exception? Error => _hasValue ? null : _error;
+
     public Result() : this(null) { }
     public Result(Result<TValue> other)
         : this(other._value, other._error, other._hasValue) { }

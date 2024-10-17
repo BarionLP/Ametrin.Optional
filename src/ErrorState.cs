@@ -72,11 +72,26 @@ public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
             action(_error);
         }
     }
+    
+    public void Consume(Action success, Action<T> fail)
+    {
+        if (_success)
+        {
+            success();
+        }
+        else
+        {
+            fail(_error);
+        }
+    }
 
     public override string ToString() => _success ? "Success" : _error?.ToString() ?? "Fail";
     public override int GetHashCode() => _success ? _success.GetHashCode() : HashCode.Combine(_success.GetHashCode(), _error!.GetHashCode());
     public override bool Equals(object? obj) => obj is ErrorState<T> s && Equals(s);
     public bool Equals(ErrorState<T> other) => _success == other._success && (_success || EqualityComparer<T>.Default.Equals(_error, other._error));
+
+    public bool IsSuccess() => _success;
+    public bool IsFail() => !_success;
 
     public static bool operator ==(ErrorState<T> left, ErrorState<T> right) => left.Equals(right);
     public static bool operator !=(ErrorState<T> left, ErrorState<T> right) => !(left == right);
