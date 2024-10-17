@@ -1,5 +1,6 @@
 namespace Ametrin.Optional;
 
+[Obsolete("Use Option")]
 public readonly struct ErrorState : IEquatable<ErrorState>
 {
     internal readonly bool _success;
@@ -74,7 +75,7 @@ public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
 
     public override string ToString() => _success ? "Success" : _error?.ToString() ?? "Fail";
     public override int GetHashCode() => _success ? _success.GetHashCode() : HashCode.Combine(_success.GetHashCode(), _error!.GetHashCode());
-    public override bool Equals(object? obj) => obj is ErrorState s && Equals(s);
+    public override bool Equals(object? obj) => obj is ErrorState<T> s && Equals(s);
     public bool Equals(ErrorState<T> other) => _success == other._success && (_success || EqualityComparer<T>.Default.Equals(_error, other._error));
 
     public static bool operator ==(ErrorState<T> left, ErrorState<T> right) => left.Equals(right);

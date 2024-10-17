@@ -1,7 +1,18 @@
 ﻿namespace Ametrin.Optional;
 
-public static class Option
+public readonly struct Option : IEquatable<Option>
 {
+    internal readonly bool _success;
+
+    public Option() : this(true) { }
+    internal Option(bool success)
+    {
+        _success = success;
+    }
+
+    public static Option Success() => new(true);
+    public static Option Fail() => new(false);
+
     public static Option<T> None<T>() => default;
     public static Option<T> Some<T>(T value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Option with null value") : new(value, true);
@@ -11,25 +22,33 @@ public static class Option
     public static Option<T> Of<T>(T? value) where T : struct
         => value.HasValue ? new(value.Value, true) : default;
 
-    public static Option<T> ToOption<T>(this T? value) where T : class => Of(value);
-    public static Option<T> ToOption<T>(this T? value) where T : struct => Of(value);
-    public static Option<T> ToOption<T>(this object? value) => value is T t ? Some(t) : default;
+    public TResult Select<TResult>(Func<TResult> success, Func<TResult> fail) => _success ? success() : fail();
 
-    public static T? OrNull<T>(this Option<T> option) where T : class
-        => option._hasValue ? option._value! : null;
-    public static T OrDefault<T>(this Option<T> option) where T : struct
-        => option._hasValue ? option._value! : default;
+    public void IfSuccess(Action action)
+    {
+        if (_success)
+        {
+            action();
+        }
+    }
 
-    public static Option<string> WhereNotEmpty(this Option<string> option)
-        => option.WhereNot(string.IsNullOrEmpty);
+    public void IfFail(Action action)
+    {
+        if (!_success)
+        {
+            action();
+        }
+    }
 
-    public static Option<string> WhereNotWhiteSpace(this Option<string> option)
-        => option.WhereNot(string.IsNullOrWhiteSpace);
+    public override string ToString() => _success ? "Success" : "None";
+    public override int GetHashCode() => _success.GetHashCode();
+    public override bool Equals(object? obj) => obj is Option s && Equals(s);
+    public bool Equals(Option other) => _success == other._success;
+    public static bool operator ==(Option left, Option right) => left.Equals(right);
+    public static bool operator !=(Option left, Option right) => !(left == right);
 
-    public static Option<T> WhereExists<T>(this Option<T> option) where T : FileSystemInfo
-        => option.Where(static info => info.Exists);
-    public static Option<T> WhereExists<T>(this T info) where T : FileSystemInfo
-        => info.Exists ? info : default;
+    public static implicit operator bool(Option state) => state._success;
+    public static implicit operator Option(bool state) => new(state);
 }
 
 public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
@@ -53,7 +72,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     public Option<TResult> Select<TResult>(Func<T, Option<TResult>> selector)
         => _hasValue ? selector(_value!) : default;
 
-    public Option<TResult> Cast<TResult>()
+    public Option<TResult> Where<TResult>()
         => _hasValue && _value is TResult casted ? casted : default;
 
 #if NET9_0_OR_GREATER

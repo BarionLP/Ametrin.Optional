@@ -1,27 +1,8 @@
-using TUnit.Assertions.Extensions.Generic;
 
 namespace Ametrin.Optional.Test;
 
 public sealed class ErrorStateTests
 {
-    [Test]
-    public async Task Equals()
-    {
-        await Assert.That(ErrorState.Fail()).IsEqualTo(false);
-        await Assert.That(ErrorState.Fail()).IsNotEqualTo(true);
-        await Assert.That(ErrorState.Success()).IsEqualTo(true);
-        await Assert.That(ErrorState.Success()).IsNotEqualTo(false);
-        await Assert.That(ErrorState.Fail() == ErrorState.Fail()).IsTrue();
-        await Assert.That(ErrorState.Success() != ErrorState.Fail()).IsTrue();
-    }
-
-    [Test]
-    public async Task HashCode()
-    {
-        await NumberIsExtensions.IsEqualTo(Assert.That(ErrorState.Fail().GetHashCode()), ErrorState.Fail().GetHashCode());
-        await NumberIsNotExtensions.IsNotEqualTo(Assert.That(ErrorState.Fail().GetHashCode()), ErrorState.Success().GetHashCode());
-    }
-
     [Test]
     [MethodDataSource(typeof(ErrorStateTestDataSource), nameof(ErrorStateTestDataSource.EqualsTestData))]
     public async Task Equals(ErrorState<int> a, ErrorState<int> b)
@@ -40,14 +21,14 @@ public sealed class ErrorStateTests
     [MethodDataSource(typeof(ErrorStateTestDataSource), nameof(ErrorStateTestDataSource.EqualsTestData))]
     public async Task HashCode_Equals(ErrorState<int> a, ErrorState<int> b)
     {
-        await NumberIsExtensions.IsEqualTo(Assert.That(a.GetHashCode()), b.GetHashCode());
+        await Assert.That(a.GetHashCode()).IsEqualTo(b.GetHashCode());
     }
 
     [Test]
     [MethodDataSource(typeof(ErrorStateTestDataSource), nameof(ErrorStateTestDataSource.NotEqualsTestData))]
     public async Task HashCode_Not_Equals(ErrorState<int> a, ErrorState<int> b)
     {
-        await NumberIsNotExtensions.IsNotEqualTo(Assert.That(a.GetHashCode()), b.GetHashCode());
+        await Assert.That(a.GetHashCode()).IsNotEqualTo(b.GetHashCode());
     }
 }
 

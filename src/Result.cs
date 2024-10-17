@@ -33,14 +33,13 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
         => _hasValue ? predicate(_value!) ? this : error ?? new Exception() : this;
     public Result<TValue> WhereNot(Func<TValue, bool> predicate, Exception? error = null)
         => _hasValue ? !predicate(_value!) ? this : error ?? new Exception() : this;
+    public Result<TResult> Where<TResult>(Exception? error = null)
+        => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
 
     public Result<TResult> Select<TResult>(Func<TValue, TResult> selector)
         => _hasValue ? selector(_value!) : _error;
     public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
         => _hasValue ? selector(_value!) : _error;
-
-    public Result<TResult> Cast<TResult>(Exception? error = null)
-        => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
 
 #if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
@@ -104,14 +103,14 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
         => _hasValue ? predicate(_value!) ? this : error : this;
     public Result<TValue, TError> WhereNot(Func<TValue, bool> predicate, TError error)
         => _hasValue ? !predicate(_value!) ? this : error : this;
+    public Result<TResult, TError> Where<TResult>(TError error)
+        => _hasValue && _value is TResult casted ? casted : error;
 
     public Result<TResult, TError> Select<TResult>(Func<TValue, TResult> selector)
         => _hasValue ? selector(_value!) : _error;
     public Result<TResult, TError> Select<TResult>(Func<TValue, Result<TResult, TError>> selector)
         => _hasValue ? selector(_value!) : _error;
 
-    public Result<TResult, TError> Cast<TResult>(TError error)
-        => _hasValue && _value is TResult casted ? casted : error;
 
 #if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
