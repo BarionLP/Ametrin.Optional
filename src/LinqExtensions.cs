@@ -6,6 +6,10 @@ public static class LinqExtensions
         => source is not null && source.Any() ? Option.Some(source) : default;
     public static Option<IEnumerable<T>> WhereNotEmpty<T>(this Option<IEnumerable<T>> option)
         => option.Where(static collection => collection.Any());
+    public static Result<IEnumerable<T>> WhereNotEmpty<T>(this Result<IEnumerable<T>> option)
+        => option.WhereNotEmpty(static () => new ArgumentException("Sequence was empty"));
+    public static Result<IEnumerable<T>> WhereNotEmpty<T>(this Result<IEnumerable<T>> option, Func<Exception> error)
+        => option.Where(static collection => collection.Any(), error);
 
     public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
         => source.Any() ? source.First() : default;

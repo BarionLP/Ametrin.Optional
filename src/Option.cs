@@ -69,6 +69,8 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 
     public Option<TResult> Select<TResult>(Func<T, TResult> selector)
         => _hasValue ? selector(_value!) : default;
+    public Result<TResult> Select<TResult>(Func<T, Result<TResult>> selector)
+        => _hasValue ? selector(_value!) : null;
     public Option<TResult> Select<TResult>(Func<T, Option<TResult>> selector)
         => _hasValue ? selector(_value!) : default;
 

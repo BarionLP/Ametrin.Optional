@@ -30,16 +30,20 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
         => (_value, _error, _hasValue) = (value, error, hasValue);
 
     public Result<TValue> Where(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? predicate(_value!) ? this : error ?? new Exception() : this;
+        => _hasValue ? predicate(_value!) ? this : error : this;
+    public Result<TValue> Where(Func<TValue, bool> predicate, Func<Exception> error)
+        => _hasValue ? predicate(_value!) ? this : error() : this;
     public Result<TValue> WhereNot(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? !predicate(_value!) ? this : error ?? new Exception() : this;
+        => _hasValue ? !predicate(_value!) ? this : error : this;
+    public Result<TValue> WhereNot(Func<TValue, bool> predicate, Func<Exception> error)
+        => _hasValue ? !predicate(_value!) ? this : error() : this;
     public Result<TResult> Where<TResult>(Exception? error = null)
         => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
 
     public Result<TResult> Select<TResult>(Func<TValue, TResult> selector)
-        => _hasValue ? selector(_value!) : _error;
+        => _hasValue ? selector(_value) : _error;
     public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
-        => _hasValue ? selector(_value!) : _error;
+        => _hasValue ? selector(_value) : _error;
 
 #if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
@@ -48,8 +52,8 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
-    public void Consume(Action? fail = null, Action<TValue>? some = null) => Consume(some, fail);
-    public void Consume(Action<TValue>? some = null, Action? fail = null)
+    public void Consume(Action<Exception>? fail = null, Action<TValue>? some = null) => Consume(some, fail);
+    public void Consume(Action<TValue>? some = null, Action<Exception>? fail = null)
     {
         if (_hasValue)
         {
@@ -57,7 +61,7 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
         }
         else
         {
-            fail?.Invoke();
+            fail?.Invoke(_error);
         }
     }
 

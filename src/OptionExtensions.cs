@@ -21,4 +21,12 @@ public static class OptionExtensions
         => option.Where(static info => info.Exists);
     public static Option<T> WhereExists<T>(this T info) where T : FileSystemInfo
         => info.Exists ? info : default;
+
+    public static Option<T> ToOption<T>(this Result<T> result)
+        => result._hasValue ? result._value : default;
+    public static Result<T> ToResult<T>(this Option<T> option, Exception? error = null) 
+        => option._hasValue ? option._value : error;
+    
+    public static Result<T> ToResult<T>(this Option<T> option, Func<Exception> error) 
+        => option._hasValue ? option._value : error();
 }

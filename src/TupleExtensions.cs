@@ -20,4 +20,18 @@ public static class TupleExtensions
             fail?.Invoke();
         }
     }
+    
+    public static void Consume<T1, T2>(this (Result<T1>, Result<T2>) options, Action? fail = null, Action<T1, T2>? action = null) 
+        => Consume(options, action, fail);
+    public static void Consume<T1, T2>(this (Result<T1>, Result<T2>) options, Action<T1, T2>? action = null, Action? fail = null)
+    {
+        if (options.Item1._hasValue && options.Item2._hasValue)
+        {
+            action?.Invoke(options.Item1._value, options.Item2._value);
+        }
+        else
+        {
+            fail?.Invoke();
+        }
+    }
 }
