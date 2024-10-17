@@ -28,6 +28,8 @@ public static class Option
 
     public static Option<T> WhereExists<T>(this Option<T> option) where T : FileSystemInfo
         => option.Where(static info => info.Exists);
+    public static Option<T> WhereExists<T>(this T info) where T : FileSystemInfo
+        => info.Exists ? info : default;
 }
 
 public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
