@@ -1,5 +1,3 @@
-using TUnit.Assertions.Extensions.Generic;
-
 namespace Ametrin.Optional.Test;
 
 public class OptionTests
@@ -18,7 +16,7 @@ public class OptionTests
     [Test]
     public async Task HashCode()
     {
-        await NumberIsExtensions.IsEqualTo(Assert.That(Option.Fail().GetHashCode()), Option.Fail().GetHashCode());
-        await NumberIsNotExtensions.IsNotEqualTo(Assert.That(Option.Fail().GetHashCode()), Option.Success().GetHashCode());
+        await Assert.That(Option.Fail().GetHashCode()).IsEqualTo(Option.Fail().GetHashCode());
+        await Assert.That(Option.Fail().GetHashCode()).IsEqualTo(Option.Success().GetHashCode());
     }
 }

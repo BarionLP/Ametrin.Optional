@@ -1,4 +1,3 @@
-
 namespace Ametrin.Optional.Test;
 
 public sealed class ErrorStateTests
