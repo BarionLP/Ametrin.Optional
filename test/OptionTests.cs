@@ -17,6 +17,6 @@ public class OptionTests
     public async Task HashCode()
     {
         await Assert.That(Option.Fail().GetHashCode()).IsEqualTo(Option.Fail().GetHashCode());
-        await Assert.That(Option.Fail().GetHashCode()).IsEqualTo(Option.Success().GetHashCode());
+        await Assert.That(Option.Fail().GetHashCode()).IsNotEqualTo(Option.Success().GetHashCode());
     }
 }
