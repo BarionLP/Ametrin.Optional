@@ -2,6 +2,8 @@ namespace Ametrin.Optional;
 
 public readonly struct ErrorState : IEquatable<ErrorState>
 {
+    public bool IsSuccess => !_isFail;
+    public bool IsFail => _isFail;
     internal readonly bool _isFail;
     internal readonly Exception _error;
     public ErrorState() : this(false, default!) { }
@@ -32,6 +34,19 @@ public readonly struct ErrorState : IEquatable<ErrorState>
         if (_isFail)
         {
             action();
+        }
+    }
+
+
+    public void Consume(Action success, Action<Exception> fail)
+    {
+        if (_isFail)
+        {
+            fail(_error);
+        }
+        else
+        {
+            success();
         }
     }
 
