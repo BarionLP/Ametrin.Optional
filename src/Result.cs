@@ -7,6 +7,18 @@ public static class Result
     public static Result<T> Some<T>(T value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
 
+    public static Result<T> Try<T>(Func<T> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (Exception e)
+        {
+            return e;
+        }
+    }
+
     public static Result<TValue, TError> Fail<TValue, TError>(TError error) => new(error);
     public static Result<TValue, TError> Some<TValue, TError>(TValue value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
