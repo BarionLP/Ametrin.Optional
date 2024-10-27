@@ -36,7 +36,11 @@ public static class OptionExtensions
         => result._hasValue ? result._value : default;
     public static Result<T> ToResult<T>(this Option<T> option, Exception? error = null) 
         => option._hasValue ? option._value : error;
+    public static Result<TValue, TError> ToResult<TValue, TError>(this Option<TValue> option, TError error) 
+        => option._hasValue ? option._value : error;
     
     public static Result<T> ToResult<T>(this Option<T> option, Func<Exception> error) 
+        => option._hasValue ? option._value : error();
+    public static Result<TValue, TError> ToResult<TValue, TError>(this Option<TValue> option, Func<TError> error)
         => option._hasValue ? option._value : error();
 }

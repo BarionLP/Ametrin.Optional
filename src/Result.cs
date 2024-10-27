@@ -25,6 +25,16 @@ public static class Result
 
     public static T? OrNull<T>(this Result<T> option) where T : class
         => option._hasValue ? option._value : null;
+
+    public static Result<T> Dispose<T>(this Result<T> option) where T : IDisposable
+    {
+        if (option._hasValue)
+        {
+            option._value.Dispose();
+        }
+
+        return new ObjectDisposedException(typeof(T).Name, "Result has been disposed");
+    }
 }
 
 public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<TValue>
@@ -33,6 +43,8 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     internal readonly Exception _error;
     internal readonly bool _hasValue = false;
 
+    public bool IsSuccess => _hasValue;
+    public bool IsFail => !_hasValue;
     public Exception? Error => _hasValue ? null : _error;
 
     public Result() : this(null) { }
@@ -66,7 +78,9 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
+#if NET9_0_OR_GREATER
     public void Consume(Action<Exception>? fail = null, Action<TValue>? some = null) => Consume(some, fail);
+#endif
     public void Consume(Action<TValue>? some = null, Action<Exception>? fail = null)
     {
         if (_hasValue)
@@ -109,6 +123,11 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
     internal readonly TError _error;
     internal readonly bool _hasValue = false;
 
+    public bool IsSuccess => _hasValue;
+    public bool IsFail => !_hasValue;
+    public TError? Error => _hasValue ? default : _error;
+
+
     public Result() : this(default(TError)!) { }
     public Result(Result<TValue, TError> other)
         : this(other._value, other._error, other._hasValue) { }
@@ -137,8 +156,8 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
-    public void Consume(Action? fail = null, Action<TValue>? some = null) => Consume(some, fail);
-    public void Consume(Action<TValue>? some = null, Action? fail = null)
+    public void Consume(Action<TError>? fail = null, Action<TValue>? some = null) => Consume(some, fail);
+    public void Consume(Action<TValue>? some = null, Action<TError>? fail = null)
     {
         if (_hasValue)
         {
@@ -146,7 +165,7 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
         }
         else
         {
-            fail?.Invoke();
+            fail?.Invoke(_error);
         }
     }
 
