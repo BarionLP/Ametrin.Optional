@@ -12,7 +12,7 @@ public static class LinqExtensions
         => option.Where(static collection => collection.Any(), error);
 
     public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
-        => source.Any() ? source.First() : default;
+        => source.Any() ? source.First() : default(Option<T>);
 
     public static IEnumerable<T> WhereSome<T>(this IEnumerable<Option<T>> source)
         => source.Where(static option => option._hasValue).Select(static option => option._value);

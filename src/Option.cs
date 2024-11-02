@@ -68,14 +68,14 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
         => _hasValue ? !predicate(_value!) ? this : default : this;
 
     public Option<TResult> Select<TResult>(Func<T, TResult> selector)
-        => _hasValue ? selector(_value!) : default;
+        => _hasValue ? selector(_value!) : default(Option<TResult>);
     public Result<TResult> Select<TResult>(Func<T, Result<TResult>> selector)
         => _hasValue ? selector(_value!) : null;
     public Option<TResult> Select<TResult>(Func<T, Option<TResult>> selector)
         => _hasValue ? selector(_value!) : default;
 
     public Option<TResult> Where<TResult>()
-        => _hasValue && _value is TResult casted ? casted : default;
+        => _hasValue && _value is TResult casted ? casted : default(Option<TResult>);
 
 #if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
