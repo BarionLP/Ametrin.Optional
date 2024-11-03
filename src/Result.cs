@@ -78,18 +78,15 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
-#if NET9_0_OR_GREATER
-    public void Consume(Action<Exception>? fail = null, Action<TValue>? some = null) => Consume(some, fail);
-#endif
-    public void Consume(Action<TValue>? some = null, Action<Exception>? fail = null)
+    public void Consume(Action<TValue>? success = null, Action<Exception>? error = null)
     {
         if (_hasValue)
         {
-            some?.Invoke(_value);
+            success?.Invoke(_value);
         }
         else
         {
-            fail?.Invoke(_error);
+            error?.Invoke(_error);
         }
     }
 
@@ -156,16 +153,15 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
-    public void Consume(Action<TError>? fail = null, Action<TValue>? some = null) => Consume(some, fail);
-    public void Consume(Action<TValue>? some = null, Action<TError>? fail = null)
+    public void Consume(Action<TValue>? success = null, Action<TError>? error = null)
     {
         if (_hasValue)
         {
-            some?.Invoke(_value);
+            success?.Invoke(_value);
         }
         else
         {
-            fail?.Invoke(_error);
+            error?.Invoke(_error);
         }
     }
 

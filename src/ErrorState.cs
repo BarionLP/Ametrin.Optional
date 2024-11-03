@@ -1,5 +1,7 @@
 namespace Ametrin.Optional;
 
+// these classes use isFail so the default value is a success state.
+// this behaviour should be kept internal to avoid confusion
 public readonly struct ErrorState : IEquatable<ErrorState>
 {
     public bool IsSuccess => !_isFail;
@@ -21,6 +23,7 @@ public readonly struct ErrorState : IEquatable<ErrorState>
 
     public TResult Select<TResult>(Func<TResult> success, Func<TResult> fail) => _isFail ? fail() : success();
 
+    [Obsolete]
     public void IfSuccess(Action action)
     {
         if (!_isFail)
@@ -29,6 +32,7 @@ public readonly struct ErrorState : IEquatable<ErrorState>
         }
     }
 
+    [Obsolete]
     public void IfFail(Action action)
     {
         if (_isFail)
@@ -38,15 +42,15 @@ public readonly struct ErrorState : IEquatable<ErrorState>
     }
 
 
-    public void Consume(Action success, Action<Exception> fail)
+    public void Consume(Action? success = null, Action<Exception>? error = null)
     {
         if (_isFail)
         {
-            fail(_error);
+            error?.Invoke(_error);
         }
         else
         {
-            success();
+            success?.Invoke();
         }
     }
 
@@ -77,6 +81,7 @@ public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
     }
 
     public TResult Select<TResult>(Func<TResult> success, Func<T, TResult> fail) => _isFail ? fail(_error) : success();
+    [Obsolete]
     public void IfSuccess(Action action)
     {
         if (!_isFail)
@@ -84,7 +89,7 @@ public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
             action();
         }
     }
-
+    [Obsolete]
     public void IfFail(Action<T> action)
     {
         if (_isFail)
@@ -93,15 +98,15 @@ public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
         }
     }
 
-    public void Consume(Action success, Action<T> fail)
+    public void Consume(Action? success = null, Action<T>? error = null)
     {
         if (_isFail)
         {
-            fail(_error);
+            error?.Invoke(_error);
         }
         else
         {
-            success();
+            success?.Invoke();
         }
     }
 

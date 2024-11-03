@@ -24,6 +24,19 @@ public readonly struct Option : IEquatable<Option>
 
     public TResult Select<TResult>(Func<TResult> success, Func<TResult> fail) => _success ? success() : fail();
 
+    public void Consume(Action? success = null, Action? error = null)
+    {
+        if (_success)
+        {
+            success?.Invoke();
+        }
+        else
+        {
+            error?.Invoke();
+        }
+    }
+
+    [Obsolete]
     public void IfSuccess(Action action)
     {
         if (_success)
@@ -32,6 +45,7 @@ public readonly struct Option : IEquatable<Option>
         }
     }
 
+    [Obsolete]
     public void IfFail(Action action)
     {
         if (!_success)
@@ -40,7 +54,7 @@ public readonly struct Option : IEquatable<Option>
         }
     }
 
-    public override string ToString() => _success ? "Success" : "None";
+    public override string ToString() => _success ? "Success" : "Error";
     public override int GetHashCode() => _success.GetHashCode();
     public override bool Equals(object? obj) => obj is Option s && Equals(s);
     public bool Equals(Option other) => _success == other._success;
@@ -84,16 +98,15 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     public T Or(Func<T> factory) => _hasValue ? _value! : factory();
     public T OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Option was None");
 
-    public void Consume(Action? fail = null, Action<T>? some = null) => Consume(some, fail);
-    public void Consume(Action<T>? some = null, Action? fail = null)
+    public void Consume(Action<T>? success = null, Action? error = null)
     {
         if (_hasValue)
         {
-            some?.Invoke(_value);
+            success?.Invoke(_value);
         }
         else
         {
-            fail?.Invoke();
+            error?.Invoke();
         }
     }
 
