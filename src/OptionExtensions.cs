@@ -6,13 +6,21 @@ public static class OptionExtensions
     public static Option<T> ToOption<T>(this T? value) where T : struct => Option.Of(value);
     public static Option<T> ToOption<T>(this object? value) => value is T t ? t : default;
 
+    public static Result<T> ToResult<T>(this T? value) where T : class => Result.Of(value);
+    public static Result<T> ToResult<T>(this T? value) where T : struct => Result.Of(value);
+
     public static T? OrNull<T>(this Option<T> option) where T : class
         => option._hasValue ? option._value! : null;
 
-    public static Option<T> WhereExists<T>(this Option<T> option) where T : FileSystemInfo
-        => option.Where(static info => info.Exists);
     public static Option<T> WhereExists<T>(this T info) where T : FileSystemInfo
         => info.Exists ? info : default(Option<T>);
+
+    public static Option<T> WhereExists<T>(this Option<T> option) where T : FileSystemInfo
+        => option.Where(static info => info.Exists);
+
+    public static Result<T> WhereExists<T>(this Result<T> result) where T : FileSystemInfo
+        => result.Where(static info => info.Exists, static info => new FileNotFoundException(null, info.FullName));
+
 
     public static Option<T> Dispose<T>(this Option<T> option) where T : IDisposable
     {

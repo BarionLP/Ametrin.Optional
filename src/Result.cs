@@ -3,6 +3,10 @@ namespace Ametrin.Optional;
 
 public static class Result
 {
+    public static Result<T> Of<T>(T? value, Exception? error = null) => value is null ? error : value;
+    public static Result<T> Of<T>(T? value, Func<Exception> error) => value is null ? error() : value;
+    public static Result<T> Of<T>(T? value) where T : struct
+        => value ?? default(Result<T>);
     public static Result<T> Fail<T>(Exception? error = null) => new(error);
     public static Result<T> Some<T>(T value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create result with null value") : new(value);
@@ -56,13 +60,15 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
         => (_value, _error, _hasValue) = (value, error, hasValue);
 
     public Result<TValue> Where(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? predicate(_value!) ? this : error : this;
+        => _hasValue ? predicate(_value) ? this : error : this;
     public Result<TValue> Where(Func<TValue, bool> predicate, Func<Exception> error)
-        => _hasValue ? predicate(_value!) ? this : error() : this;
+        => _hasValue ? predicate(_value) ? this : error() : this;
+    public Result<TValue> Where(Func<TValue, bool> predicate, Func<TValue, Exception> error)
+        => _hasValue ? predicate(_value) ? this : error(_value) : this;
     public Result<TValue> WhereNot(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? !predicate(_value!) ? this : error : this;
+        => _hasValue ? !predicate(_value) ? this : error : this;
     public Result<TValue> WhereNot(Func<TValue, bool> predicate, Func<Exception> error)
-        => _hasValue ? !predicate(_value!) ? this : error() : this;
+        => _hasValue ? !predicate(_value) ? this : error() : this;
     public Result<TResult> Where<TResult>(Exception? error = null)
         => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
 
@@ -74,8 +80,8 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
 #if NET9_0_OR_GREATER
     [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
 #endif
-    public TValue Or(TValue other) => _hasValue ? _value! : other;
-    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+    public TValue Or(TValue other) => _hasValue ? _value : other;
+    public TValue Or(Func<TValue> factory) => _hasValue ? _value : factory();
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
     public void Consume(Action<TValue>? success = null, Action<Exception>? error = null)
