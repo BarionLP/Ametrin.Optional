@@ -35,13 +35,13 @@ public static class ErrorStateTestDataSource
 {
     public static IEnumerable<(ErrorState<int>, ErrorState<int>)> EqualsTestData()
     {
-        yield return (ErrorState.Fail(1), ErrorState.Fail(1));
+        yield return (ErrorState.Error(1), ErrorState.Error(1));
         yield return (ErrorState.Success<int>(), new());
     }
 
     public static IEnumerable<(ErrorState<int>, ErrorState<int>)> NotEqualsTestData()
     {
-        yield return (ErrorState.Fail(1), ErrorState.Fail(2));
-        yield return (ErrorState.Fail(0), ErrorState.Success<int>());
+        yield return (ErrorState.Error(1), ErrorState.Error(2));
+        yield return (ErrorState.Error(0), ErrorState.Success<int>());
     }
 }

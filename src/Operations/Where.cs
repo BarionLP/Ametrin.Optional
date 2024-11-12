@@ -1,14 +1,14 @@
 namespace Ametrin.Optional;
 
-partial struct Option<T>
+partial struct Option<TValue>
 {
-    public Option<T> Where(Func<T, bool> predicate)
+    public Option<TValue> Where(Func<TValue, bool> predicate)
         => _hasValue ? predicate(_value!) ? this : default : this;
 
     public Option<TResult> Where<TResult>()
         => _hasValue && _value is TResult casted ? casted : default(Option<TResult>);
 
-    public Option<T> WhereNot(Func<T, bool> predicate)
+    public Option<TValue> WhereNot(Func<TValue, bool> predicate)
         => _hasValue ? !predicate(_value!) ? this : default : this;
 }
 
@@ -20,9 +20,9 @@ partial struct Result<TValue>
         => _hasValue ? predicate(_value) ? this : error(_value) : this;
 
     public Result<TResult> Where<TResult>(Exception? error = null)
-        => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
+        => _hasValue ? _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}") : _error;
     public Result<TResult> Where<TResult>(Func<TValue, Exception> error)
-        => _hasValue && _value is TResult casted ? casted : error(_value);
+        => _hasValue ? _value is TResult casted ? casted : error(_value) : _error;
 
     public Result<TValue> WhereNot(Func<TValue, bool> predicate, Exception? error = null)
         => _hasValue ? !predicate(_value) ? this : error : this;
@@ -38,9 +38,9 @@ partial struct Result<TValue, TError>
         => _hasValue ? predicate(_value!) ? this : error(_value) : this;
 
     public Result<TResult, TError> Where<TResult>(TError error)
-        => _hasValue && _value is TResult casted ? casted : error;
+        => _hasValue ? _value is TResult casted ? casted : error : _error;
     public Result<TResult, TError> Where<TResult>(Func<TValue, TError> error)
-        => _hasValue && _value is TResult casted ? casted : error(_value);
+        => _hasValue ? _value is TResult casted ? casted : error(_value) : _error;
 
     public Result<TValue, TError> WhereNot(Func<TValue, bool> predicate, TError error)
         => _hasValue ? !predicate(_value!) ? this : error : this;

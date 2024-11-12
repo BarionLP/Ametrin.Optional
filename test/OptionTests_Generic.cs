@@ -5,9 +5,9 @@ public sealed class OptionTests_Generic
     [Test]
     public async Task Construction()
     {
-        await Assert.That(Option.Of<string>(null!) == Option.None<string>()).IsTrue();
-        await Assert.That(Option.None<int>() == default(Option<int>)).IsTrue();
-        await Assert.That(() => Option.Some<string>(null!)).ThrowsException();
+        await Assert.That(Option.Of<string>(null!) == Option.Error<string>()).IsTrue();
+        await Assert.That(Option.Error<int>() == default(Option<int>)).IsTrue();
+        await Assert.That(() => Option.Success<string>(null!)).ThrowsException();
     }
 
     [Test]
@@ -44,12 +44,12 @@ public static class OptionTestDataSource
     public static IEnumerable<(Option<int>, Option<int>)> EqualsTestData()
     {
         yield return (Option.Of(1), Option.Of(1));
-        yield return (Option.None<int>(), default);
+        yield return (Option.Error<int>(), default);
     }
 
     public static IEnumerable<(Option<int>, Option<int>)> NotEqualsTestData()
     {
         yield return (Option.Of(1), Option.Of(2));
-        yield return (Option.Of(0), Option.None<int>());
+        yield return (Option.Of(0), Option.Error<int>());
     }
 }

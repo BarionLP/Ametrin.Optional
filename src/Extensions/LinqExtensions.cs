@@ -5,7 +5,7 @@ namespace Ametrin.Optional;
 public static class LinqExtensions
 {
     public static Option<IEnumerable<T>> WhereNotEmpty<T>(this IEnumerable<T> source)
-        => source is not null && source.Any() ? Option.Some(source) : default;
+        => source is not null && source.Any() ? Option.Success(source) : default;
     public static Option<IEnumerable<T>> WhereNotEmpty<T>(this Option<IEnumerable<T>> option)
         => option.Where(static collection => collection.Any());
     public static Result<IEnumerable<T>> WhereNotEmpty<T>(this Result<IEnumerable<T>> option)
