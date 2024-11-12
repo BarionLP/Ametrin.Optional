@@ -6,3 +6,5 @@ using BenchmarkDotNet.Running;
     error: () => Console.WriteLine("Failure"),
     success: s => Console.WriteLine(s)
 );
+
+BenchmarkRunner.Run<Benchmarks>();
