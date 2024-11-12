@@ -2,7 +2,7 @@ namespace Ametrin.Optional;
 
 // these classes use isFail so the default value is a success state.
 // this behaviour should be kept internal to avoid confusion
-public readonly struct ErrorState : IEquatable<ErrorState>
+public readonly partial struct ErrorState : IEquatable<ErrorState>
 {
     public bool IsSuccess => !_isFail;
     public bool IsFail => _isFail;
@@ -22,25 +22,6 @@ public readonly struct ErrorState : IEquatable<ErrorState>
     public static ErrorState<T> Fail<T>(T error) => new(true, error);
 
     public TResult Select<TResult>(Func<TResult> success, Func<TResult> fail) => _isFail ? fail() : success();
-
-    [Obsolete]
-    public void IfSuccess(Action action)
-    {
-        if (!_isFail)
-        {
-            action();
-        }
-    }
-
-    [Obsolete]
-    public void IfFail(Action action)
-    {
-        if (_isFail)
-        {
-            action();
-        }
-    }
-
 
     public void Consume(Action? success = null, Action<Exception>? error = null)
     {
@@ -67,7 +48,7 @@ public readonly struct ErrorState : IEquatable<ErrorState>
     public static implicit operator ErrorState(Exception? error) => error is null ? Success() : Fail(error);
 }
 
-public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
+public readonly partial struct ErrorState<T> : IEquatable<ErrorState<T>>
 {
     public bool IsSuccess => !_isFail;
     public bool IsFail => _isFail;
@@ -81,23 +62,6 @@ public readonly struct ErrorState<T> : IEquatable<ErrorState<T>>
     }
 
     public TResult Select<TResult>(Func<TResult> success, Func<T, TResult> fail) => _isFail ? fail(_error) : success();
-    [Obsolete]
-    public void IfSuccess(Action action)
-    {
-        if (!_isFail)
-        {
-            action();
-        }
-    }
-    [Obsolete]
-    public void IfFail(Action<T> action)
-    {
-        if (_isFail)
-        {
-            action(_error);
-        }
-    }
-
     public void Consume(Action? success = null, Action<T>? error = null)
     {
         if (_isFail)

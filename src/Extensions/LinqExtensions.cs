@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Ametrin.Optional;
 
 public static class LinqExtensions
@@ -7,8 +9,8 @@ public static class LinqExtensions
     public static Option<IEnumerable<T>> WhereNotEmpty<T>(this Option<IEnumerable<T>> option)
         => option.Where(static collection => collection.Any());
     public static Result<IEnumerable<T>> WhereNotEmpty<T>(this Result<IEnumerable<T>> option)
-        => option.WhereNotEmpty(static () => new ArgumentException("Sequence was empty"));
-    public static Result<IEnumerable<T>> WhereNotEmpty<T>(this Result<IEnumerable<T>> option, Func<Exception> error)
+        => option.WhereNotEmpty(static value => new ArgumentException("Sequence was empty"));
+    public static Result<IEnumerable<T>> WhereNotEmpty<T>(this Result<IEnumerable<T>> option, Func<IEnumerable<T>, Exception> error)
         => option.Where(static collection => collection.Any(), error);
 
     public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)

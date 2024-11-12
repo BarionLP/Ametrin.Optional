@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Ametrin.Optional;
 
 public static class OptionExtensions

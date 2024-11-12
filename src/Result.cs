@@ -41,7 +41,7 @@ public static class Result
     }
 }
 
-public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<TValue>
+public readonly partial struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<TValue>
 {
     internal readonly TValue _value;
     internal readonly Exception _error;
@@ -58,31 +58,6 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     internal Result(Exception? error = null) : this(default!, error ?? new Exception(), false) { }
     internal Result(TValue value, Exception error, bool hasValue)
         => (_value, _error, _hasValue) = (value, error, hasValue);
-
-    public Result<TValue> Where(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? predicate(_value) ? this : error : this;
-    public Result<TValue> Where(Func<TValue, bool> predicate, Func<Exception> error)
-        => _hasValue ? predicate(_value) ? this : error() : this;
-    public Result<TValue> Where(Func<TValue, bool> predicate, Func<TValue, Exception> error)
-        => _hasValue ? predicate(_value) ? this : error(_value) : this;
-    public Result<TValue> WhereNot(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? !predicate(_value) ? this : error : this;
-    public Result<TValue> WhereNot(Func<TValue, bool> predicate, Func<Exception> error)
-        => _hasValue ? !predicate(_value) ? this : error() : this;
-    public Result<TResult> Where<TResult>(Exception? error = null)
-        => _hasValue && _value is TResult casted ? casted : error ?? new InvalidCastException($"Cannot cast ${typeof(TValue).Name} to ${typeof(TResult).Name}");
-
-    public Result<TResult> Select<TResult>(Func<TValue, TResult> selector)
-        => _hasValue ? selector(_value) : _error;
-    public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
-        => _hasValue ? selector(_value) : _error;
-
-#if NET9_0_OR_GREATER
-    [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
-#endif
-    public TValue Or(TValue other) => _hasValue ? _value : other;
-    public TValue Or(Func<TValue> factory) => _hasValue ? _value : factory();
-    public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
     public void Consume(Action<TValue>? success = null, Action<Exception>? error = null)
     {
@@ -120,7 +95,7 @@ public readonly struct Result<TValue> : IEquatable<Result<TValue>>, IEquatable<T
     public static implicit operator Result<TValue>(Exception? error) => Result.Fail<TValue>(error);
 }
 
-public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEquatable<TValue>
+public readonly partial struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEquatable<TValue>
 {
     internal readonly TValue _value;
     internal readonly TError _error;
@@ -138,26 +113,6 @@ public readonly struct Result<TValue, TError> : IEquatable<Result<TValue>>, IEqu
     internal Result(TError error) : this(default!, error, false) { }
     internal Result(TValue value, TError error, bool hasValue)
         => (_value, _error, _hasValue) = (value, error, hasValue);
-
-    public Result<TValue, TError> Where(Func<TValue, bool> predicate, TError error)
-        => _hasValue ? predicate(_value!) ? this : error : this;
-    public Result<TValue, TError> WhereNot(Func<TValue, bool> predicate, TError error)
-        => _hasValue ? !predicate(_value!) ? this : error : this;
-    public Result<TResult, TError> Where<TResult>(TError error)
-        => _hasValue && _value is TResult casted ? casted : error;
-
-    public Result<TResult, TError> Select<TResult>(Func<TValue, TResult> selector)
-        => _hasValue ? selector(_value!) : _error;
-    public Result<TResult, TError> Select<TResult>(Func<TValue, Result<TResult, TError>> selector)
-        => _hasValue ? selector(_value!) : _error;
-
-
-#if NET9_0_OR_GREATER
-    [OverloadResolutionPriority(1)] // to allow 'Or(null)' which would normally be ambigious
-#endif
-    public TValue Or(TValue other) => _hasValue ? _value! : other;
-    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
-    public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException("Result was None");
 
     public void Consume(Action<TValue>? success = null, Action<TError>? error = null)
     {
