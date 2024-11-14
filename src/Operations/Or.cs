@@ -33,7 +33,7 @@ partial struct Result<TValue, TError>
 public static class OrExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : class
-        => option._hasValue ? option._value! : null;
+        => option._hasValue ? option._value : null;
 
     public static TValue? OrNull<TValue>(this Result<TValue> result) where TValue : class
         => result._hasValue ? result._value : null;

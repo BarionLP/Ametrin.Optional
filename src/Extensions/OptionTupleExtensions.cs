@@ -1,6 +1,6 @@
 namespace Ametrin.Optional;
 
-public static class TupleExtensions
+public static class OptionTupleExtensions
 {
     public static Option<R> Select<R, T1, T2>(this (Option<T1>, Option<T2>) options, Func<T1, T2, R> selector)
         => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : default(Option<R>);
