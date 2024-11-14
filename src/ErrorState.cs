@@ -2,6 +2,10 @@ namespace Ametrin.Optional;
 
 // these classes use isFail so the default value is a success state.
 // this behaviour should be kept internal to avoid confusion
+
+/// <summary>
+/// A simplified version of <see cref="ErrorState{TError}"/> with Exception as TError
+/// </summary>
 public readonly partial struct ErrorState
 {
     public bool IsSuccess => !_isFail;
@@ -17,6 +21,10 @@ public readonly partial struct ErrorState
     }
 }
 
+/// <summary>
+/// A struct representing either success or an error value of <typeparamref name="TError"/>
+/// </summary>
+/// <typeparam name="TError">Type of the Error</typeparam>
 public readonly partial struct ErrorState<TError>
 {
     public bool IsSuccess => !_isFail;

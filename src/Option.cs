@@ -1,5 +1,8 @@
 ﻿namespace Ametrin.Optional;
 
+/// <summary>
+/// A struct representing either success or error
+/// </summary>
 public readonly partial struct Option
 {
     internal readonly bool _success;
@@ -11,6 +14,10 @@ public readonly partial struct Option
     }
 }
 
+/// <summary>
+/// A struct representing a value of type <typeparamref name="TValue"/> or error
+/// </summary>
+/// <typeparam name="TValue">type of the value</typeparam>
 public readonly partial struct Option<TValue>
 {
     internal readonly TValue _value;

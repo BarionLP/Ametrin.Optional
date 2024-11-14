@@ -1,6 +1,9 @@
 namespace Ametrin.Optional;
 
-public static class OptionsMarshall
+/// <summary>
+/// providing unsafe access to all option types
+/// </summary>
+public static partial class OptionsMarshall
 {
     public static TValue GetValue<TValue, TError>(Result<TValue, TError> result)
         => TryGetValue(result, out var value) ? value : throw new InvalidOperationException();
