@@ -8,7 +8,7 @@ partial struct Option
 partial struct Option<TValue>
 {
     public Option<TResult> Select<TResult>(Func<TValue, TResult> selector)
-        => _hasValue ? selector(_value) : default(Option<TResult>);
+        => _hasValue ? Option.Success(selector(_value)) : default;
     public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
         => _hasValue ? selector(_value) : null;
     public Option<TResult> Select<TResult>(Func<TValue, Option<TResult>> selector)

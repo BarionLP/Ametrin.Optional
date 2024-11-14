@@ -5,7 +5,7 @@ namespace Ametrin.Optional;
 public static class FileSystemInfoExtensions
 {
     public static Option<T> WhereExists<T>(this T info) where T : FileSystemInfo
-        => info.Exists ? info : default(Option<T>);
+        => info.Exists ? Option.Success(info) : default;
 
     public static Option<T> WhereExists<T>(this Option<T> option) where T : FileSystemInfo
         => option.Where(static info => info.Exists);

@@ -2,7 +2,7 @@ namespace Ametrin.Optional;
 
 public static class DisposableExtensions
 {
-    public static void Dispose<T>(this Option<T> option) where T : IDisposable
+    public static void Dispose<TValue>(this Option<TValue> option) where TValue : IDisposable
     {
         if (option._hasValue)
         {
@@ -26,7 +26,7 @@ public static class DisposableExtensions
         }
     }
 
-    public static void Dispose<T>(this ErrorState<T> option) where T : IDisposable
+    public static void Dispose<TError>(this ErrorState<TError> option) where TError : IDisposable
     {
         if (option._isFail)
         {

@@ -14,7 +14,7 @@ public static class LinqExtensions
         => option.Where(static collection => collection.Any(), error);
 
     public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
-        => source.Any() ? source.First() : default(Option<T>);
+        => source.Any() ? Option.Success(source.First()) : default;
 
     public static IEnumerable<T> WhereSuccess<T>(this IEnumerable<Option<T>> source)
         => source.Where(static option => option._hasValue).Select(static option => option._value);
