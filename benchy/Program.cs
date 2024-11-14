@@ -7,4 +7,6 @@ using BenchmarkDotNet.Running;
     success: s => Console.WriteLine(s)
 );
 
+Option.Success("").OrNull();
+
 BenchmarkRunner.Run<Benchmarks>();

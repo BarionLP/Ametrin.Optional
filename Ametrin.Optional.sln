@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ametrin.Optional", "src\Ame
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ametrin.Optional.Test", "test\Ametrin.Optional.Test.csproj", "{4CD32508-CD86-46E9-A05C-8698DDF3E40C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ametrin.Optional.Testing.TUnit", "testing\TUnit\Ametrin.Optional.Testing.TUnit.csproj", "{B004827A-B8F2-49B9-B1C2-F210C20816DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{4CD32508-CD86-46E9-A05C-8698DDF3E40C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CD32508-CD86-46E9-A05C-8698DDF3E40C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CD32508-CD86-46E9-A05C-8698DDF3E40C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B004827A-B8F2-49B9-B1C2-F210C20816DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B004827A-B8F2-49B9-B1C2-F210C20816DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B004827A-B8F2-49B9-B1C2-F210C20816DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B004827A-B8F2-49B9-B1C2-F210C20816DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

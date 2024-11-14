@@ -15,9 +15,6 @@ public readonly partial struct ErrorState
         _isFail = isFail;
         _error = error;
     }
-
-    // public static implicit operator bool(ErrorState state) => !state._isFail;
-    public static implicit operator ErrorState(Exception? error) => error is null ? Success() : Error(error);
 }
 
 public readonly partial struct ErrorState<TError>
@@ -33,9 +30,6 @@ public readonly partial struct ErrorState<TError>
         _isFail = isFail;
         _error = error;
     }
-
-    // public static implicit operator bool(ErrorState<T> state) => !state._isFail;
-    public static implicit operator ErrorState<TError>(TError? state) => state is TError t ? ErrorState.Error(t) : ErrorState.Success<TError>();
 }
 
 partial struct ErrorState

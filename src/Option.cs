@@ -9,9 +9,6 @@ public readonly partial struct Option
     {
         _success = success;
     }
-
-    public static implicit operator bool(Option state) => state._success;
-    public static implicit operator Option(bool state) => new(state);
 }
 
 public readonly partial struct Option<TValue>
@@ -24,8 +21,6 @@ public readonly partial struct Option<TValue>
         => (_value, _hasValue) = (value, hasValue);
     public Option(Option<TValue> other)
         : this(other._value, other._hasValue) { }
-
-    public static implicit operator Option<TValue>(TValue? value) => Option.Of(value);
 }
 
 partial struct Option
@@ -34,7 +29,7 @@ partial struct Option
     public static Option Error() => new(false);
 
     public static Option<TValue> Success<TValue>(TValue value)
-        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Option with null") : new(value, true);
+        => new(value ?? throw new ArgumentNullException(nameof(value), "Cannot create Option with null"), true);
     public static Option<TValue> Error<TValue>() => default;
 
     public static Option<TValue> Of<TValue>(TValue? value)
