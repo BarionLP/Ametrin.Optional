@@ -18,6 +18,19 @@ public static partial class OptionsMarshall
         return false;
     }
 
+    public static Exception GetError<TValue>(Result<TValue> result)
+        => TryGetError(result, out var value) ? value : throw new InvalidOperationException();
+    public static bool TryGetError<TResult>(Result<TResult> result, out Exception error)
+    {
+        if (!result._hasValue)
+        {
+            error = result._error;
+            return true;
+        }
+        error = default!;
+        return false;
+    }
+    
     public static TError GetError<TValue, TError>(Result<TValue, TError> result)
         => TryGetError(result, out var value) ? value : throw new InvalidOperationException();
     public static bool TryGetError<TResult, TError>(Result<TResult, TError> result, out TError error)
