@@ -46,6 +46,8 @@ public static partial class OptionsMarshall
         return false;
     }
 
+    public static Exception? GetErrorOrNull<TValue>(Result<TValue> result)
+        => TryGetError(result, out var error) ? error : null;
     public static Exception GetError<TValue>(Result<TValue> result)
         => TryGetError(result, out var error) ? error : throw new InvalidOperationException();
     public static bool TryGetError<TValue>(Result<TValue> result, [NotNullWhen(true)] out Exception? error)
@@ -72,8 +74,10 @@ public static partial class OptionsMarshall
         return false;
     }
 
+    public static Exception? GetErrorOrNull(ErrorState result)
+        => TryGetError(result, out var error) ? error : null;
     public static Exception GetError(ErrorState result)
-    => TryGetError(result, out var error) ? error : throw new InvalidOperationException();
+        => TryGetError(result, out var error) ? error : throw new InvalidOperationException();
     public static bool TryGetError(ErrorState result, [NotNullWhen(true)] out Exception? error)
     {
         if (result._isError)

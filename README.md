@@ -43,3 +43,25 @@ option.Where(a => a > 5).Select(a => a * 5).Consume(a => process(a), () => repor
 ```
 There is an alternative most `Try...` methods that return an option. If not, I'm happy to accept pull request.<br/>
 If you are missing something feel free to create an issue or PR (talk to me before so i agree on the design)
+### Edge Cases
+if you run into edge cases that are not covered by the API let me know so we can find a solution<br/>
+In the mean time you can use the `OptionsMarshall` to get direct access to the underlying data. This can also be used in high performance scenarious where the delegate cannot be static
+```csharp
+if(!OptionsMarshall.IsSuccess(result))
+{
+    ...
+}
+
+if(OptionsMarshall.TryGetError(result, out var error))
+{
+    ...
+}
+
+if(OptionsMarshall.TryGetValue(result, out var value))
+{
+    ...
+}
+```
+
+### Unit tests
+If you need to unit test an option you can use `Ametrin.Optional.Testing.TUnit` to to simplify the testing experience with TUnit. Feel free to pr similar extensions for your testing framework

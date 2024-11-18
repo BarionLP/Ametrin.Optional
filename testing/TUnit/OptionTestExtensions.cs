@@ -38,7 +38,7 @@ public sealed class OptionAssertCondition<TValue>(bool expectValue) : BaseAssert
 
     protected override Task<AssertionResult> GetResult(Option<TValue> actualValue, Exception? exception)
     {
-        var hasValue = actualValue.Select(_ => true).Or(false);
+        var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
         return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
     }
