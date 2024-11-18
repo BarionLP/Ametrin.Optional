@@ -104,3 +104,8 @@ partial struct ErrorState<TError> : IEquatable<ErrorState<TError>>
     public static bool operator ==(ErrorState<TError> left, ErrorState<TError> right) => left.Equals(right);
     public static bool operator !=(ErrorState<TError> left, ErrorState<TError> right) => !(left == right);
 }
+
+partial struct RefOption<TValue>
+{
+
+}

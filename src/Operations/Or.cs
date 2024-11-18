@@ -42,6 +42,16 @@ public static class ReferenceOrExtensions
         => result._hasValue ? result._value : null;
 }
 
+partial struct RefOption<TValue>
+{
+#if NET9_0_OR_GREATER
+    [OverloadResolutionPriority(1)] // to allow 'Or(default)' which would normally be ambigious
+#endif
+    public TValue Or(TValue other) => _hasValue ? _value : other;
+    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+    public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Option is Error state");
+}
+
 public static class ValueOrExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : struct

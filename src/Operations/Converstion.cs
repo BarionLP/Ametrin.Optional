@@ -42,6 +42,12 @@ partial struct ErrorState<TError>
     public static explicit operator Option(ErrorState<TError> error) => !error._isFail;
 }
 
+partial struct RefOption<TValue>
+{
+    public static implicit operator RefOption<TValue>(TValue value) => RefOption.Success(value);
+    public static explicit operator Option(RefOption<TValue> option) => option._hasValue;
+}
+
 public static class OptionConversions
 {
     public static Option<TValue> ToOption<TValue>(this TValue? value) => Option.Of(value);

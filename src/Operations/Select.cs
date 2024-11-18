@@ -46,3 +46,19 @@ partial struct ErrorState<TError>
 {
     public TResult Select<TResult>(Func<TResult> success, Func<TError, TResult> error) => _isFail ? error(_error) : success();
 }
+
+partial struct RefOption<TValue>
+{
+    public RefOption<TResult> Select<TResult>(Func<TValue, TResult> selector) where TResult : struct, allows ref struct
+        => _hasValue ? RefOption.Success(selector(_value)) : default;
+    public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
+        => _hasValue ? selector(_value) : null;
+    public RefOption<TResult> Select<TResult>(Func<TValue, RefOption<TResult>> selector) where TResult : struct, allows ref struct
+        => _hasValue ? selector(_value) : default;
+}
+
+public static class SelectExtensions
+{
+    public static Option<TResult> Select<TValue, TResult>(this RefOption<TValue> option, Func<TValue, TResult> selector) where TResult : class where TValue : struct, allows ref struct
+        => option._hasValue ? Option.Success(selector(option._value)) : default;
+}

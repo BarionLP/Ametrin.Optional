@@ -89,3 +89,18 @@ partial struct ErrorState<TError>
         }
     }
 }
+
+partial struct RefOption<TValue>
+{
+    public void Consume(Action<TValue>? success = null, Action? error = null)
+    {
+        if (_hasValue)
+        {
+            success?.Invoke(_value);
+        }
+        else
+        {
+            error?.Invoke();
+        }
+    }
+}
