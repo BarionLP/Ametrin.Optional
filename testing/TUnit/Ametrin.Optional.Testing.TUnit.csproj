@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TUnit.Assertions" Version="0.2.212" />
+    <PackageReference Include="TUnit.Assertions" Version="0.3.31" />
   </ItemGroup>
 
 </Project>

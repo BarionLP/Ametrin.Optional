@@ -74,7 +74,7 @@ public sealed class ResultAssertCondition<TValue>(bool hasValue) : BaseAssertCon
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
-        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
+        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
     }
 }
 
@@ -84,7 +84,7 @@ public sealed class ResultAssertErrorTypeCondition<TValue, TError>() : BaseAsser
 
     protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception)
     {
-        return OptionsMarshall.GetErrorOrNull(actualValue) is TError ? AssertionResult.Passed : AssertionResult.Fail(actualValue.Select(v => "found Success").Or(e => $"found {e}"));
+        return OptionsMarshall.GetErrorOrNull(actualValue) is TError ? AssertionResult.Passed : AssertionResult.Fail(() => actualValue.Select(v => "found Success").Or(e => $"found {e}"));
     }
 }
 public sealed class ResultAssertErrorTypeNotCondition<TValue, TError>() : BaseAssertCondition<Result<TValue>> where TError : Exception
@@ -96,9 +96,9 @@ public sealed class ResultAssertErrorTypeNotCondition<TValue, TError>() : BaseAs
         var error = OptionsMarshall.GetErrorOrNull(actualValue);
         return error switch
         {
-            null => AssertionResult.Fail("found Success"),
+            null => AssertionResult.Fail(() => "found Success"),
             not TError => AssertionResult.Passed,
-            _ => AssertionResult.Fail($"found {error}")
+            _ => AssertionResult.Fail(() => $"found {error}")
         };
     }
 }
@@ -113,6 +113,6 @@ public sealed class Result2AssertCondition<TValue, TError>(bool hasValue) : Base
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue); ;
 
-        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
+        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
     }
 }

@@ -5,7 +5,7 @@ This is a rewrite of the Optional namespace in [Ametrin.Utils](https://github.co
 **Warning**: This is my 3rd take on options and I assume it will not be my last (Especially once .NET gets type unions). I try to avoid breaking changes. If I have to break something I'll create a legacy branch.
 
 # Types
-## Option\<T>
+## `Option<T>`
 T or Error
 ```csharp
 Option<T> a = someT; // equivalent to Option.Of(someT) - will produce Error if someT is null
@@ -13,23 +13,23 @@ Option<T> b = default; // equivalent to Option.Error<T>()
 //careful that default is actually referencing Option<T> and not T. Especially in conditional assignments.
 Option<T> a = Option.Success(someT); //requires a nonnull value
 ```
-### Option 
+### `Option` 
 Success or Error
 ```csharp
 Option success = true; // equivalent to Option.Success()
 Option error = false; //equivalent to Option.Error()
 ```
-## Result\<T, E>
+## `Result<T, E>`
 T or E
 ```csharp
 Result<T, E> success = someT; // equivalent to Result.Success<T, E>(someT)  
 Result<T, E> error = someE; // equivalent to Option.Error<T, E>(someE) 
 ```
-### Result\<T>
+### `Result<T>`
 T or Exception
-## ErrorState\<T>
+## `ErrorState<T>`
 Success or T
-### ErrorState
+### `ErrorState`
 Success or Exception
 
 ## General API
@@ -64,4 +64,4 @@ if(OptionsMarshall.TryGetValue(result, out var value))
 ```
 
 ### Unit tests
-If you need to unit test an option you can use `Ametrin.Optional.Testing.TUnit` to to simplify the testing experience with TUnit. Feel free to pr similar extensions for your testing framework
+If you need to unit test an option you can use `Ametrin.Optional.Testing.TUnit` to to simplify the testing experience with TUnit. Feel free to contribute similar extensions for your testing framework
