@@ -28,7 +28,7 @@ public static class DisposableExtensions
 
     public static void Dispose<TError>(this ErrorState<TError> option) where TError : IDisposable
     {
-        if (option._isFail)
+        if (option._isError)
         {
             option._error.Dispose();
         }

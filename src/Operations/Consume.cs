@@ -64,7 +64,7 @@ partial struct ErrorState
 {
     public void Consume(Action? success = null, Action<Exception>? error = null)
     {
-        if (_isFail)
+        if (_isError)
         {
             error?.Invoke(_error);
         }
@@ -79,7 +79,7 @@ partial struct ErrorState<TError>
 {
     public void Consume(Action? success = null, Action<TError>? error = null)
     {
-        if (_isFail)
+        if (_isError)
         {
             error?.Invoke(_error);
         }

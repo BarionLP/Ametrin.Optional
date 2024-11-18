@@ -8,15 +8,15 @@ namespace Ametrin.Optional;
 /// </summary>
 public readonly partial struct ErrorState
 {
-    public bool IsSuccess => !_isFail;
-    public bool IsFail => _isFail;
-    internal readonly bool _isFail;
+    public bool IsSuccess => !_isError;
+    public bool IsFail => _isError;
+    internal readonly bool _isError;
     internal readonly Exception _error;
 
     public ErrorState() : this(false, default!) { }
     internal ErrorState(bool isFail, Exception error)
     {
-        _isFail = isFail;
+        _isError = isFail;
         _error = error;
     }
 }
@@ -27,15 +27,15 @@ public readonly partial struct ErrorState
 /// <typeparam name="TError">Type of the Error</typeparam>
 public readonly partial struct ErrorState<TError>
 {
-    public bool IsSuccess => !_isFail;
-    public bool IsFail => _isFail;
-    internal readonly bool _isFail;
+    public bool IsSuccess => !_isError;
+    public bool IsFail => _isError;
+    internal readonly bool _isError;
     internal readonly TError _error;
 
     public ErrorState() : this(false, default!) { }
     internal ErrorState(bool isFail, TError error)
     {
-        _isFail = isFail;
+        _isError = isFail;
         _error = error;
     }
 }

@@ -33,13 +33,13 @@ partial struct Result<TValue, TError>
 partial struct ErrorState
 {
     public static implicit operator ErrorState(Exception? error) => error is null ? Success() : Error(error);
-    public static explicit operator Option(ErrorState error) => !error._isFail;
+    public static explicit operator Option(ErrorState error) => !error._isError;
 }
 
 partial struct ErrorState<TError>
 {
     public static implicit operator ErrorState<TError>(TError? state) => state is TError t ? ErrorState.Error(t) : ErrorState.Success<TError>();
-    public static explicit operator Option(ErrorState<TError> error) => !error._isFail;
+    public static explicit operator Option(ErrorState<TError> error) => !error._isError;
 }
 
 public static class OptionConversions

@@ -22,10 +22,10 @@ partial struct Result<TValue, TError>
 
 partial struct ErrorState
 {
-    public override string ToString() => _isFail ? _error.Message : "Success";
+    public override string ToString() => _isError ? _error.Message : "Success";
 }
 
 partial struct ErrorState<TError>
 {
-    public override string ToString() => _isFail ? _error!.ToString() ?? "Error" : "Success";
+    public override string ToString() => _isError ? _error!.ToString() ?? "Error" : "Success";
 }
