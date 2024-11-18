@@ -39,7 +39,7 @@ partial struct Result<TValue, TError>
 
 partial struct ErrorState
 {
-    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) => _isFail ? error() : success();
+    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) => _isError ? error() : success();
 }
 
 partial struct ErrorState<TError>

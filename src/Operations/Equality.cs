@@ -83,10 +83,10 @@ partial struct Result<TValue, TError> : IEquatable<Result<TValue, TError>>, IEqu
 
 partial struct ErrorState : IEquatable<ErrorState>
 {
-    public override int GetHashCode() => _isFail ? HashCode.Combine(_isFail.GetHashCode(), _error.GetHashCode()) : _isFail.GetHashCode();
+    public override int GetHashCode() => _isError ? HashCode.Combine(_isError.GetHashCode(), _error.GetHashCode()) : _isError.GetHashCode();
 
     public bool Equals(ErrorState other)
-        => _isFail ? other._isFail && _error == other._error : !other._isFail;
+        => _isError ? other._isError && _error == other._error : !other._isError;
     public override bool Equals(object? obj) => obj is ErrorState s && Equals(s);
 
     public static bool operator ==(ErrorState left, ErrorState right) => left.Equals(right);
@@ -95,10 +95,10 @@ partial struct ErrorState : IEquatable<ErrorState>
 
 partial struct ErrorState<TError> : IEquatable<ErrorState<TError>>
 {
-    public override int GetHashCode() => _isFail ? HashCode.Combine(_isFail.GetHashCode(), _error!.GetHashCode()) : _isFail.GetHashCode();
+    public override int GetHashCode() => _isError ? HashCode.Combine(_isError.GetHashCode(), _error!.GetHashCode()) : _isError.GetHashCode();
 
     public bool Equals(ErrorState<TError> other)
-        => _isFail ? other._isFail && EqualityComparer<TError>.Default.Equals(_error, other._error) : !other._isFail;
+        => _isError ? other._isError && EqualityComparer<TError>.Default.Equals(_error, other._error) : !other._isError;
     public override bool Equals(object? obj) => obj is ErrorState<TError> s && Equals(s);
 
     public static bool operator ==(ErrorState<TError> left, ErrorState<TError> right) => left.Equals(right);
