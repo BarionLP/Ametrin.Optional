@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace Ametrin.Optional;
 
-public static class LinqExtensions
+public static class OptionLinqExtensions
 {
     public static Option<IEnumerable<T>> WhereNotEmpty<T>(this IEnumerable<T> source)
         => source is not null && source.Any() ? Option.Success(source) : default;
@@ -14,7 +14,10 @@ public static class LinqExtensions
         => option.Where(static collection => collection.Any(), error);
 
     public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
-        => source.Any() ? Option.Success(source.First()) : default;
+    {
+        using var enumerator = source.GetEnumerator();
+        return enumerator.MoveNext() ? Option.Success(enumerator.Current) : default;
+    }
 
     public static IEnumerable<T> WhereSuccess<T>(this IEnumerable<Option<T>> source)
         => source.Where(static option => option._hasValue).Select(static option => option._value);

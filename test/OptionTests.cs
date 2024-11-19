@@ -1,22 +1,47 @@
 namespace Ametrin.Optional.Test;
 
-public class OptionTests
+public sealed class OptionTests
 {
     [Test]
-    public async Task Equals()
+    [MethodDataSource(typeof(OptionTestDataSource), nameof(OptionTestDataSource.EqualsTestData))]
+    public async Task Equals(Option<int> a, Option<int> b)
     {
-        await Assert.That(Option.Error()).IsEqualTo(false);
-        await Assert.That(Option.Error()).IsNotEqualTo(true);
-        await Assert.That(Option.Success()).IsEqualTo(true);
-        await Assert.That(Option.Success()).IsNotEqualTo(false);
-        await Assert.That(Option.Error() == Option.Error()).IsTrue();
-        await Assert.That(Option.Success() != Option.Error()).IsTrue();
+        await Assert.That(a == b).IsTrue();
     }
 
     [Test]
-    public async Task HashCode()
+    [MethodDataSource(typeof(OptionTestDataSource), nameof(OptionTestDataSource.NotEqualsTestData))]
+    public async Task Not_Equals(Option<int> a, Option<int> b)
     {
-        await Assert.That(Option.Error().GetHashCode()).IsEqualTo(Option.Error().GetHashCode());
-        await Assert.That(Option.Error().GetHashCode()).IsNotEqualTo(Option.Success().GetHashCode());
+        await Assert.That(a != b).IsTrue();
+    }
+
+    [Test]
+    [MethodDataSource(typeof(OptionTestDataSource), nameof(OptionTestDataSource.EqualsTestData))]
+    public async Task HashCode_Equals(Option<int> a, Option<int> b)
+    {
+        await Assert.That(a.GetHashCode()).IsEqualTo(b.GetHashCode());
+    }
+
+    [Test]
+    [MethodDataSource(typeof(OptionTestDataSource), nameof(OptionTestDataSource.NotEqualsTestData))]
+    public async Task HashCode_Not_Equals(Option<int> a, Option<int> b)
+    {
+        await Assert.That(a.GetHashCode()).IsNotEqualTo(b.GetHashCode());
+    }
+}
+
+public static class OptionTestDataSource
+{
+    public static IEnumerable<(Option<int>, Option<int>)> EqualsTestData()
+    {
+        yield return (Option.Of(1), Option.Of(1));
+        yield return (Option.Error<int>(), default);
+    }
+
+    public static IEnumerable<(Option<int>, Option<int>)> NotEqualsTestData()
+    {
+        yield return (Option.Of(1), Option.Of(2));
+        yield return (Option.Of(0), Option.Error<int>());
     }
 }

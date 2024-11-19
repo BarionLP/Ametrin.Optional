@@ -1,4 +1,9 @@
-﻿using Ametrin.Optional.Benchy;
+﻿using Ametrin.Optional;
+using Ametrin.Optional.Benchy;
 using BenchmarkDotNet.Running;
+
+var option = RefOption.Success(Span<byte>.Empty);
+var other = option.WhereNot(span => span.IsEmpty).Select(span => Convert.ToHexString(span));
+option.Or([]);
 
 BenchmarkRunner.Run<Benchmarks>();

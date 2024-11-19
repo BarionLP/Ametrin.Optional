@@ -10,6 +10,11 @@ partial struct Option<TValue>
 {
     public static implicit operator Option<TValue>(TValue? value) => Option.Of(value);
     public static explicit operator Option(Option<TValue> option) => option._hasValue;
+
+    public Result<TValue> ToResult(Func<Exception> error)
+        => _hasValue ? _value : error();
+    public Result<TValue, TError> ToResult<TError>(Func<TError> error)
+        => _hasValue ? _value : error();
 }
 
 partial struct Result<TValue>
@@ -19,7 +24,11 @@ partial struct Result<TValue>
     public static implicit operator Result<TValue>(Result<TValue, Exception> other) => other._hasValue ? other._value : other._error;
     public static implicit operator Result<TValue, Exception>(Result<TValue> other) => other._hasValue ? other._value : other._error;
     public static explicit operator Option(Result<TValue> result) => result._hasValue;
-    public static explicit operator ErrorState(Result<TValue> result) => result._hasValue ? default : result._error;
+    public static explicit operator ErrorState(Result<TValue> result) => result._hasValue ? default : ErrorState.Error(result._error);
+    public static explicit operator Option<TValue>(Result<TValue> result) => result.ToOption();
+
+    public Option<TValue> ToOption()
+        => _hasValue ? Option.Success(_value) : default;
 }
 
 partial struct Result<TValue, TError>
@@ -27,7 +36,13 @@ partial struct Result<TValue, TError>
     public static implicit operator Result<TValue, TError>(TValue value) => Result.Success<TValue, TError>(value);
     public static implicit operator Result<TValue, TError>(TError error) => Result.Error<TValue, TError>(error);
     public static explicit operator Option(Result<TValue, TError> result) => result._hasValue;
-    public static explicit operator ErrorState<TError>(Result<TValue, TError> result) => result._hasValue ? default : result._error;
+    public static explicit operator ErrorState<TError>(Result<TValue, TError> result) => result.ToErrorState();
+    public static explicit operator Option<TValue>(Result<TValue, TError> result) => result.ToOption();
+
+    public Option<TValue> ToOption()
+        => _hasValue ? Option.Success(_value) : default;
+    public ErrorState<TError> ToErrorState()
+        => _hasValue ? default : ErrorState.Error(_error);
 }
 
 partial struct ErrorState
@@ -42,21 +57,17 @@ partial struct ErrorState<TError>
     public static explicit operator Option(ErrorState<TError> error) => !error._isError;
 }
 
+partial struct RefOption<TValue>
+{
+    public static implicit operator RefOption<TValue>(TValue value) => RefOption.Success(value);
+    public static explicit operator Option(RefOption<TValue> option) => option._hasValue;
+}
+
 public static class OptionConversions
 {
     public static Option<TValue> ToOption<TValue>(this TValue? value) => Option.Of(value);
     public static Option<TValue> ToOption<TValue>(this TValue? value) where TValue : struct => Option.Of(value);
-    public static Option<TValue> ToOption<TValue>(this object? value) => value is TValue t ? t : default(Option<TValue>);
-
-    public static Result<TValue> ToResult<TValue>(this Option<TValue> option, Exception? error = null)
-        => option._hasValue ? option._value : error;
-    public static Result<TValue> ToResult<TValue>(this Option<TValue> option, Func<Exception> error)
-        => option._hasValue ? option._value : error();
-
-    public static Result<TValue, TError> ToResult<TValue, TError>(this Option<TValue> option, TError error)
-        => option._hasValue ? option._value : error;
-    public static Result<TValue, TError> ToResult<TValue, TError>(this Option<TValue> option, Func<TError> error)
-        => option._hasValue ? option._value : error();
+    public static Option<TValue> ToOption<TValue>(this object? value) => value is TValue t ? Option.Success(t) : default;
 }
 
 public static class ResultConversions
@@ -64,9 +75,4 @@ public static class ResultConversions
     public static Result<TValue> ToResult<TValue>(this TValue? value) => Result.Of(value);
     public static Result<TValue> ToResult<TValue>(this TValue? value) where TValue : struct => Result.Of(value);
     public static Result<TValue> ToResult<TValue>(this object? value) => value.ToResult().Where<TValue>();
-
-    public static Option<TValue> ToOption<TValue>(this Result<TValue> result)
-            => result._hasValue ? result._value : default(Option<TValue>);
-    public static Option<TValue> ToOption<TValue, TError>(this Result<TValue, TError> result)
-            => result._hasValue ? result._value : default(Option<TValue>);
 }

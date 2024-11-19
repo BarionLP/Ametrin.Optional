@@ -47,3 +47,12 @@ partial struct Result<TValue, TError>
     public Result<TValue, TError> WhereNot(Func<TValue, bool> predicate, Func<TValue, TError> error)
         => _hasValue ? !predicate(_value!) ? this : error(_value) : this;
 }
+
+partial struct RefOption<TValue>
+{
+    public RefOption<TValue> Where(Func<TValue, bool> predicate)
+        => _hasValue ? predicate(_value!) ? this : default : this;
+
+    public RefOption<TValue> WhereNot(Func<TValue, bool> predicate)
+        => _hasValue ? !predicate(_value!) ? this : default : this;
+}

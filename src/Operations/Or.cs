@@ -24,6 +24,14 @@ partial struct Result<TValue, TError>
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException($"Result is Error state: {_error}");
 }
 
+partial struct RefOption<TValue>
+{
+    [OverloadResolutionPriority(1)]
+    public TValue Or(TValue other) => _hasValue ? _value : other;
+    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+    public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Option is Error state");
+}
+
 public static class ReferenceOrExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : class

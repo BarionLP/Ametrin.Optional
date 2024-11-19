@@ -35,7 +35,7 @@ public readonly partial struct Result<TValue, TError>
     public Result(Result<TValue, TError> other)
         : this(other._value, other._error, other._hasValue) { }
     internal Result(TValue value) : this(value, default!, true) { }
-    internal Result(TError error) : this(default!, error, false) { }
+    internal Result(TError error) : this(default!, error ?? throw new ArgumentNullException(nameof(error), "Cannot create Error Result with null error"), false) { }
     internal Result(TValue value, TError error, bool hasValue)
         => (_value, _error, _hasValue) = (value, error, hasValue);
 }
@@ -43,7 +43,7 @@ public readonly partial struct Result<TValue, TError>
 public static class Result
 {
     public static Result<T> Success<T>(T value)
-        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Result with null") : new(value);
+        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Success Result with null value") : new(value);
     public static Result<T> Error<T>(Exception? error = null) => new(error);
 
     public static Result<T> Of<T>(T? value, Exception? error = null) => value is null ? error : value;

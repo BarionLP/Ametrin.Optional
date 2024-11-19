@@ -33,4 +33,13 @@ public static class DisposableExtensions
             option._error.Dispose();
         }
     }
+    
+    public static void Dispose<TValue>(this RefOption<TValue> option) 
+        where TValue : struct, IDisposable, allows ref struct
+    {
+        if (option._hasValue)
+        {
+            option._value.Dispose();
+        }
+    }
 }
