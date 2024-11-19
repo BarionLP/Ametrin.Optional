@@ -2,13 +2,15 @@ namespace Ametrin.Optional;
 
 partial struct Option
 {
-    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) => _success ? success() : error();
+    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) 
+        => _success ? success() : error();
 }
 
 partial struct Option<TValue>
 {
     public Option<TResult> Select<TResult>(Func<TValue, TResult> selector)
         => _hasValue ? Option.Success(selector(_value)) : default;
+    [Obsolete("use .ToResult().Select")]
     public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
         => _hasValue ? selector(_value) : null;
     public Option<TResult> Select<TResult>(Func<TValue, Option<TResult>> selector)
@@ -55,8 +57,6 @@ partial struct RefOption<TValue>
     public RefOption<TResult> Select<TResult>(Func<TValue, RefOption<TResult>> selector)
         where TResult : struct, allows ref struct
         => _hasValue ? selector(_value) : default;
-    public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
-        => _hasValue ? selector(_value) : null;
     public Option<TResult> Select<TResult>(Func<TValue, Option<TResult>> selector)
         => _hasValue ? selector(_value) : default;
 }
