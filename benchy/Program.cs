@@ -4,5 +4,6 @@ using BenchmarkDotNet.Running;
 
 RefOption<Span<byte>> option = RefOption.Success(Span<byte>.Empty);
 option.WhereNot(span => span.IsEmpty).Select(span => Convert.ToHexString(span));
+option.Or([]);
 
 BenchmarkRunner.Run<Benchmarks>();

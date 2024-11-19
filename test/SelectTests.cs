@@ -9,6 +9,8 @@ public sealed class SelectTests
         await Assert.That(Result.Success(1).Select(i => i + 1)).IsSuccess(2);
         await Assert.That(Result.Success<int, string>(1).Select(i => i + 1)).IsSuccess(2);
         await Assert.That(Result.Success<int, int>(1).Select(i => i + 1, error => error.ToString())).IsSuccess(2);
+        await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>([]).Select(s => s))).IsTrue();
+        await Assert.That(RefOption.Success<Span<char>>([]).Select(s => new string(s))).IsSuccess("");
     }
 
     [Test]
@@ -19,5 +21,7 @@ public sealed class SelectTests
         await Assert.That(Result.Error<int>(new InvalidOperationException()).Select(i => i + 1)).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(Result.Error<int, string>("").Select(i => i + 1)).IsError("");
         await Assert.That(Result.Error<int, int>(5).Select(i => i + 1, error => error.ToString())).IsError("5");
+        await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<Span<char>>().Select(s => s))).IsFalse();
+        await Assert.That(RefOption.Error<Span<char>>().Select(s => new string(s))).IsError();
     }
 }

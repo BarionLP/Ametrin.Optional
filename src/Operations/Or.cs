@@ -24,6 +24,14 @@ partial struct Result<TValue, TError>
     public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException($"Result is Error state: {_error}");
 }
 
+partial struct RefOption<TValue>
+{
+    [OverloadResolutionPriority(1)]
+    public TValue Or(TValue other) => _hasValue ? _value : other;
+    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+    public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Option is Error state");
+}
+
 public static class ReferenceOrExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : class
@@ -34,16 +42,6 @@ public static class ReferenceOrExtensions
 
     public static TValue? OrNull<TValue, TError>(this Result<TValue, TError> result) where TValue : class
         => result._hasValue ? result._value : null;
-}
-
-partial struct RefOption<TValue>
-{
-#if NET9_0_OR_GREATER
-    [OverloadResolutionPriority(1)] // to allow 'Or(default)' which would normally be ambigious
-#endif
-    public TValue Or(TValue other) => _hasValue ? _value : other;
-    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
-    public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Option is Error state");
 }
 
 public static class ValueOrExtensions

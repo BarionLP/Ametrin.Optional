@@ -1,8 +1,10 @@
 namespace Ametrin.Optional;
 
+/// <summary>
+/// A ref struct representing a value of type <typeparamref name="TValue"/> or error
+/// </summary>
+/// <typeparam name="TValue">ref struct type of the value</typeparam>
 public readonly ref partial struct RefOption<TValue>
-#if NET9_0_OR_GREATER
-#endif
     where TValue : struct, allows ref struct
 {
     internal readonly TValue _value;
@@ -25,7 +27,4 @@ public static class RefOption
         => new(value, true);
     public static RefOption<TValue> Error<TValue>() where TValue : struct, allows ref struct
         => default;
-
-    public static RefOption<TValue> Of<TValue>(TValue? value) where TValue : struct
-        => value is null ? default : new(value.Value, true);
 }

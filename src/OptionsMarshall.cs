@@ -12,6 +12,7 @@ public static partial class OptionsMarshall
     public static bool IsSuccess<TValue, TError>(Result<TValue, TError> result) => result._hasValue;
     public static bool IsSuccess(ErrorState errorState) => !errorState._isError;
     public static bool IsSuccess<TError>(ErrorState<TError> errorState) => !errorState._isError;
+    public static bool IsSuccess<TValue>(RefOption<TValue> option) where TValue : struct, allows ref struct => option._hasValue;
 
     public static bool TryGetValue<TValue>(Option<TValue> option, out TValue value)
     {
@@ -40,6 +41,18 @@ public static partial class OptionsMarshall
         if (result._hasValue)
         {
             value = result._value;
+            return true;
+        }
+        value = default!;
+        return false;
+    }
+    
+    public static bool TryGetValue<TValue>(RefOption<TValue> option, out TValue value)
+        where TValue : struct, allows ref struct
+    {
+        if (option._hasValue)
+        {
+            value = option._value;
             return true;
         }
         value = default!;

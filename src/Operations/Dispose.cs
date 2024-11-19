@@ -34,7 +34,8 @@ public static class DisposableExtensions
         }
     }
     
-    public static void Dispose<TValue>(this RefOption<TValue> option) where TValue : struct, IDisposable, allows ref struct
+    public static void Dispose<TValue>(this RefOption<TValue> option) 
+        where TValue : struct, IDisposable, allows ref struct
     {
         if (option._hasValue)
         {
