@@ -24,11 +24,14 @@ partial struct Result<TValue>
     public static implicit operator Result<TValue>(Result<TValue, Exception> other) => other._hasValue ? other._value : other._error;
     public static implicit operator Result<TValue, Exception>(Result<TValue> other) => other._hasValue ? other._value : other._error;
     public static explicit operator Option(Result<TValue> result) => result._hasValue;
-    public static explicit operator ErrorState(Result<TValue> result) => result._hasValue ? default : ErrorState.Error(result._error);
     public static explicit operator Option<TValue>(Result<TValue> result) => result.ToOption();
+    public static explicit operator ErrorState(Result<TValue> result) => result.ToErrorState();
 
     public Option<TValue> ToOption()
         => _hasValue ? Option.Success(_value) : default;
+
+    public ErrorState ToErrorState()
+        => _hasValue ? default : ErrorState.Error(_error);
 }
 
 partial struct Result<TValue, TError>
