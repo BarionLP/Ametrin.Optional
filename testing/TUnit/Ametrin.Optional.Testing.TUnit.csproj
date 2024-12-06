@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>Ametrin.Optional.Testing.TUnit</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Barion</Authors>
     <Company>Ametrin Studios</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
