@@ -1,6 +1,6 @@
 namespace Ametrin.Optional;
 
-// these classes use isFail so the default value is a success state.
+// these classes use isError instead of isSuccess so the default value (isError = false) is a success state.
 // this behaviour should be kept internal to avoid confusion
 
 /// <summary>
@@ -8,8 +8,6 @@ namespace Ametrin.Optional;
 /// </summary>
 public readonly partial struct ErrorState
 {
-    [Obsolete] public bool IsSuccess => !_isError;
-    [Obsolete] public bool IsFail => _isError;
     internal readonly bool _isError;
     internal readonly Exception _error;
 
@@ -27,8 +25,6 @@ public readonly partial struct ErrorState
 /// <typeparam name="TError">Type of the Error</typeparam>
 public readonly partial struct ErrorState<TError>
 {
-    [Obsolete] public bool IsSuccess => !_isError;
-    [Obsolete] public bool IsFail => _isError;
     internal readonly bool _isError;
     internal readonly TError _error;
 
