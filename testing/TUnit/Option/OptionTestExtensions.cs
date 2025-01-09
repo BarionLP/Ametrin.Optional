@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using TUnit.Assertions.AssertConditions;
 using TUnit.Assertions.AssertConditions.Interfaces;
 using TUnit.Assertions.AssertionBuilders;
+using TUnit.Assertions.AssertionBuilders.Wrappers;
 
 namespace Ametrin.Optional.Testing.TUnit;
 
@@ -13,6 +14,11 @@ public static class OptionTestExtensions
         => Assert(valueSource, new OptionAssertCondition<TValue>(true), []);
     public static InvokableValueAssertionBuilder<Option<TValue>> IsError<TValue>(this IValueSource<Option<TValue>> valueSource)
         => Assert(valueSource, new OptionAssertCondition<TValue>(false), []);
+    
+    public static GenericEqualToAssertionBuilderWrapper<Option> IsSuccess(this IValueSource<Option> valueSource)
+        => valueSource.IsEqualTo(true);
+    public static GenericEqualToAssertionBuilderWrapper<Option> IsError(this IValueSource<Option> valueSource)
+        => valueSource.IsEqualTo(false);
 
     internal static InvokableValueAssertionBuilder<Option<TValue>> Assert<TValue>(IValueSource<Option<TValue>> valueSource, BaseAssertCondition<Option<TValue>> condition, string[] argumentExpressions)
     {

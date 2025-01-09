@@ -17,6 +17,8 @@ public readonly partial struct ErrorState
         _isError = isFail;
         _error = error;
     }
+    public ErrorState(ErrorState other) 
+        : this(other._isError, other._error) { }
 }
 
 /// <summary>
@@ -34,12 +36,14 @@ public readonly partial struct ErrorState<TError>
         _isError = isFail;
         _error = error;
     }
+    public ErrorState(ErrorState<TError> other) : this(other._isError, other._error) { }
 }
 
 partial struct ErrorState
 {
     public static ErrorState Success() => new();
     public static ErrorState Error(Exception? error = null) => new(true, error ?? new Exception());
+    // public static ErrorState Error<TError>(TError? error = null) where TError : Exception => new(true, error ?? new Exception());
 
     public static ErrorState<TError> Success<TError>() => new();
     public static ErrorState<TError> Error<TError>(TError error) => new(true, error);
