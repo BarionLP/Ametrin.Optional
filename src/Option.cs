@@ -7,11 +7,11 @@ public readonly partial struct Option
 {
     internal readonly bool _success;
 
-    public Option() : this(true) { }
+    public Option() : this(false) { }
     internal Option(bool success)
-    {
-        _success = success;
-    }
+        => _success = success;
+    public Option(Option success) 
+        : this(success._success) { }
 }
 
 /// <summary>

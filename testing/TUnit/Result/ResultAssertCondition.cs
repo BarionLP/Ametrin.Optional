@@ -14,6 +14,11 @@ internal sealed class ResultAssertCondition<TValue>(bool hasValue) : BaseAssertC
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
+        if (!hasValue && OptionsMarshall.GetError(actualValue) is null)
+        {
+            return AssertionResult.Fail(() => "found Error with null error value");
+        }
+
         return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
     }
 }
