@@ -3,7 +3,7 @@ using BenchmarkDotNet.Attributes;
 namespace Ametrin.Optional.Benchy;
 
 [MemoryDiagnoser(false)]
-public class Benchmarks
+public class ConstructionBenchmarks
 {
     internal Option<string> Some = "Hello World";
     internal Option<string> None = default;

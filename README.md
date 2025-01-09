@@ -69,3 +69,19 @@ if(OptionsMarshall.TryGetValue(result, out var value))
 
 ### Unit tests
 If you need to unit test an option you can use `Ametrin.Optional.Testing.TUnit` to to simplify the testing experience with TUnit. Feel free to contribute similar extensions for your testing framework
+
+## Performance
+Ametrin.Optional promises minimal to none performance impact on your application.
+### Example Benchmarks
+[Parsing a DateTime](/benchy/Examples/ParsingDateTimeBenchmarks.cs)
+```
+| Method            | Mean      | Error    | StdDev   | Allocated |
+|------------------ |----------:|---------:|---------:|----------:|
+| Default_Success   | 291.30 ns | 1.093 ns | 1.022 ns |         - |
+| Option_Success    | 310.56 ns | 1.914 ns | 1.697 ns |         - |
+| RefOption_Success | 300.98 ns | 1.454 ns | 1.360 ns |         - |
+
+| Default_Error     |  72.12 ns | 0.289 ns | 0.226 ns |         - | // using TryParse (with Exceptions this would be way higher)
+| Option_Error      |  67.75 ns | 0.324 ns | 0.287 ns |         - |
+| RefOption_Error   |  72.75 ns | 0.145 ns | 0.136 ns |         - |
+```
