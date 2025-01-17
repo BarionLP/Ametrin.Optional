@@ -15,7 +15,7 @@ partial struct Option<TValue>
     public Result<TValue> ToResult(Func<Exception> error)
         => _hasValue ? _value : error();
 
-    // [OverloadResolutionPriority(1)] //cannot have this
+    // [OverloadResolutionPriority(1)] //would prevent ToResult(Func) from being called
     public Result<TValue, TError> ToResult<TError>(TError error)
         => _hasValue ? _value : error;
     public Result<TValue, TError> ToResult<TError>(Func<TError> error)

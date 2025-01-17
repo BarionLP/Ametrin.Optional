@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TUnit.Assertions" Version="0.6.43" />
-    <PackageReference Include="Ametrin.Optional" Version="0.1.0" />
+    <PackageReference Include="TUnit.Assertions" Version="0.6.117" />
+    <PackageReference Include="Ametrin.Optional" Version="0.1.2" />
   </ItemGroup>
 
 </Project>
