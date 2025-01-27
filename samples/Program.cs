@@ -1,6 +1,6 @@
 ﻿using Ametrin.Optional;
 
-// basic usecases
+// basic use cases
 Console.Write("Input a number: ");
 Option<string> inputA = Console.ReadLine();
 
@@ -19,4 +19,5 @@ Console.WriteLine($"You entered {optionB.Select(value => value.ToString()).Where
 var result = (optionA, optionB).Select((a, b) => a * b);
 
 // async operations
-var text = new FileInfo("hey.txt").WhereExists().SelectAsync(static f => File.ReadAllTextAsync(f.FullName));
+var text = await new FileInfo("hey.txt").WhereExists().SelectAsync(f => File.ReadAllTextAsync(f.FullName)).Select(s => s.ToLower());
+await text.ConsumeAsync(text => File.WriteAllTextAsync("hey2.txt", text));
