@@ -2,7 +2,8 @@ namespace Ametrin.Optional;
 
 partial struct Option
 {
-    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) => _success ? success() : error();
+    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) 
+        => _success ? success() : error();
 }
 
 partial struct Option<TValue>
@@ -39,10 +40,12 @@ partial struct Result<TValue, TError>
 
 partial struct ErrorState
 {
-    public TResult Select<TResult>(Func<TResult> success, Func<TResult> error) => _isError ? error() : success();
+    public TResult Select<TResult>(Func<TResult> success, Func<Exception, TResult> error) 
+        => _isError ? error(_error) : success();
 }
 
 partial struct ErrorState<TError>
 {
-    public TResult Select<TResult>(Func<TResult> success, Func<TError, TResult> error) => _isError ? error(_error) : success();
+    public TResult Select<TResult>(Func<TResult> success, Func<TError, TResult> error) 
+        => _isError ? error(_error) : success();
 }

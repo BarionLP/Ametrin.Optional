@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace Ametrin.Optional;
 
-public static class LinqExtensions
+public static class OptionLinqExtensions
 {
     public static Option<IEnumerable<T>> WhereNotEmpty<T>(this IEnumerable<T> source)
         => source is not null && source.Any() ? Option.Success(source) : default;

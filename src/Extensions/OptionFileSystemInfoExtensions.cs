@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Ametrin.Optional;
 
-public static class FileSystemInfoExtensions
+public static class OptionFileSystemInfoExtensions
 {
     public static Option<T> WhereExists<T>(this T info) where T : FileSystemInfo
         => info.Exists ? Option.Success(info) : default;
