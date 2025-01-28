@@ -37,7 +37,7 @@ Success or Exception
 
 ## General API
 All option types in this library have a monadic, linq-like api to interact with them. 
-### Examples
+### [Examples](samples/Program.cs)
 ```csharp
 option.Select(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("John Doe");
 option.Where(a => a > 5).Select(a => a * 5).Consume(a => process(a), () => reportFailure());
@@ -46,6 +46,7 @@ option.Where(a => a > 5).Select(a => a * 5).Consume(a => process(a), () => repor
 ```
 There is an alternative most `Try...` methods that return an option. If not, I'm happy to accept pull requests.</br>
 If you are missing something feel free to create an issue or PR (talk to me before so i agree on the design)
+
 ### Edge Cases
 If you run into edge cases that are not covered by the API let me know so we can find a solution</br>
 In the mean time you can use the `OptionsMarshall` to get direct access to the underlying data. This can also be used in high performance scenarious where the delegates cannot be static
