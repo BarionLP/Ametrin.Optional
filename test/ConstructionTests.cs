@@ -76,7 +76,7 @@ public sealed class ConstructionTests
     {
         await Assert.That(ErrorState.Success()).IsSuccess();
         await Assert.That(ErrorState.Error()).IsErrorOfType<Exception>();
-        await Assert.That(ErrorState.Error(new ArgumentException() as Exception)).IsErrorOfType<ArgumentException>();
+        await Assert.That(ErrorState.Error(new ArgumentException())).IsErrorOfType<ArgumentException>();
 
         var originalSuccess = ErrorState.Success<string>();
         await Assert.That(new ErrorState<string>(originalSuccess)).IsEqualTo(originalSuccess);

@@ -42,8 +42,9 @@ public readonly partial struct ErrorState<TError>
 partial struct ErrorState
 {
     public static ErrorState Success() => new();
+    
+    [OverloadResolutionPriority(1)] // to avoid ambiguity with Error(TError) with subclasses of Exception
     public static ErrorState Error(Exception? error = null) => new(true, error ?? new Exception());
-    // public static ErrorState Error<TError>(TError? error = null) where TError : Exception => new(true, error ?? new Exception());
 
     public static ErrorState<TError> Success<TError>() => new();
     public static ErrorState<TError> Error<TError>(TError error) => new(true, error);
