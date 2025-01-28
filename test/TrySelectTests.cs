@@ -1,5 +1,3 @@
-using System;
-
 namespace Ametrin.Optional.Test;
 
 public sealed class TrySelectTests
@@ -20,9 +18,9 @@ public sealed class TrySelectTests
     public async Task TrySelect_Success_Exception_Test()
     {
         await Assert.That(Option.Success("z").TrySelect(int.Parse)).IsError();
-        await Assert.That(Result.Success("z").TrySelect(int.Parse)).IsError();
-        await Assert.That(Result.Success("z").TrySelect(int.Parse, e => e.Message)).IsError();
-        await Assert.That(Result.Success<string, string>("z").TrySelect(int.Parse, e => e.Message)).IsError();
+        await Assert.That(Result.Success("z").TrySelect(int.Parse)).IsErrorOfType<int, FormatException>();
+        await Assert.That(Result.Success("z").TrySelect(int.Parse, e => e.Message)).IsError("The input string 'z' was not in a correct format.");
+        await Assert.That(Result.Success<string, string>("z").TrySelect(int.Parse, e => e.Message)).IsError("The input string 'z' was not in a correct format.");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<ReadOnlySpan<char>>("z").TrySelect(static s => int.Parse(s)))).IsFalse();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Success("z").TrySelect<string, ReadOnlySpan<char>>(s => throw new Exception()))).IsFalse();
         await Assert.That(RefOption.Success<ReadOnlySpan<char>>("z").TrySelect<ReadOnlySpan<char>, string>(s => throw new Exception())).IsError();
@@ -32,7 +30,7 @@ public sealed class TrySelectTests
     public async Task TrySelect_Error_Test()
     {
         await Assert.That(Option.Error<string>().TrySelect(int.Parse)).IsError();
-        await Assert.That(Result.Error<string>(new NullReferenceException()).TrySelect(int.Parse)).IsError();
+        await Assert.That(Result.Error<string>(new NullReferenceException()).TrySelect(int.Parse)).IsErrorOfType<int, NullReferenceException>();
         await Assert.That(Result.Error<string>(new Exception("error")).TrySelect(int.Parse, e => e.Message)).IsError("error");
         await Assert.That(Result.Error<string, string>("error").TrySelect(int.Parse, e => e.Message)).IsError("error");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<ReadOnlySpan<char>>().TrySelect(static s => int.Parse(s)))).IsFalse();
