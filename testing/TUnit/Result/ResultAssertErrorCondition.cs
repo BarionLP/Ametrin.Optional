@@ -15,6 +15,6 @@ internal sealed class ResultAssertErrorCondition<TValue, TError>(TError expected
     {
         var hasError = OptionsMarshall.TryGetError(actualValue, out var actual);
 
-        return hasError && EqualityComparer<TError>.Default.Equals(expectedError, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasError ? "found Success" : $"found {actual}");
+        return hasError && EqualityComparer<TError>.Default.Equals(expectedError, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasError ? $"found {actual}" : "found Success");
     }
 }
