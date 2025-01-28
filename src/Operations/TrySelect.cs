@@ -15,42 +15,11 @@ partial struct Option<TValue>
 
         return default;
     }
-
-    public Option<TResult> TrySelect<TResult>(Func<TValue, Option<TResult>> selector)
-    {
-        if (_hasValue)
-        {
-            try
-            {
-                return selector(_value);
-            }
-            catch { }
-        }
-
-        return default;
-    }
 }
 
 partial struct Result<TValue>
 {
     public Result<TResult> TrySelect<TResult>(Func<TValue, TResult> selector)
-    {
-        if (!_hasValue)
-        {
-            return _error;
-        }
-
-        try
-        {
-            return selector(_value);
-        }
-        catch (Exception e)
-        {
-            return e;
-        }
-    }
-
-    public Result<TResult> TrySelect<TResult>(Func<TValue, Result<TResult>> selector)
     {
         if (!_hasValue)
         {
@@ -103,63 +72,12 @@ partial struct Result<TValue, TError>
             return errorSelector(e);
         }
     }
-
-    public Result<TResult, TError> TrySelect<TResult>(Func<TValue, Result<TResult, TError>> selector, Func<Exception, TError> errorSelector)
-    {
-        if (!_hasValue)
-        {
-            return _error;
-        }
-
-        try
-        {
-            return selector(_value);
-        }
-        catch (Exception e)
-        {
-            return errorSelector(e);
-        }
-    }
 }
 
 partial struct RefOption<TValue>
 {
     public RefOption<TResult> TrySelect<TResult>(Func<TValue, TResult> selector)
         where TResult : struct, allows ref struct
-    {
-        if (!_hasValue)
-        {
-            return default;
-        }
-
-        try
-        {
-            return selector(_value);
-        }
-        catch
-        {
-            return default;
-        }
-    }
-
-    public RefOption<TResult> TrySelect<TResult>(Func<TValue, RefOption<TResult>> selector)
-        where TResult : struct, allows ref struct
-    {
-        if (!_hasValue)
-        {
-            return default;
-        }
-
-        try
-        {
-            return selector(_value);
-        }
-        catch
-        {
-            return default;
-        }
-    }
-    public Option<TResult> TrySelect<TResult>(Func<TValue, Option<TResult>> selector)
     {
         if (!_hasValue)
         {
