@@ -52,7 +52,7 @@ partial struct RefOption<TValue>
 {
     public RefOption<TValue> Where(Func<TValue, bool> predicate)
         => _hasValue ? predicate(_value!) ? this : default : this;
-        
+
     public RefOption<TValue> WhereNot(Func<TValue, bool> predicate)
         => _hasValue ? !predicate(_value!) ? this : default : this;
 }

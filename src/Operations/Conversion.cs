@@ -11,6 +11,9 @@ partial struct Option<TValue>
     public static implicit operator Option<TValue>(TValue? value) => Option.Of(value);
     public static explicit operator Option(Option<TValue> option) => option._hasValue;
 
+    public Result<TValue> ToResult()
+        => _hasValue ? _value : Result.Error<TValue>();
+    
     [OverloadResolutionPriority(1)]
     public Result<TValue> ToResult(Func<Exception> error)
         => _hasValue ? _value : error();

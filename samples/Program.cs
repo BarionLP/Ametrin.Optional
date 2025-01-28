@@ -1,16 +1,34 @@
 ﻿using Ametrin.Optional;
 
-Console.Write("Input a number: ");
-Option<string> inputA = Console.ReadLine();
+// Option<T> is T or nothing. Examples on how to work with it:
 
-var optionA = inputA.Parse<int>();
+Console.Write("Input a number: ");
+Option<string> inputA = Console.ReadLine(); // implicit conversion
+
+var optionA = inputA.Parse<int>();        // apply an operation              // check a condition               // provide a default value
 Console.WriteLine($"You entered {optionA.Select(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("an invalid number")}");
 
 
 Console.Write("Input another number: ");
-var inputB = Console.ReadLine().ToOption();
+var inputB = Console.ReadLine().ToOption(); // explicit conversion
 
 var optionB = inputB.Parse<int>();
 Console.WriteLine($"You entered {optionB.Select(value => value.ToString()).WhereNotWhiteSpace().Or("an invalid number")}");
 
-var result = (optionA, optionB).Select((a, b) => a * b);
+// operations on tuples (all options must have a value)
+(optionA, optionB).Select((a, b) => a * b);
+
+// catching exceptions
+optionA.TrySelect(a => 1 / a);
+
+
+// Result<T> is T or an exception. Same operations like Option<T>
+Result<int> result = optionB.ToResult();
+
+// stores the catched exception
+result.TrySelect(b => 1 / b);
+
+// Result<T, E> is T or E. Same operations like Option<T>
+Result<int, string> result2 = optionB.ToResult("not a number");
+                                    // convert exception to E
+result2.TrySelect(b => 1 / b, e => e.Message);
