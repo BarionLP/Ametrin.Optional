@@ -10,6 +10,7 @@ partial struct Option<TValue>
 {
     public Option<TResult> Select<TResult>(Func<TValue, TResult> selector)
         => _hasValue ? Option.Success(selector(_value)) : default;
+    [Obsolete("use .ToResult().Select")]
     public Result<TResult> Select<TResult>(Func<TValue, Result<TResult>> selector)
         => _hasValue ? selector(_value) : null;
     public Option<TResult> Select<TResult>(Func<TValue, Option<TResult>> selector)
