@@ -13,9 +13,9 @@ internal sealed class ErrorStateAssertErrorTypeNotCondition<TError>() : BaseAsse
         var error = OptionsMarshall.GetErrorOrNull(actualValue);
         return error switch
         {
-            null => AssertionResult.Fail(() => "found Success"),
+            null => AssertionResult.Fail("found Success"),
             not TError => AssertionResult.Passed,
-            _ => AssertionResult.Fail(() => $"found {error}")
+            _ => AssertionResult.Fail($"found {error}")
         };
     }
 }

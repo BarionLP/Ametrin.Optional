@@ -15,6 +15,6 @@ internal sealed class OptionAssertCondition<TValue>(bool expectValue) : BaseAsse
     protected override Task<AssertionResult> GetResult(Option<TValue> actualValue, Exception? exception)
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
-        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
+        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
     }
 }

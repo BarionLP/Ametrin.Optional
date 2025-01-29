@@ -15,7 +15,7 @@ internal sealed class ResultAssertSuccessCondition<TValue>(TValue expectValue) :
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
 
-        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? $"found {actual}" : "found Error");
+        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
 }
 
@@ -29,6 +29,6 @@ internal sealed class ResultAssertSuccessCondition<TValue, TError>(TValue expect
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
 
-        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? $"found {actual}" : "found Error");
+        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
 }

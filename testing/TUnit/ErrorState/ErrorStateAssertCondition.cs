@@ -14,7 +14,7 @@ internal sealed class ErrorStateAssertCondition(bool hasValue) : BaseAssertCondi
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
-        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
+        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
     }
 }
 
@@ -28,6 +28,6 @@ internal sealed class ErrorStateAssertCondition<TError>(bool hasValue) : BaseAss
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
-        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
+        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
     }
 }

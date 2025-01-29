@@ -1,3 +1,5 @@
+using TUnit.Assertions.AssertConditions.Throws;
+
 namespace Ametrin.Optional.Test;
 
 public sealed class ConstructionTests

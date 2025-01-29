@@ -14,6 +14,6 @@ internal sealed class OptionAssertSuccessCondition<TValue>(TValue expectValue) :
     protected override Task<AssertionResult> GetResult(Option<TValue> actualValue, Exception? exception)
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
-        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? $"found {actual}" : "found Error");
+        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
 }
