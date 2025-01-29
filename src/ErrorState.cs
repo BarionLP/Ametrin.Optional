@@ -1,6 +1,7 @@
 namespace Ametrin.Optional;
 
 // these classes use isError instead of isSuccess so the default value (isError = false) is a success state.
+// this behaviour should be kept internal to avoid confusion
 
 /// <summary>
 /// A simplified version of <see cref="ErrorState{TError}"/> with Exception as TError
