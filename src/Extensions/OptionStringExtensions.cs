@@ -1,6 +1,6 @@
 namespace Ametrin.Optional;
 
-public static class StringExtensions
+public static class OptionStringExtensions
 {
     // public static Option<T> ParseOrNone<T>(this string s, IFormatProvider? provider = null) where T : ISpanParsable<T>
     //     => T.TryParse(s, provider, out var result) ? Option.Success(result) : default;

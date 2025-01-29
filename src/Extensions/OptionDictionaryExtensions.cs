@@ -2,7 +2,7 @@ using System.Collections.Frozen;
 
 namespace Ametrin.Optional;
 
-public static class DictionaryExtensions
+public static class OptionDictionaryExtensions
 {
     public static Option<TValue> TryGetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key) where TKey : notnull
         => dictionary.TryGetValue(key, out var result) ? result : default(Option<TValue>);

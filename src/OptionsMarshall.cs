@@ -90,7 +90,7 @@ public static partial class OptionsMarshall
     }
 
     public static TError GetError<TError>(ErrorState<TError> result)
-    => TryGetError(result, out var error) ? error : throw new InvalidOperationException();
+        => TryGetError(result, out var error) ? error : throw new InvalidOperationException();
     public static bool TryGetError<TError>(ErrorState<TError> result, out TError error)
     {
         if (result._isError)
