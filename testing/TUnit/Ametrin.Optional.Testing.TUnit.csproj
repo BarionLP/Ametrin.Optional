@@ -23,10 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="TUnit.Assertions" Version="0.8.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Ametrin.Optional.csproj" />
+    <PackageReference Include="Ametrin.Optional" Version="0.0.1" />
   </ItemGroup>
 
 </Project>
