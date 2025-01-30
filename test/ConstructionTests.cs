@@ -58,7 +58,7 @@ public sealed class ConstructionTests
         await Assert.That(Result.Try(() => 1)).IsSuccess(1);
         await Assert.That(Result.Try<int>(() => throw new Exception())).IsError();
     }
-    
+
     [Test]
     public async Task Result_Generic_Test()
     {
@@ -98,5 +98,17 @@ public sealed class ConstructionTests
 
         var originalError = ErrorState.Error();
         await Assert.That(new ErrorState(originalError)).IsEqualTo(originalError);
+    }
+
+    [Test]
+    public async Task RefOption_Generic_Test()
+    {
+        await Assert.That(OptionsMarshall.IsSuccess(new RefOption<ReadOnlySpan<char>>())).IsFalse();
+        await Assert.That(RefOption.Success("".AsSpan()).OrThrow() == "").IsTrue();
+
+        var value = "hello";
+        var alt = "world";
+        await Assert.That(new RefOption<ReadOnlySpan<char>>(RefOption.Success(value.AsSpan())).Or(alt) == value).IsTrue();
+        await Assert.That(new RefOption<ReadOnlySpan<char>>(RefOption.Error<ReadOnlySpan<char>>()).Or(alt) == alt).IsTrue();
     }
 }
