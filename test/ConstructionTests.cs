@@ -42,11 +42,11 @@ public sealed class ConstructionTests
     {
         await Assert.That(new Result<string>()).IsError();
         await Assert.That(Result.Of("hello")).IsSuccess("hello");
-        await Assert.That(Result.Of<string>(null)).IsError();
+        await Assert.That(Result.Of<string>(null)).IsErrorOfType<string, NullReferenceException>();
         await Assert.That(Result.Of(1)).IsSuccess(1);
-        await Assert.That(Result.Of<int>(null)).IsError();
+        await Assert.That(Result.Of<int>(null)).IsErrorOfType<int, NullReferenceException>();
         await Assert.That(Result.Of("hello", () => new Exception())).IsSuccess();
-        await Assert.That(Result.Of<string>(null, () => new Exception())).IsError();
+        await Assert.That(Result.Of<string>(null, () => new FormatException())).IsErrorOfType<string, FormatException>();
         await Assert.That(() => Result.Success<string>(null!)).Throws<ArgumentNullException>();
 
         var originalSuccess = Result.Success("hello");
