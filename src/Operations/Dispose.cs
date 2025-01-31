@@ -1,6 +1,6 @@
 namespace Ametrin.Optional;
 
-public static class DisposableExtensions
+public static class OptionDisposeExtensions
 {
     public static void Dispose<TValue>(this Option<TValue> option) where TValue : IDisposable
     {

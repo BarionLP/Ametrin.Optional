@@ -2,6 +2,7 @@ namespace Ametrin.Optional;
 
 partial struct Option<TValue>
 {
+    [Obsolete("use TryMap")]
     public Option<TResult> TrySelect<TResult>(Func<TValue, TResult> selector)
     {
         if (_hasValue)
@@ -19,6 +20,7 @@ partial struct Option<TValue>
 
 partial struct Result<TValue>
 {
+    [Obsolete("use TryMap")]
     public Result<TResult> TrySelect<TResult>(Func<TValue, TResult> selector)
     {
         if (!_hasValue)
@@ -36,6 +38,7 @@ partial struct Result<TValue>
         }
     }
 
+    [Obsolete("use TryMap")]
     public Result<TResult, TNewError> TrySelect<TResult, TNewError>(Func<TValue, TResult> selector, Func<Exception, TNewError> errorSelector)
     {
         if (!_hasValue)
@@ -56,6 +59,7 @@ partial struct Result<TValue>
 
 partial struct Result<TValue, TError>
 {
+    [Obsolete("use TryMap")]
     public Result<TResult, TError> TrySelect<TResult>(Func<TValue, TResult> selector, Func<Exception, TError> errorSelector)
     {
         if (!_hasValue)
@@ -76,6 +80,7 @@ partial struct Result<TValue, TError>
 
 partial struct RefOption<TValue>
 {
+    [Obsolete("use TryMap")]
     public RefOption<TResult> TrySelect<TResult>(Func<TValue, TResult> selector)
         where TResult : struct, allows ref struct
     {
@@ -97,6 +102,7 @@ partial struct RefOption<TValue>
 
 public static class TrySelectOptionExtensions
 {
+    [Obsolete("use TryMap")]
     public static Option<TResult> TrySelect<TValue, TResult>(this RefOption<TValue> option, Func<TValue, TResult> selector)
         where TValue : struct, allows ref struct
         where TResult : class
@@ -113,6 +119,7 @@ public static class TrySelectOptionExtensions
         return default;
     }
 
+    [Obsolete("use TryMap")]
     public static RefOption<TResult> TrySelect<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> selector)
         where TResult : struct, allows ref struct
     {

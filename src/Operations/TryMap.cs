@@ -95,7 +95,7 @@ partial struct RefOption<TValue>
     }
 }
 
-public static class TryMapOptionExtensions
+public static class OptionTryMapExtensions
 {
     public static Option<TResult> TryMap<TValue, TResult>(this RefOption<TValue> option, Func<TValue, TResult> map)
         where TValue : struct, allows ref struct

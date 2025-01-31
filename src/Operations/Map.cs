@@ -58,7 +58,7 @@ partial struct RefOption<TValue>
         => _hasValue ? map(_value) : default;
 }
 
-public static class MapOptionExtensions
+public static class OptionMapExtensions
 {
     public static Option<TResult> Map<TValue, TResult>(this RefOption<TValue> option, Func<TValue, TResult> map)
         where TValue : struct, allows ref struct
