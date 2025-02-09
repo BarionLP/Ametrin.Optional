@@ -29,10 +29,10 @@ result.TryMap(b => 1 / b);
 
 // Result<T, E> is T or E. Same operations like Option<T>
 Result<int, string> result2 = optionB.ToResult("not a number");
-                                    // convert exception to E
+// convert exception to E
 result2.TryMap(b => 1 / b, e => e.Message);
 
 
 // async operations
-var text = await new FileInfo("hey.txt").WhereExists().SelectAsync(f => File.ReadAllTextAsync(f.FullName)).Select(s => s.ToLower());
+var text = await new FileInfo("hey.txt").WhereExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).Map(s => s.ToLower());
 await text.ConsumeAsync(text => File.WriteAllTextAsync("hey2.txt", text));
