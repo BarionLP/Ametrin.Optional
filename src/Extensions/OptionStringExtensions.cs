@@ -8,8 +8,8 @@ public static class OptionStringExtensions
     public static Option<T> Parse<T>(this RefOption<ReadOnlySpan<char>> option, IFormatProvider? provider = null) where T : ISpanParsable<T>
         => option._hasValue && T.TryParse(option._value, provider, out var result) ? Option.Success(result) : default;
 
-    public static RefOption<ReadOnlySpan<char>> SelectAsSpan(this Option<string> option)
-        => option.Select(s => s.AsSpan());
+    public static RefOption<ReadOnlySpan<char>> MapAsSpan(this Option<string> option)
+        => option.Map(static s => s.AsSpan());
 
     public static Option<string> WhereNotEmpty(this Option<string> option)
         => option.WhereNot(string.IsNullOrEmpty);

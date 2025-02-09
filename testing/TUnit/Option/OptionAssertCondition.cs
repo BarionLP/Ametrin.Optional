@@ -12,9 +12,9 @@ internal sealed class OptionAssertCondition<TValue>(bool expectValue) : BaseAsse
             ? "to be Success"
             : "to be Error";
 
-    protected override Task<AssertionResult> GetResult(Option<TValue> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Option<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
-        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? "found Success" : "found Error");
+        return hasValue == expectValue ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? "found Success" : "found Error");
     }
 }

@@ -11,10 +11,10 @@ internal sealed class ResultAssertErrorCondition<TValue, TError>(TError expected
 
     protected override string GetExpectation() => $"to be {expectedError}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasError = OptionsMarshall.TryGetError(actualValue, out var actual);
 
-        return hasError && EqualityComparer<TError>.Default.Equals(expectedError, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasError ? $"found {actual}" : "found Success");
+        return hasError && EqualityComparer<TError>.Default.Equals(expectedError, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasError ? $"found {actual}" : "found Success");
     }
 }

@@ -72,9 +72,9 @@ public sealed class ErrorStateAssertErrorCondition<TError>(TError expectedError)
 
     protected override string GetExpectation() => $"to be {expectedError}";
 
-    protected override Task<AssertionResult> GetResult(ErrorState<TError> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(ErrorState<TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasError = OptionsMarshall.TryGetError(actualValue, out var error);
-        return hasError && EqualityComparer<TError>.Default.Equals(expectedError, error) ? AssertionResult.Passed : AssertionResult.Fail(() => hasError ? $"found {error}" : "found Success");
+        return hasError && EqualityComparer<TError>.Default.Equals(expectedError, error) ? AssertionResult.Passed : AssertionResult.Fail(hasError ? $"found {error}" : "found Success");
     }
 }

@@ -8,14 +8,14 @@ internal sealed class ResultAssertErrorTypeNotCondition<TValue, TError>() : Base
 {
     protected override string GetExpectation() => $"not to be {typeof(TError).Name}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var error = OptionsMarshall.GetErrorOrNull(actualValue);
         return error switch
         {
-            null => AssertionResult.Fail(() => "found Success"),
+            null => AssertionResult.Fail("found Success"),
             not TError => AssertionResult.Passed,
-            _ => AssertionResult.Fail(() => $"found {error}")
+            _ => AssertionResult.Fail($"found {error}")
         };
     }
 }

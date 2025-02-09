@@ -11,11 +11,11 @@ internal sealed class ResultAssertSuccessCondition<TValue>(TValue expectValue) :
 
     protected override string GetExpectation() => $"to be {expectValue}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
 
-        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? $"found {actual}" : "found Error");
+        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
 }
 
@@ -25,10 +25,10 @@ internal sealed class ResultAssertSuccessCondition<TValue, TError>(TValue expect
 
     protected override string GetExpectation() => $"to be {expectValue}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
 
-        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(() => hasValue ? $"found {actual}" : "found Error");
+        return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
 }
