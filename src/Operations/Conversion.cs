@@ -74,15 +74,12 @@ partial struct RefOption<TValue>
     public static explicit operator Option(RefOption<TValue> option) => option._hasValue;
 }
 
-public static class OptionConversions
+public static class OptionConversionExtensions
 {
     public static Option<TValue> ToOption<TValue>(this TValue? value) => Option.Of(value);
     public static Option<TValue> ToOption<TValue>(this TValue? value) where TValue : struct => Option.Of(value);
     public static Option<TValue> ToOption<TValue>(this object? value) => value is TValue t ? Option.Success(t) : default;
-}
 
-public static class ResultConversions
-{
     public static Result<TValue> ToResult<TValue>(this TValue? value) => Result.Of(value);
     public static Result<TValue> ToResult<TValue>(this TValue? value) where TValue : struct => Result.Of(value);
     public static Result<TValue> ToResult<TValue>(this object? value) => value.ToResult().Where<TValue>();

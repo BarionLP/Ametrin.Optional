@@ -50,7 +50,7 @@ public static class ReferenceOrExtensions
         => result._hasValue ? result._value : null;
 }
 
-public static class ValueOrExtensions
+public static class OptionOrExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : struct
         => option._hasValue ? option._value! : null;

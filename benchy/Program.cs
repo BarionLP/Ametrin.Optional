@@ -4,7 +4,7 @@ using Ametrin.Optional.Benchy.Examples;
 using BenchmarkDotNet.Running;
 
 var option = RefOption.Success(Span<byte>.Empty);
-var other = option.WhereNot(span => span.IsEmpty).Select(span => Convert.ToHexString(span));
+var other = option.WhereNot(span => span.IsEmpty).Map(span => Convert.ToHexString(span));
 option.Or([]);
 
 BenchmarkRunner.Run<ParsingDateTimeBenchmarks>();
