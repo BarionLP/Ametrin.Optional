@@ -11,7 +11,7 @@ internal sealed class ResultAssertSuccessCondition<TValue>(TValue expectValue) :
 
     protected override string GetExpectation() => $"to be {expectValue}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
 
@@ -25,7 +25,7 @@ internal sealed class ResultAssertSuccessCondition<TValue, TError>(TValue expect
 
     protected override string GetExpectation() => $"to be {expectValue}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception)
+    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
 

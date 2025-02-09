@@ -17,7 +17,7 @@ public sealed class WhereNotTests
     public async Task Success_WhereNot_False_Test()
     {
         await Assert.That(Option.Success(1).WhereNot(i => i != 2)).IsError();
-        await Assert.That(Result.Success(1).WhereNot(i => i != 2).Select<Exception>(i => null!).Or(e => e)).IsNotNull();
+        await Assert.That(Result.Success(1).WhereNot(i => i != 2).Map<Exception>(i => null!).Or(e => e)).IsNotNull();
         await Assert.That(Result.Success(1).WhereNot(i => i != 2, static i => new ArgumentException($"{i} was not 2"))).IsErrorOfType<int, ArgumentException>();
         await Assert.That(Result.Success<int, string>(1).WhereNot(i => i != 2, "was not 2")).IsEqualTo("was not 2");
         await Assert.That(Result.Success<int, string>(1).WhereNot(i => i != 2, static i => $"{i} was not 2")).IsEqualTo("1 was not 2");
