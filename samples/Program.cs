@@ -33,10 +33,11 @@ result.TryMap(b => 1 / b);
 
 // Result<T, E> is T or E. Same operations like Result<T>
 Result<int, string> result2 = optionB.ToResult("not a number");
-                            // convert exception to E
+//                           convert exception to E
 result2.TryMap(b => 1 / b, e => e.Message);
 
 // a limited set of instuctions is also available on T?
 int? nullable = optionA.OrNull();
 
-nullable.Map(a => a*2);
+// this allows for a very elegant syntax
+var t = nullable.Map(a => a * 2).Where(int.IsEvenInteger)?.GetHashCode() ?? -1;
