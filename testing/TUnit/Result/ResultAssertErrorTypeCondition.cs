@@ -10,6 +10,6 @@ internal sealed class ResultAssertErrorTypeCondition<TValue, TError>() : BaseAss
 
     protected override Task<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
-        return OptionsMarshall.GetErrorOrNull(actualValue) is TError ? AssertionResult.Passed : AssertionResult.Fail(actualValue.Select(v => "found Success").Or(e => $"found {e}"));
+        return OptionsMarshall.GetErrorOrNull(actualValue) is TError ? AssertionResult.Passed : AssertionResult.Fail(actualValue.Map(v => "found Success").Or(e => $"found {e}"));
     }
 }
