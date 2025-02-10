@@ -19,7 +19,7 @@ public static class OptionLinqExtensions
         return enumerator.MoveNext() ? Option.Success(enumerator.Current) : default;
     }
 
-    public static IEnumerable<T> RequireSuccess<T>(this IEnumerable<Option<T>> source)
+    public static IEnumerable<T> WhereSuccess<T>(this IEnumerable<Option<T>> source)
         => source.Where(static option => option._hasValue).Select(static option => option._value);
     public static IEnumerable<Option<TResult>> Select<T, TResult>(this IEnumerable<Option<T>> source, Func<T, TResult> map)
         => source.Select(option => option.Map(map));
