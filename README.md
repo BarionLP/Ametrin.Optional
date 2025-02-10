@@ -38,9 +38,9 @@ Success or Exception
 All option types in this library have a monadic, linq-like api to interact with them. 
 ### [Examples](samples/Program.cs)
 ```csharp
-option.Select(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("John Doe");
-option.Where(a => a > 5).Select(a => a * 5).Consume(a => process(a), () => reportFailure());
-(optionA, optionB).Select((a, b) => a * b);
+option.Map(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("John Doe");
+option.Where(a => a > 5).Map(a => a * 5).Consume(a => process(a), () => reportFailure());
+(optionA, optionB).Map((a, b) => a * b);
 (optionA, optionB).Consume((a, b) => ...);
 ```
 There is an alternative for most `Try...` methods that return an option. If not, I'm happy to accept pull requests.<br>
