@@ -43,5 +43,5 @@ var t = nullable.Map(a => a * 2).Require(int.IsEvenInteger)?.GetHashCode() ?? -1
 
 
 // async operations
-var text = await new FileInfo("hey.txt").RequireExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).Map(s => s.ToLower());
+var text = await new FileInfo("hey.txt").RequireExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).MapAsync(s => s.ToLower());
 await text.ConsumeAsync(text => File.WriteAllTextAsync("hey2.txt", text));
