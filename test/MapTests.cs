@@ -17,6 +17,10 @@ public sealed class MapTests
         await Assert.That(RefOption.Success<Span<char>>([]).Map(s => new string(s))).IsSuccess("");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>([]).Map(s => s))).IsTrue();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Success("").MapAsSpan())).IsTrue();
+        await Assert.That(new int?(1).Map(v => v * 2)).IsEqualTo(2);
+        await Assert.That(new int?(1).Map(v => v.ToString())).IsEqualTo("1");
+        await Assert.That(((string?)"").Map(v => v + "a")).IsEqualTo("a");
+        await Assert.That(((string?)"1").Map(int.Parse)).IsEqualTo(1);
 
         await Assert.That(Option.Success().Map(() => "yay", () => "nay")).IsEqualTo("yay");
         await Assert.That(ErrorState.Success().Map(() => "yay", e => "nay")).IsEqualTo("yay");
@@ -41,7 +45,10 @@ public sealed class MapTests
         await Assert.That(RefOption.Error<Span<char>>().Map(s => new string(s))).IsError();
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<Span<char>>().Map(s => s))).IsFalse();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Error<string>().MapAsSpan())).IsFalse();
-
+        await Assert.That(new int?().Map(v => v * 2)).IsNull();
+        await Assert.That(new int?().Map(v => v.ToString())).IsNull();
+        await Assert.That(((string?)null).Map(v => v + "a")).IsNull();
+        await Assert.That(((string?)null).Map(int.Parse)).IsNull();
 
         await Assert.That(Option.Error().Map(() => "yay", () => "nay")).IsEqualTo("nay");
         await Assert.That(ErrorState.Error().Map(() => "yay", e => "nay")).IsEqualTo("nay");

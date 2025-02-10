@@ -5,8 +5,11 @@
 Console.Write("Input a number: ");
 Option<string> inputA = Console.ReadLine(); // implicit conversion
 
-var optionA = inputA.Parse<int>();        // apply an operation              // check a condition               // provide a default value
-Console.WriteLine($"You entered {optionA.Map(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("an invalid number")}");
+var optionA = inputA.Parse<int>();
+Console.WriteLine($"You entered {optionA
+                                    .Map(value => value.ToString())         // apply an operation
+                                    .WhereNot(string.IsNullOrWhiteSpace)    // check a condition
+                                    .Or("an invalid number")}");            // provide a default value
 
 
 Console.Write("Input another number: ");
@@ -28,7 +31,12 @@ Result<int> result = optionB.ToResult();
 // stores the catched exception
 result.TryMap(b => 1 / b);
 
-// Result<T, E> is T or E. Same operations like Option<T>
+// Result<T, E> is T or E. Same operations like Result<T>
 Result<int, string> result2 = optionB.ToResult("not a number");
-                                    // convert exception to E
+                            // convert exception to E
 result2.TryMap(b => 1 / b, e => e.Message);
+
+// a limited set of instuctions is also available on T?
+int? nullable = optionA.OrNull();
+
+nullable.Map(a => a*2);
