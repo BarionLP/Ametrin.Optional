@@ -7,7 +7,7 @@ Option<string> inputA = Console.ReadLine(); // implicit conversion
 var optionA = inputA.Parse<int>();
 Console.WriteLine($"You entered {optionA
                                     .Map(value => value.ToString())         // apply an operation
-                                    .WhereNot(string.IsNullOrWhiteSpace)    // check a condition
+                                    .Reject(string.IsNullOrWhiteSpace)      // check a condition
                                     .Or("an invalid number")}");            // provide a default value
 
 
@@ -15,7 +15,7 @@ Console.Write("Input another number: ");
 var inputB = Console.ReadLine().ToOption(); // explicit conversion
 
 var optionB = inputB.Parse<int>();
-Console.WriteLine($"You entered {optionB.Map(value => value.ToString()).WhereNotWhiteSpace().Or("an invalid number")}");
+Console.WriteLine($"You entered {optionB.Map(value => value.ToString()).RejectWhiteSpace().Or("an invalid number")}");
 
 // operations on tuples (all options must have a value)
 (optionA, optionB).Map((a, b) => a * b);
@@ -39,9 +39,9 @@ result2.TryMap(b => 1 / b, e => e.Message);
 int? nullable = optionA.OrNull();
 
 // this allows for a very elegant syntax
-var t = nullable.Map(a => a * 2).Where(int.IsEvenInteger)?.GetHashCode() ?? -1;
+var t = nullable.Map(a => a * 2).Require(int.IsEvenInteger)?.GetHashCode() ?? -1;
 
 
 // async operations
-var text = await new FileInfo("hey.txt").WhereExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).Map(s => s.ToLower());
+var text = await new FileInfo("hey.txt").RequireExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).Map(s => s.ToLower());
 await text.ConsumeAsync(text => File.WriteAllTextAsync("hey2.txt", text));

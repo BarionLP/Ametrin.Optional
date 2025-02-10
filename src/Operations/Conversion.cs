@@ -82,5 +82,5 @@ public static class OptionConversionExtensions
 
     public static Result<TValue> ToResult<TValue>(this TValue? value) => Result.Of(value);
     public static Result<TValue> ToResult<TValue>(this TValue? value) where TValue : struct => Result.Of(value);
-    public static Result<TValue> ToResult<TValue>(this object? value) => value.ToResult().Where<TValue>();
+    public static Result<TValue> ToResult<TValue>(this object? value) => value.ToResult().Require<TValue>();
 }
