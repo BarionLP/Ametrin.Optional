@@ -11,6 +11,9 @@ public sealed class WhereTests
         await Assert.That(Result.Success<int, string>(1).Where(i => i != 2, "was 2")).IsSuccess(1);
         await Assert.That(Result.Success<int, string>(1).Where(i => i != 2, static i => $"{i} was 2")).IsSuccess(1);
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>([]).Where(s => s.IsEmpty))).IsTrue();
+
+        await Assert.That(new int?(1).Where(v => v == 1)).IsEqualTo(1);
+        await Assert.That("".Where(string.IsNullOrEmpty)).IsEqualTo("");
     }
 
     [Test]
@@ -22,6 +25,10 @@ public sealed class WhereTests
         await Assert.That(Result.Success<int, string>(1).Where(i => i == 2, "was not 2")).IsError("was not 2");
         await Assert.That(Result.Success<int, string>(1).Where(i => i == 2, static i => $"{i} was not 2")).IsError("1 was not 2");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>(['a']).Where(s => s.IsEmpty))).IsFalse();
+
+
+        await Assert.That(new int?(1).Where(v => v != 1)).IsNull();
+        await Assert.That("1".Where(string.IsNullOrEmpty)).IsNull();
     }
 
     [Test]
@@ -33,6 +40,10 @@ public sealed class WhereTests
         await Assert.That(Result.Error<int, string>("error").Where(i => i != 2, "was 2")).IsError("error");
         await Assert.That(Result.Error<int, string>("error").Where(i => i != 2, static i => $"{i} was 2")).IsError("error");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<Span<char>>().Where(s => s.IsEmpty))).IsFalse();
+
+
+        await Assert.That(new int?().Where(v => v != 1)).IsNull();
+        await Assert.That(((string?)null).Where(string.IsNullOrEmpty)).IsNull();
     }
 
     [Test]

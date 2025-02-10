@@ -11,6 +11,10 @@ public sealed class WhereNotTests
         await Assert.That(Result.Success<int, string>(1).WhereNot(i => i == 2, "was 2")).IsSuccess(1);
         await Assert.That(Result.Success<int, string>(1).WhereNot(i => i == 2, static i => $"{i} was 2")).IsSuccess(1);
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>(['a']).WhereNot(s => s.IsEmpty))).IsTrue();
+
+
+        await Assert.That(new int?(1).WhereNot(v => v != 1)).IsEqualTo(1);
+        await Assert.That("1".WhereNot(string.IsNullOrEmpty)).IsEqualTo("1");
     }
 
     [Test]
@@ -22,6 +26,10 @@ public sealed class WhereNotTests
         await Assert.That(Result.Success<int, string>(1).WhereNot(i => i != 2, "was not 2")).IsEqualTo("was not 2");
         await Assert.That(Result.Success<int, string>(1).WhereNot(i => i != 2, static i => $"{i} was not 2")).IsEqualTo("1 was not 2");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>([]).WhereNot(s => s.IsEmpty))).IsFalse();
+
+
+        await Assert.That(new int?(1).WhereNot(v => v == 1)).IsNull();
+        await Assert.That("".WhereNot(string.IsNullOrEmpty)).IsNull();
     }
 
     [Test]
@@ -33,5 +41,9 @@ public sealed class WhereNotTests
         await Assert.That(Result.Error<int, string>("error").WhereNot(i => i == 2, "was 2")).IsEqualTo("error");
         await Assert.That(Result.Error<int, string>("error").WhereNot(i => i == 2, static i => $"{i} was 2")).IsEqualTo("error");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<Span<char>>().WhereNot(s => s.IsEmpty))).IsFalse();
+
+
+        await Assert.That(new int?().WhereNot(v => v != 1)).IsNull();
+        await Assert.That(((string?)null).WhereNot(string.IsNullOrEmpty)).IsNull();
     }
 }
