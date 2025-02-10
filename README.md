@@ -35,11 +35,11 @@ Success or T
 Success or Exception
 
 ## General API
-All option types in this library have a monadic, linq-like api to interact with them. 
+All option types in this library have a monadic api to interact with them. 
 ### [Examples](samples/Program.cs)
 ```csharp
-option.Map(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("John Doe");
-option.Where(a => a > 5).Map(a => a * 5).Consume(a => process(a), () => reportFailure());
+option.Map(value => value.ToString()).Reject(string.IsNullOrWhiteSpace).Or("John Doe");
+option.Require(a => a > 5).Map(a => a * 5).Consume(a => process(a), () => reportFailure());
 (optionA, optionB).Map((a, b) => a * b);
 (optionA, optionB).Consume((a, b) => ...);
 ```
