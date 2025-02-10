@@ -1,7 +1,6 @@
 ﻿using Ametrin.Optional;
 
 // Option<T> is T or nothing. Examples on how to work with it:
-
 Console.Write("Input a number: ");
 Option<string> inputA = Console.ReadLine(); // implicit conversion
 
@@ -41,3 +40,8 @@ int? nullable = optionA.OrNull();
 
 // this allows for a very elegant syntax
 var t = nullable.Map(a => a * 2).Where(int.IsEvenInteger)?.GetHashCode() ?? -1;
+
+
+// async operations
+var text = await new FileInfo("hey.txt").WhereExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).Map(s => s.ToLower());
+await text.ConsumeAsync(text => File.WriteAllTextAsync("hey2.txt", text));

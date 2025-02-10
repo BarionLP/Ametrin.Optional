@@ -7,4 +7,9 @@ var option = RefOption.Success(Span<byte>.Empty);
 var other = option.WhereNot(span => span.IsEmpty).Map(span => Convert.ToHexString(span));
 option.Or([]);
 
-BenchmarkRunner.Run<ParsingDateTimeBenchmarks>();
+// var lol = Option.Success(new FileInfo("lol.txt"));
+// var content = await lol.SelectAsync(async file => await File.ReadAllTextAsync(file.FullName));
+
+// Console.WriteLine(content);
+
+BenchmarkRunner.Run<TestBenchmarks>();
