@@ -73,24 +73,3 @@ partial struct RefOption<TValue>
     public RefOption<TValue> WhereNot(Func<TValue, bool> predicate)
         => _hasValue ? (predicate(_value!) ? default : this) : this;
 }
-
-public static class OptionWhereExtensions
-{
-    [Obsolete("Use .Require")]
-    public static TValue? Where<TValue>(this TValue? value, Func<TValue, bool> predicate)
-        where TValue : class
-        => value is null ? null : (predicate(value) ? value : null);
-    [Obsolete("Use .Reject")]
-    public static TValue? WhereNot<TValue>(this TValue? value, Func<TValue, bool> predicate)
-        where TValue : class
-        => value is null ? null : (predicate(value) ? null : value);
-
-    [Obsolete("Use .Require")]
-    public static TValue? Where<TValue>(this TValue? value, Func<TValue, bool> predicate)
-        where TValue : struct
-        => value.HasValue ? (predicate(value.Value) ? value : null) : null;
-    [Obsolete("Use .Reject")]
-    public static TValue? WhereNot<TValue>(this TValue? value, Func<TValue, bool> predicate)
-        where TValue : struct
-        => value.HasValue ? (predicate(value.Value) ? null : value) : null;
-}
