@@ -4,13 +4,13 @@ namespace Ametrin.Optional;
 
 public static class OptionLinqExtensions
 {
-    public static Option<IEnumerable<T>> RequireNotEmpty<T>(this IEnumerable<T> source)
+    public static Option<IEnumerable<T>> RejectEmpty<T>(this IEnumerable<T> source)
         => source is not null && source.Any() ? Option.Success(source) : default;
-    public static Option<IEnumerable<T>> RequireNotEmpty<T>(this Option<IEnumerable<T>> option)
+    public static Option<IEnumerable<T>> RejectEmpty<T>(this Option<IEnumerable<T>> option)
         => option.Require(static collection => collection.Any());
-    public static Result<IEnumerable<T>> RequireNotEmpty<T>(this Result<IEnumerable<T>> option)
-        => option.RequireNotEmpty(static value => new ArgumentException("Sequence was empty"));
-    public static Result<IEnumerable<T>> RequireNotEmpty<T>(this Result<IEnumerable<T>> option, Func<IEnumerable<T>, Exception> error)
+    public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option)
+        => option.RejectEmpty(static value => new ArgumentException("Sequence was empty"));
+    public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option, Func<IEnumerable<T>, Exception> error)
         => option.Require(static collection => collection.Any(), error);
 
     public static Option<T> FirstOrNone<T>(this IEnumerable<T> source)
