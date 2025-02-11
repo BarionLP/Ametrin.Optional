@@ -38,7 +38,7 @@ partial struct RefOption<TValue>
     public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Option is Error state");
 }
 
-public static class ReferenceOrExtensions
+public static class OptionReferenceOrNullExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : class
         => option._hasValue ? option._value : null;
@@ -50,7 +50,7 @@ public static class ReferenceOrExtensions
         => result._hasValue ? result._value : null;
 }
 
-public static class OptionOrExtensions
+public static class OptionValueOrNullExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : struct
         => option._hasValue ? option._value! : null;
