@@ -11,7 +11,7 @@ internal sealed class ResultAssertErrorCondition<TValue, TError>(TError expected
 
     protected override string GetExpectation() => $"to be {expectedError}";
 
-    protected override Task<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
+    protected override ValueTask<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasError = OptionsMarshall.TryGetError(actualValue, out var actual);
 

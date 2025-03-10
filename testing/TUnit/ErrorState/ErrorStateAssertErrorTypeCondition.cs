@@ -8,7 +8,7 @@ internal sealed class ErrorStateAssertErrorTypeCondition<TError>() : BaseAssertC
 {
     protected override string GetExpectation() => $"to be {typeof(TError).Name}";
 
-    protected override Task<AssertionResult> GetResult(ErrorState actualValue, Exception? exception, AssertionMetadata assertionMetadata)
+    protected override ValueTask<AssertionResult> GetResult(ErrorState actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         return OptionsMarshall.GetErrorOrNull(actualValue) is TError ? AssertionResult.Passed : AssertionResult.Fail(actualValue.Map(() => "found Success", e => $"found {e}"));
     }

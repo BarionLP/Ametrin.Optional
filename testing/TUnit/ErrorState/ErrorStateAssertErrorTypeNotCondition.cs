@@ -8,7 +8,7 @@ internal sealed class ErrorStateAssertErrorTypeNotCondition<TError>() : BaseAsse
 {
     protected override string GetExpectation() => $"not to be {typeof(TError).Name}";
 
-    protected override Task<AssertionResult> GetResult(ErrorState actualValue, Exception? exception, AssertionMetadata assertionMetadata)
+    protected override ValueTask<AssertionResult> GetResult(ErrorState actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var error = OptionsMarshall.GetErrorOrNull(actualValue);
         return error switch

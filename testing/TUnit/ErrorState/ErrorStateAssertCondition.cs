@@ -10,7 +10,7 @@ internal sealed class ErrorStateAssertCondition(bool hasValue) : BaseAssertCondi
 
     protected override string GetExpectation() => expectValue ? "to be Success" : "to be Error";
 
-    protected override Task<AssertionResult> GetResult(ErrorState actualValue, Exception? exception, AssertionMetadata assertionMetadata)
+    protected override ValueTask<AssertionResult> GetResult(ErrorState actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
@@ -24,7 +24,7 @@ internal sealed class ErrorStateAssertCondition<TError>(bool hasValue) : BaseAss
 
     protected override string GetExpectation() => expectValue ? "to be Success" : "to be Error";
 
-    protected override Task<AssertionResult> GetResult(ErrorState<TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
+    protected override ValueTask<AssertionResult> GetResult(ErrorState<TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
         var hasValue = OptionsMarshall.IsSuccess(actualValue);
 
