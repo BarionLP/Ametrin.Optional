@@ -4,7 +4,7 @@ using Ametrin.Optional;
 
 file class Authentication
 {
-    static void Main()
+    static void Example()
     {
         var authService = new AuthService();
 

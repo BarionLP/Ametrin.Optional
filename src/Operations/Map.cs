@@ -68,25 +68,4 @@ public static class OptionMapExtensions
     public static RefOption<TResult> Map<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
         where TResult : struct, allows ref struct
         => option._hasValue ? RefOption.Success(map(option._value)) : default;
-
-    public static TResult? Map<TValue, TResult>(this TValue? value, Func<TValue, TResult> map)
-        where TValue : class
-        where TResult : class
-        => value is null ? null : map(value);
-    public static TResult? Map<TValue, TResult>(this TValue? value, Func<TValue, TResult> map)
-        where TValue : struct
-        where TResult : class
-        => value.HasValue ? map(value.Value) : null;
-}
-
-public static class OptionValueMapExtensions
-{
-    public static TResult? Map<TValue, TResult>(this TValue? value, Func<TValue, TResult> map)
-        where TValue : struct
-        where TResult : struct
-        => value.HasValue ? map(value.Value) : null;
-    public static TResult? Map<TValue, TResult>(this TValue? value, Func<TValue, TResult> map)
-        where TValue : class
-        where TResult : struct
-        => value is null ? null : map(value);
 }

@@ -1,4 +1,5 @@
-﻿using Ametrin.Optional;
+﻿using Ametrin.Optional; // contains all the option types and operations
+using Ametrin.Optional.Nullable; // contains a limited set of operations on T?
 
 // Option<T> is T or nothing. Examples on how to work with it:
 Console.Write("Input a number: ");
@@ -35,10 +36,10 @@ Result<int, string> result2 = optionB.ToResult("not a number");
 //                           convert exception to E
 result2.TryMap(b => 1 / b, e => e.Message);
 
-// a limited set of instuctions is also available on T?
+// a limited set of instuctions is also available on T? (using Ametrin.Optional.Nullable)
 int? nullable = optionA.OrNull();
 
-// this allows for a very elegant syntax
+// this allows for a very elegant syntax using the ? operator
 var t = nullable.Map(a => a * 2).Require(int.IsEvenInteger)?.GetHashCode() ?? -1;
 
 

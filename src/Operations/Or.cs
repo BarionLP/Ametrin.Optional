@@ -42,10 +42,8 @@ public static class OptionReferenceOrNullExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : class
         => option._hasValue ? option._value : null;
-
     public static TValue? OrNull<TValue>(this Result<TValue> result) where TValue : class
         => result._hasValue ? result._value : null;
-
     public static TValue? OrNull<TValue, TError>(this Result<TValue, TError> result) where TValue : class
         => result._hasValue ? result._value : null;
 }
@@ -54,10 +52,8 @@ public static class OptionValueOrNullExtensions
 {
     public static TValue? OrNull<TValue>(this Option<TValue> option) where TValue : struct
         => option._hasValue ? option._value! : null;
-
     public static TValue? OrNull<TValue>(this Result<TValue> result) where TValue : struct
         => result._hasValue ? result._value : null;
-
     public static TValue? OrNull<TValue, TError>(this Result<TValue, TError> result) where TValue : struct
         => result._hasValue ? result._value : null;
 }

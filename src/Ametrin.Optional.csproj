@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <PackageId>Ametrin.Optional</PackageId>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
     <Authors>Barion</Authors>
     <Company>Ametrin Studios</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

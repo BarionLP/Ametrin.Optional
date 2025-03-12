@@ -40,14 +40,3 @@ partial struct RefOption<TValue>
     public RefOption<TValue> Require(Func<TValue, bool> predicate)
         => _hasValue ? (predicate(_value!) ? this : default) : this;
 }
-
-public static class OptionRequireExtensions
-{
-    public static TValue? Require<TValue>(this TValue? value, Func<TValue, bool> predicate)
-        where TValue : class
-        => value is null ? null : (predicate(value) ? value : null);
-
-    public static TValue? Require<TValue>(this TValue? value, Func<TValue, bool> predicate)
-        where TValue : struct
-        => value.HasValue ? (predicate(value.Value) ? value : null) : null;
-}
