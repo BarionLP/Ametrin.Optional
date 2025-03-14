@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="benchy/Ametrin.Optional.Benchy.csproj" />
+  <Project Path="samples/Ametrin.Optional.Samples.csproj" />
+  <Project Path="src/Ametrin.Optional.csproj" />
+  <Project Path="test/Ametrin.Optional.Test.csproj" />
+  <Project Path="testing/TUnit/Ametrin.Optional.Testing.TUnit.csproj" />
+</Solution>
