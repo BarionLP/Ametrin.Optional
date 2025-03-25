@@ -12,13 +12,13 @@ T or Error
 Option<T> a = someT; // equivalent to Option.Of(someT) - will produce Error if someT is null
 Option<T> b = default; // equivalent to Option.Error<T>() 
 //careful that default is actually referencing Option<T> and not T. Especially in conditional assignments.
-Option<T> a = Option.Success(someT); //requires a nonnull value
+Option<T> a = Option.Success(someT); // throws if someT is null
 ```
 ### `Option` 
 Success or Error
 ```csharp
 Option success = true; // equivalent to Option.Success()
-Option error = false; //equivalent to Option.Error()
+Option error = false; // equivalent to Option.Error()
 ```
 ## `Result<T, E>`
 T or E
@@ -34,7 +34,7 @@ Success or T
 Success or Exception
 
 ## General API
-All option types in this library have a monadic, linq-like api to interact with them. 
+All option types in this library have a monadic api to interact with them. 
 ### Examples
 ```csharp
 option.Select(value => value.ToString()).WhereNot(string.IsNullOrWhiteSpace).Or("John Doe");
@@ -46,9 +46,9 @@ There is an alternative for most `Try...` methods that return an option. If not,
 If you are missing something feel free to create an issue or PR (talk to me before so i agree on the design)
 ### Edge Cases
 If you run into edge cases that are not covered by the API let me know so we can find a solution.<br>
-In the mean time you can use the `OptionsMarshall` to get direct access to the underlying data. This can also be used in high performance scenarios where the delegate cannot be static.
+In the mean time you can use the `OptionsMarshall` to get direct access to the underlying data. This can also be used in high performance scenarios where the delegates cannot be static.
 ```csharp
-if(!OptionsMarshall.IsSuccess(result))
+if(OptionsMarshall.IsSuccess(result))
 {
     ...
 }
