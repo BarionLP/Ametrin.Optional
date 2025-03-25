@@ -13,7 +13,6 @@ partial struct Option<TValue>
 
     public Result<TValue> ToResult()
         => _hasValue ? _value : Result.Error<TValue>();
-
     public Result<TValue> ToResult(Func<Exception> error)
         => _hasValue ? _value : error();
 

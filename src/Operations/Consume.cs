@@ -17,7 +17,7 @@ partial struct Option
 
 partial struct Option<TValue>
 {
-    public void Consume(Action<TValue>? success = null, Action? error = null)
+    public Option Consume(Action<TValue>? success = null, Action? error = null)
     {
         if (_hasValue)
         {
@@ -27,35 +27,41 @@ partial struct Option<TValue>
         {
             error?.Invoke();
         }
+
+        return _hasValue;
     }
 }
 
 partial struct Result<TValue>
 {
-    public void Consume(Action<TValue>? success = null, Action<Exception>? error = null)
+    public ErrorState Consume(Action<TValue>? success = null, Action<Exception>? error = null)
     {
         if (_hasValue)
         {
             success?.Invoke(_value);
+            return default;
         }
         else
         {
             error?.Invoke(_error);
+            return _error;
         }
     }
 }
 
 partial struct Result<TValue, TError>
 {
-    public void Consume(Action<TValue>? success = null, Action<TError>? error = null)
+    public ErrorState<TError> Consume(Action<TValue>? success = null, Action<TError>? error = null)
     {
         if (_hasValue)
         {
             success?.Invoke(_value);
+            return default;
         }
         else
         {
             error?.Invoke(_error);
+            return _error;
         }
     }
 }

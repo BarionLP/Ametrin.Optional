@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Ametrin.Optional;
 
 partial struct Option : IEquatable<Option>

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Ametrin.Optional.Exceptions;
 
 namespace Ametrin.Optional;
 
@@ -10,7 +11,7 @@ partial struct Option<TValue>
     public TValue Or(TValue other) => _hasValue ? _value : other;
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     [StackTraceHidden]
-    public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Option is Error state");
+    public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();
 }
 
 partial struct Result<TValue>
@@ -21,7 +22,7 @@ partial struct Result<TValue>
     public TValue Or(TValue other) => _hasValue ? _value : other;
     public TValue Or(Func<Exception, TValue> factory) => _hasValue ? _value : factory(_error);
     [StackTraceHidden]
-    public TValue OrThrow() => _hasValue ? _value : throw new NullReferenceException("Result is Error state", _error);
+    public TValue OrThrow() => _hasValue ? _value : throw new ResultIsErrorException("Result is Error state", _error);
 }
 
 partial struct Result<TValue, TError>
@@ -32,7 +33,7 @@ partial struct Result<TValue, TError>
     public TValue Or(TValue other) => _hasValue ? _value! : other;
     public TValue Or(Func<TError, TValue> factory) => _hasValue ? _value! : factory(_error);
     [StackTraceHidden]
-    public TValue OrThrow() => _hasValue ? _value! : throw new NullReferenceException($"Result is Error state: {_error}");
+    public TValue OrThrow() => _hasValue ? _value! : throw new ResultIsErrorException<TError>("Result is Error state", _error);
 }
 
 public static class ReferenceOrExtensions
