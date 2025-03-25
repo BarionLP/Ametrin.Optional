@@ -1,3 +1,4 @@
+using Ametrin.Optional.Exceptions;
 using TUnit.Assertions.AssertConditions.Throws;
 
 namespace Ametrin.Optional.Test;
@@ -45,10 +46,10 @@ public sealed class OrTests
         await Assert.That(Result.Error<int, string>("").Or(static e => 0)).IsEqualTo(0);
         await Assert.That(RefOption.Error<int>().Or(static () => 0)).IsEqualTo(0);
 
-        await Assert.That(() => Option.Error<int>().OrThrow()).Throws<NullReferenceException>();
-        await Assert.That(() => Result.Error<int>().OrThrow()).Throws<NullReferenceException>();
-        await Assert.That(() => Result.Error<int, string>("").OrThrow()).Throws<NullReferenceException>();
-        await Assert.That(() => RefOption.Error<int>().OrThrow()).Throws<NullReferenceException>();
+        await Assert.That(() => Option.Error<int>().OrThrow()).Throws<OptionIsErrorException>();
+        await Assert.That(() => Result.Error<int>().OrThrow()).Throws<ResultIsErrorException>();
+        await Assert.That(() => Result.Error<int, string>("").OrThrow()).Throws<ResultIsErrorException<string>>();
+        await Assert.That(() => RefOption.Error<int>().OrThrow()).Throws<OptionIsErrorException>();
 
 
         await Assert.That(Option.Error<int>().OrNull()).IsEqualTo(null);

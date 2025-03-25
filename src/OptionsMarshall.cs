@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Ametrin.Optional;
 
 /// <summary>
-/// providing unrecommended and unsafe access to all option types for edge case scenarios
+/// providing unrecommended (or unsafe) access to all option types for edge case scenarios
 /// </summary>
 public static partial class OptionsMarshall
 {
