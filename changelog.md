@@ -1,5 +1,7 @@
 ## 0.2.3 (unreleased)
-- removed obsolete Where(Not) use Require/Reject instead
+- added custom exceptions for `.OrThrow()`
+- removed obsolete `Where(Not)`. Use `Require`/`Reject` instead
+- updated TUnit to 18.60
 
 ## 0.2.2
 - moved nullable extensions to Ametrin.Optional.Numerics
