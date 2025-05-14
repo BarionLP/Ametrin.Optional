@@ -19,10 +19,6 @@ public sealed class MapTests
         await Assert.That(new int?(1).Map(v => v.ToString())).IsEqualTo("1");
         await Assert.That(((string?)"").Map(v => v + "a")).IsEqualTo("a");
         await Assert.That(((string?)"1").Map(int.Parse)).IsEqualTo(1);
-
-        await Assert.That(Option.Success().Map(() => "yay", () => "nay")).IsEqualTo("yay");
-        await Assert.That(ErrorState.Success().Map(() => "yay", e => "nay")).IsEqualTo("yay");
-        await Assert.That(ErrorState.Success<int>().Map(() => "yay", e => "nay")).IsEqualTo("yay");
     }
 
     [Test]
@@ -45,9 +41,5 @@ public sealed class MapTests
         await Assert.That(new int?().Map(v => v.ToString())).IsNull();
         await Assert.That(((string?)null).Map(v => v + "a")).IsNull();
         await Assert.That(((string?)null).Map(int.Parse)).IsNull();
-
-        await Assert.That(Option.Error().Map(() => "yay", () => "nay")).IsEqualTo("nay");
-        await Assert.That(ErrorState.Error().Map(() => "yay", e => "nay")).IsEqualTo("nay");
-        await Assert.That(ErrorState.Error(1).Map(() => "yay", e => "nay")).IsEqualTo("nay");
     }
 }

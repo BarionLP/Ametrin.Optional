@@ -37,10 +37,8 @@ public sealed class MapAsyncTests
         await Assert.That(await optionTask.MapAsync(i => i + 1)).IsSuccess(2);
         await Assert.That(await optionTask.MapAsync(i => Option.Success(i))).IsSuccess(1);
         await Assert.That(await resultTask.MapAsync(i => i + 1)).IsSuccess(2);
-        await Assert.That(await resultTask.MapAsync(i => i + 1, e => e.Message)).IsSuccess(2);
         await Assert.That(await resultTask.MapAsync(i => Result.Success(i))).IsSuccess(1);
         await Assert.That(await result2Task.MapAsync(i => i + 1)).IsSuccess(2);
-        await Assert.That(await Task.FromResult(Result.Success<int, int>(1)).MapAsync(i => i + 1, error => error.ToString())).IsSuccess(2);
         await Assert.That(await result2Task.MapAsync(i => i + 1, error => new FormatException(error))).IsSuccess();
         await Assert.That(await result2Task.MapAsync(i => Result.Success<int, string>(i))).IsSuccess(1);
     }

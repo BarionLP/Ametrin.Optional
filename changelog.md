@@ -1,5 +1,8 @@
 ## 0.2.3 (unreleased)
-- added `.MapError()` (replaces `.Map(map, errorMap)` overloads)
+- added `.MapError()` (#19) 
+  - (replaces `.Map(map, errorMap)` overloads)
+- added `Match(Async)` API (#18)
+  - (replaces `Map` for `Option`, `ErrorState<T>` and `ErrorState`)
 - added custom exceptions for `.OrThrow()`
 - removed obsolete `Where(Not)`. Use `Require`/`Reject` instead.
 - updated TUnit to 0.19.148
