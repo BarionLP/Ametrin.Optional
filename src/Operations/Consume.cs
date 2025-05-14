@@ -46,7 +46,6 @@ partial struct Result<TValue>
             error?.Invoke(_error);
             return _error;
         }
-
     }
 }
 
