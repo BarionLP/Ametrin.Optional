@@ -50,6 +50,8 @@ public static class OptionMapAsyncExtensions
         => (await optionTask).Map(map);
     public static async Task<Result<TResult>> MapAsync<TValue, TResult>(this Task<Result<TValue>> optionTask, Func<TValue, Result<TResult>> map)
         => (await optionTask).Map(map);
+
+    [Obsolete("use MapAsync and MapError")]
     public static async Task<Result<TResult, TNewError>> MapAsync<TValue, TResult, TNewError>(this Task<Result<TValue>> optionTask, Func<TValue, TResult> map, Func<Exception, TNewError> errorMap)
         => (await optionTask).Map(map, errorMap);
     public static async Task<Result<TResult>> MapAsync<TValue, TResult>(this Task<Result<TValue>> resultTask, Func<TValue, Task<TResult>> map)
@@ -65,6 +67,8 @@ public static class OptionMapAsyncExtensions
     [OverloadResolutionPriority(1)]
     public static async Task<Result<TResult, Exception>> MapAsync<TValue, TError, TResult>(this Task<Result<TValue, TError>> optionTask, Func<TValue, TResult> map, Func<TError, Exception> errorMap)
         => (await optionTask).Map(map, errorMap);
+
+    [Obsolete("use MapAsync and MapError")]
     public static async Task<Result<TResult, TNewError>> MapAsync<TValue, TError, TResult, TNewError>(this Task<Result<TValue, TError>> optionTask, Func<TValue, TResult> map, Func<TError, TNewError> errorMap)
         => (await optionTask).Map(map, errorMap);
     public static async Task<Result<TResult, TError>> MapAsync<TValue, TError, TResult>(this Task<Result<TValue, TError>> resultTask, Func<TValue, Task<TResult>> map)
