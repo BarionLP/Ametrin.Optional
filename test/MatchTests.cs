@@ -1,6 +1,6 @@
 namespace Ametrin.Optional.Test;
 
-public class MatchTests
+public sealed class MatchTests
 {
     [Test]
     public async Task Match_Success_Test()

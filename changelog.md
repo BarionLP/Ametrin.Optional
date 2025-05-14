@@ -1,7 +1,7 @@
 ## 0.2.3 (unreleased)
 - added custom exceptions for `.OrThrow()`
 - removed obsolete `Where(Not)`. Use `Require`/`Reject` instead
-- added `Match` API (#17) 
+- added `Match(Async)` API (#18)
   - (replaces `Map` for `Option`, `ErrorState<T>` and `ErrorState`)
 - updated TUnit to 0.19.64
 
