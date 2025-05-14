@@ -36,6 +36,7 @@ partial struct Result<TValue>
         }
     }
 
+    [Obsolete("use TryMap and MapError")]
     public Result<TResult, TNewError> TryMap<TResult, TNewError>(Func<TValue, TResult> map, Func<Exception, TNewError> errormap)
     {
         if (!_hasValue)

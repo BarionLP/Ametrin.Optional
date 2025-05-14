@@ -7,7 +7,6 @@ public sealed class TryMapTests
     {
         await Assert.That(Option.Success("1").TryMap(int.Parse)).IsSuccess(1);
         await Assert.That(Result.Success("1").TryMap(int.Parse)).IsSuccess(1);
-        await Assert.That(Result.Success("1").TryMap(int.Parse, e => e.Message)).IsSuccess(1);
         await Assert.That(Result.Success<string, string>("1").TryMap(int.Parse, e => e.Message)).IsSuccess(1);
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<ReadOnlySpan<char>>("1").TryMap(static s => int.Parse(s)))).IsTrue();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Success("1").TryMap(s => s.AsSpan()))).IsTrue();
@@ -24,7 +23,6 @@ public sealed class TryMapTests
     {
         await Assert.That(Option.Success("z").TryMap(int.Parse)).IsError();
         await Assert.That(Result.Success("z").TryMap(int.Parse)).IsErrorOfType<int, FormatException>();
-        await Assert.That(Result.Success("z").TryMap(int.Parse, e => e.Message)).IsError("The input string 'z' was not in a correct format.");
         await Assert.That(Result.Success<string, string>("z").TryMap(int.Parse, e => e.Message)).IsError("The input string 'z' was not in a correct format.");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<ReadOnlySpan<char>>("z").TryMap(static s => int.Parse(s)))).IsFalse();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Success("z").TryMap<string, ReadOnlySpan<char>>(s => throw new Exception()))).IsFalse();
@@ -41,7 +39,7 @@ public sealed class TryMapTests
     {
         await Assert.That(Option.Error<string>().TryMap(int.Parse)).IsError();
         await Assert.That(Result.Error<string>(new NullReferenceException()).TryMap(int.Parse)).IsErrorOfType<int, NullReferenceException>();
-        await Assert.That(Result.Error<string>(new Exception("error")).TryMap(int.Parse, e => e.Message)).IsError("error");
+        await Assert.That(Result.Error<string>(new Exception("error")).TryMap(int.Parse).MapError(e => e.Message)).IsError("error");
         await Assert.That(Result.Error<string, string>("error").TryMap(int.Parse, e => e.Message)).IsError("error");
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<ReadOnlySpan<char>>().TryMap(static s => int.Parse(s)))).IsFalse();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Error<string>().TryMap(s => s.AsSpan()))).IsFalse();
