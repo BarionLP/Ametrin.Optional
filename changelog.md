@@ -1,6 +1,7 @@
 ## 0.2.3 (unreleased)
+- added `.MapError()` (replaces `.Map(map, errorMap)` overloads)
 - added custom exceptions for `.OrThrow()`
-- removed obsolete `Where(Not)`. Use `Require`/`Reject` instead
+- removed obsolete `Where(Not)`. Use `Require`/`Reject` instead.
 - updated TUnit to 0.19.148
 
 ## 0.2.2
