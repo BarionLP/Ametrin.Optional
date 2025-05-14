@@ -1,4 +1,4 @@
-## 0.2.3 (unreleased)
+## 0.2.3
 - added `.MapError()` (#19) 
   - (replaces `.Map(map, errorMap)` overloads)
 - added `Match(Async)` API (#18)
