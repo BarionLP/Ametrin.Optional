@@ -19,6 +19,8 @@ partial struct Result<TValue>
 {
     public Result<TResult> Map<TResult>(Func<TValue, TResult> map)
         => _hasValue ? map(_value) : _error;
+    
+    [Obsolete("use Map and MapError")]
     public Result<TResult, TNewError> Map<TResult, TNewError>(Func<TValue, TResult> map, Func<Exception, TNewError> errorMap)
         => _hasValue ? map(_value) : errorMap(_error);
     public Result<TResult> Map<TResult>(Func<TValue, Result<TResult>> map)
@@ -31,6 +33,8 @@ partial struct Result<TValue, TError>
         => _hasValue ? map(_value) : _error;
     public Result<TResult> Map<TResult>(Func<TValue, TResult> map, Func<TError, Exception> errorMap)
         => _hasValue ? map(_value) : errorMap(_error);
+
+    [Obsolete("use Map and MapError")]
     public Result<TResult, TNewError> Map<TResult, TNewError>(Func<TValue, TResult> map, Func<TError, TNewError> errorMap)
         => _hasValue ? map(_value) : errorMap(_error);
     public Result<TResult, TError> Map<TResult>(Func<TValue, Result<TResult, TError>> map)
