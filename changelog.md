@@ -1,3 +1,6 @@
+## 0.2.4
+- updated TUnit 0.21.13
+
 ## 0.2.3
 - added `.MapError()` (#19) 
   - (replaces `.Map(map, errorMap)` overloads)
