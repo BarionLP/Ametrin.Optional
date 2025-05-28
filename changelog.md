@@ -1,4 +1,7 @@
 ## 0.2.4
+- added `RequireExists` for `Result<FileSystemInfo, Error>` and overload with custom error for `Result<FileSystemInfo>`
+- added `RequireExists` overload with custom error for `Result<FileSystemInfo>`
+- added `ZipArchive.TryGetEntry` returning an option
 - updated TUnit 0.21.13
 
 ## 0.2.3
