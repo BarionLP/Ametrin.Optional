@@ -8,6 +8,11 @@ partial struct Result<TValue>
         => _hasValue ? _value : errorMap(_error);
     public Result<TValue> MapError(Func<Exception, Exception> errorMap)
         => _hasValue ? _value : errorMap(_error);
+    
+    public Result<TValue, TNewError> MapError<TArg, TNewError>(TArg arg, Func<Exception, TArg, TNewError> errorMap) where TArg : allows ref struct
+        => _hasValue ? _value : errorMap(_error, arg);
+    public Result<TValue> MapError<TArg>(TArg arg, Func<Exception, TArg, Exception> errorMap) where TArg : allows ref struct
+        => _hasValue ? _value : errorMap(_error, arg);
 }
 
 partial struct Result<TValue, TError>
@@ -16,6 +21,11 @@ partial struct Result<TValue, TError>
         => _hasValue ? _value : errorMap(_error);
     public Result<TValue, TNewError> MapError<TNewError>(Func<TError, TNewError> errorMap)
         => _hasValue ? _value : errorMap(_error);
+
+    public Result<TValue> MapError<TArg>(TArg arg, Func<TError, TArg, Exception> errorMap) where TArg : allows ref struct
+        => _hasValue ? _value : errorMap(_error, arg);
+    public Result<TValue, TNewError> MapError<TArg, TNewError>(TArg arg, Func<TError, TArg, TNewError> errorMap) where TArg : allows ref struct
+        => _hasValue ? _value : errorMap(_error, arg);
 }
 
 partial struct ErrorState
@@ -24,6 +34,11 @@ partial struct ErrorState
         => _isError ? errorMap(_error) : default(ErrorState<TNewError>);
     public ErrorState MapError(Func<Exception, Exception> errorMap)
         => _isError ? errorMap(_error) : default(ErrorState);
+        
+    public ErrorState<TNewError> MapError<TArg, TNewError>(TArg arg, Func<Exception, TArg, TNewError> errorMap) where TArg : allows ref struct
+        => _isError ? errorMap(_error, arg) : default(ErrorState<TNewError>);
+    public ErrorState MapError<TArg>(TArg arg, Func<Exception, TArg, Exception> errorMap) where TArg : allows ref struct
+        => _isError ? errorMap(_error, arg) : default(ErrorState);
 }
 
 partial struct ErrorState<TError>
@@ -32,6 +47,11 @@ partial struct ErrorState<TError>
         => _isError ? errorMap(_error) : default(ErrorState);
     public ErrorState<TNewError> MapError<TNewError>(Func<TError, TNewError> errorMap)
         => _isError ? errorMap(_error) : default(ErrorState<TNewError>);
+
+    public ErrorState MapError<TArg>(TArg arg, Func<TError, TArg, Exception> errorMap) where TArg : allows ref struct
+        => _isError ? errorMap(_error, arg) : default(ErrorState);
+    public ErrorState<TNewError> MapError<TArg, TNewError>(TArg arg, Func<TError, TArg, TNewError> errorMap) where TArg : allows ref struct
+        => _isError ? errorMap(_error, arg) : default(ErrorState<TNewError>);
 }
 
 public static class OptionMapErrorAsyncExtensions
