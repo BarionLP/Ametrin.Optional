@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>Ametrin.Optional.Testing.TUnit</PackageId>
-    <Version>0.2.3</Version>
+    <Version>0.2.4</Version>
     <Authors>Barion</Authors>
     <Company>Ametrin Studios</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TUnit.Assertions" Version="0.21.13" />
-    <PackageReference Include="Ametrin.Optional" Version="0.2.3" />
+    <PackageReference Include="TUnit.Assertions" Version="0.24.0" />
+    <PackageReference Include="Ametrin.Optional" Version="0.2.4" />
   </ItemGroup>
 
 </Project>
