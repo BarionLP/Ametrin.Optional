@@ -51,12 +51,6 @@ partial struct Result<TValue>
         }
     }
 
-    [Obsolete("use TryMap and MapError", error: true)]
-    public Result<TResult, TNewError> TryMap<TResult, TNewError>(Func<TValue, TResult> map, Func<Exception, TNewError> errormap)
-    {
-        return TryMap(map).MapError(errormap);
-    }
-
     public Result<TResult> TryMap<TArg, TResult>(TArg arg, Func<TValue, TArg, TResult> map)
         where TArg : allows ref struct
     {

@@ -1,3 +1,7 @@
+## 0.2.5
+- removed obsolete `(Try)Map(Async)` overloads that took an error map
+  - replaced by `MapError` (#19)
+
 ## 0.2.4
 - added `(Try)Map(Error)` overloads with one argument (#21)
 - added `RequireExists` for `Result<FileSystemInfo, Error>` and overload with custom error for `Result<FileSystemInfo>`

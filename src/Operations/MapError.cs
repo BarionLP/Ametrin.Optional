@@ -59,6 +59,7 @@ public static class OptionMapErrorAsyncExtensions
     public static async Task<Result<TValue, TNewError>> MapError<TValue, TNewError>(this Task<Result<TValue>> optionalTask, Func<Exception, TNewError> errorMap)
         => (await optionalTask).MapError(errorMap);
 
+    [OverloadResolutionPriority(1)]
     public static async Task<Result<TValue>> MapError<TValue, TError, TNewError>(this Task<Result<TValue, TError>> optionalTask, Func<TError, Exception> errorMap)
         => (await optionalTask).MapError(errorMap);
     public static async Task<Result<TValue, TNewError>> MapError<TValue, TError, TNewError>(this Task<Result<TValue, TError>> optionalTask, Func<TError, TNewError> errorMap)

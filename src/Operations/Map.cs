@@ -1,12 +1,5 @@
 namespace Ametrin.Optional;
 
-partial struct Option
-{
-    [Obsolete("Use Match", error: true)]
-    public TResult Map<TResult>(Func<TResult> success, Func<TResult> error)
-        => _success ? success() : error();
-}
-
 partial struct Option<TValue>
 {
     public Option<TResult> Map<TResult>(Func<TValue, TResult> map)
@@ -24,10 +17,6 @@ partial struct Result<TValue>
 {
     public Result<TResult> Map<TResult>(Func<TValue, TResult> map)
         => _hasValue ? map(_value) : _error;
-
-    [Obsolete("use Map and MapError", error: true)]
-    public Result<TResult, TNewError> Map<TResult, TNewError>(Func<TValue, TResult> map, Func<Exception, TNewError> errorMap)
-        => _hasValue ? map(_value) : errorMap(_error);
     public Result<TResult> Map<TResult>(Func<TValue, Result<TResult>> map)
         => _hasValue ? map(_value) : _error;
 
@@ -41,13 +30,6 @@ partial struct Result<TValue, TError>
 {
     public Result<TResult, TError> Map<TResult>(Func<TValue, TResult> map)
         => _hasValue ? map(_value) : _error;
-    [Obsolete("use Map and MapError", error: true)]
-    public Result<TResult> Map<TResult>(Func<TValue, TResult> map, Func<TError, Exception> errorMap)
-        => _hasValue ? map(_value) : errorMap(_error);
-
-    [Obsolete("use Map and MapError", error: true)]
-    public Result<TResult, TNewError> Map<TResult, TNewError>(Func<TValue, TResult> map, Func<TError, TNewError> errorMap)
-        => _hasValue ? map(_value) : errorMap(_error);
     public Result<TResult, TError> Map<TResult>(Func<TValue, Result<TResult, TError>> map)
         => _hasValue ? map(_value) : _error;
 
@@ -55,18 +37,6 @@ partial struct Result<TValue, TError>
         => _hasValue ? map(_value, arg) : _error;
     public Result<TResult, TError> Map<TArg, TResult>(TArg arg, Func<TValue, TArg, Result<TResult, TError>> map) where TArg : allows ref struct
         => _hasValue ? map(_value, arg) : _error;
-}
-
-partial struct ErrorState
-{
-    [Obsolete("Use Match", error: true)]
-    public TResult Map<TResult>(Func<TResult> success, Func<Exception, TResult> error) => _isError ? error(_error) : success();
-}
-
-partial struct ErrorState<TError>
-{
-    [Obsolete("Use Match", error: true)]
-    public TResult Map<TResult>(Func<TResult> success, Func<TError, TResult> error) => _isError ? error(_error) : success();
 }
 
 partial struct RefOption<TValue>
