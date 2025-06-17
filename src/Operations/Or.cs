@@ -10,6 +10,10 @@ partial struct Option<TValue>
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     [StackTraceHidden]
     public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();
+    [StackTraceHidden]
+    public TValue OrThrow(string message) => _hasValue ? _value : throw new OptionIsErrorException(message);
+    [StackTraceHidden]
+    public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
 }
 
 partial struct Result<TValue>
@@ -18,7 +22,11 @@ partial struct Result<TValue>
     public TValue Or(TValue other) => _hasValue ? _value : other;
     public TValue Or(Func<Exception, TValue> factory) => _hasValue ? _value : factory(_error);
     [StackTraceHidden]
-    public TValue OrThrow() => _hasValue ? _value : throw new ResultIsErrorException("Result is Error state", _error);
+    public TValue OrThrow() => OrThrow("Result is Error state");
+    [StackTraceHidden]
+    public TValue OrThrow(string message) => _hasValue ? _value : throw new ResultIsErrorException(message, _error);
+    [StackTraceHidden]
+    public TValue OrThrow(Func<Exception, string> messageSupplier) => _hasValue ? _value : throw new ResultIsErrorException(messageSupplier(_error), _error);
 }
 
 partial struct Result<TValue, TError>
@@ -27,7 +35,11 @@ partial struct Result<TValue, TError>
     public TValue Or(TValue other) => _hasValue ? _value! : other;
     public TValue Or(Func<TError, TValue> factory) => _hasValue ? _value! : factory(_error);
     [StackTraceHidden]
-    public TValue OrThrow() => _hasValue ? _value! : throw new ResultIsErrorException<TError>($"Result is Error state", _error);
+    public TValue OrThrow() => OrThrow("Result is Error state");
+    [StackTraceHidden]
+    public TValue OrThrow(string message) => _hasValue ? _value : throw new ResultIsErrorException<TError>(message, _error);
+    [StackTraceHidden]
+    public TValue OrThrow(Func<TError, string> messageSupplier) => _hasValue ? _value : throw new ResultIsErrorException<TError>(messageSupplier(_error), _error);
 }
 
 partial struct RefOption<TValue>
@@ -37,6 +49,10 @@ partial struct RefOption<TValue>
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
     [StackTraceHidden]
     public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();
+    [StackTraceHidden]
+    public TValue OrThrow(string message) => _hasValue ? _value : throw new OptionIsErrorException(message);
+    [StackTraceHidden]
+    public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
 }
 
 public static class OptionReferenceOrNullExtensions
@@ -57,4 +73,6 @@ public static class OptionValueOrNullExtensions
         => result._hasValue ? result._value : null;
     public static TValue? OrNull<TValue, TError>(this Result<TValue, TError> result) where TValue : struct
         => result._hasValue ? result._value : null;
+    public static TValue? OrNull<TValue>(this RefOption<TValue> option) where TValue : struct
+        => option._hasValue ? option._value! : null;
 }

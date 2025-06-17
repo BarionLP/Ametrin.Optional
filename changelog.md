@@ -1,10 +1,12 @@
 ## 0.2.5
+- added `Or(Throw)Async` (#24)
+- added `OrThrow` with custom message (#23)
 - removed obsolete `(Try)Map(Async)` overloads that took an error map
   - replaced by `MapError` (#19)
 
 ## 0.2.4
 - added `(Try)Map(Error)` overloads with one argument (#21)
-- added `RequireExists` for `Result<FileSystemInfo, Error>` and overload with custom error for `Result<FileSystemInfo>`
+- added `RequireExists` for `Result<FileSystemInfo, Error>`
 - added `RequireExists` overload with custom error for `Result<FileSystemInfo>`
 - added `ZipArchive.TryGetEntry` returning an option
 - updated TUnit 0.24.0
