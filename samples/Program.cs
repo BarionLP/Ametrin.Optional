@@ -1,48 +1,130 @@
-﻿using Ametrin.Optional; // contains all the option types and operations
-using Ametrin.Optional.Nullable; // contains a limited set of operations on T?
+﻿using Ametrin.Optional;
+using Ametrin.Optional.Nullable;
 
-// Option<T> is T or nothing. Examples on how to work with it:
-Console.Write("Input a number: ");
-Option<string> inputA = Console.ReadLine(); // implicit conversion
+BasicOptionsExample();
+ResultTypesExample();
+await AsyncOperationsExample();
+TupleOperationsExample();
+NullableIntegrationExample();
 
-var optionA = inputA.Parse<int>();
-Console.WriteLine($"You entered {optionA
-                                    .Map(value => value.ToString())         // apply an operation
-                                    .Reject(string.IsNullOrWhiteSpace)      // check a condition
-                                    .Or("an invalid number")}");            // provide a default value
+/// <summary>
+/// Demonstrates basic Option<T> usage with parsing and validation
+/// </summary>
+static void BasicOptionsExample()
+{
+    Console.WriteLine("=== Basic Options Example ===\n");
+    
+    // Option<T> represents a value or nothing (error state)
+    Console.Write("Input a number: ");
+    Option<string> inputA = Console.ReadLine(); // Implicit conversion from string
 
+    // Chain operations with fluent API
+    var optionA = inputA
+        .Parse<int>()                          // Try parse as integer
+        .Map(value => value * 2)               // Transform value if present
+        .Require(x => x > 0)                   // Ensure positive number
+        .Map(x => $"Result: {x}");             // Convert to string
 
-Console.Write("Input another number: ");
-var inputB = Console.ReadLine().ToOption(); // explicit conversion
+    Console.WriteLine($"Processed input: {optionA.Or("Invalid input")}");
+}
 
-var optionB = inputB.Parse<int>();
-Console.WriteLine($"You entered {optionB.Map(value => value.ToString()).RejectWhiteSpace().Or("an invalid number")}");
+/// <summary>
+/// Shows how to use Result types for error handling
+/// </summary>
+static void ResultTypesExample()
+{
+    Console.WriteLine("\n=== Result Types Example ===\n");
 
-// operations on tuples (all options must have a value)
-(optionA, optionB).Map((a, b) => a * b);
+    // Result<T> stores exceptions
+    Result<double> divisionResult = Result.Success(10d)
+        .TryMap(x => 100.0 / x); // Catches exceptions
 
-// catching exceptions
-optionA.TryMap(a => 1 / a);
+    divisionResult.Consume(
+        success: value => Console.WriteLine($"Division result: {value}"),
+        error: ex => Console.WriteLine($"Division failed: {ex.Message}")
+    );
 
+    // Result<T, E> allows custom error types
+    Result<int, string> parseResult = "abc"
+        .ToOption()
+        .Parse<int>()
+        .ToResult("Not a valid number");       // Custom error message
 
-// Result<T> is T or an exception. Same operations like Option<T>
-Result<int> result = optionB.ToResult();
+    var message = parseResult.Match(
+        success: value => $"Parsed: {value}",
+        error: err => $"Error: {err}"
+    );
+    Console.WriteLine(message);
+}
 
-// stores the catched exception
-result.TryMap(b => 1 / b);
+/// <summary>
+/// Demonstrates async operations with options
+/// </summary>
+static async Task AsyncOperationsExample()
+{
+    Console.WriteLine("\n=== Async Operations Example ===\n");
 
-// Result<T, E> is T or E. Same operations like Result<T>
-Result<int, string> result2 = optionB.ToResult("not a number");
-//                           convert exception to E
-result2.TryMap(b => 1 / b, e => e.Message);
+    // Chain async operations while maintaining option context
+    var fileResult = await new FileInfo("sample.txt")
+        .RequireExists()                       // Check if file exists
+        .MapAsync(async f =>                   // Async operations
+        {
+            var text = await File.ReadAllTextAsync(f.FullName);
+            return text.ToUpperInvariant();
+        });
 
-// a limited set of instuctions is also available on T? (using Ametrin.Optional.Nullable)
-int? nullable = optionA.OrNull();
+    await fileResult.ConsumeAsync(
+        async text => await File.WriteAllTextAsync("output.txt", text),
+        () => Console.WriteLine("File processing failed")
+    );
+}
 
-// this allows for a very elegant syntax using the ? operator
-var t = nullable.Map(a => a * 2).Require(int.IsEvenInteger)?.GetHashCode() ?? -1;
+/// <summary>
+/// Shows how to work with multiple options using tuple operations
+/// </summary>
+static void TupleOperationsExample()
+{
+    Console.WriteLine("\n=== Tuple Operations Example ===\n");
 
+    Option<int> first = Option.Success(10);
+    Option<int> second = Option.Success(20);
 
-// async operations
-var text = await new FileInfo("hey.txt").RequireExists().MapAsync(f => File.ReadAllTextAsync(f.FullName)).MapAsync(s => s.ToLower());
-await text.ConsumeAsync(text => File.WriteAllTextAsync("hey2.txt", text));
+    // Combine multiple options
+    var combined = (first, second).Map((a, b) => a + b);
+    
+    // Handle both success and error cases
+    (first, second).Consume(
+        success: (a, b) => Console.WriteLine($"Sum: {a + b}"),
+        error: () => Console.WriteLine("One or both values were missing")
+    );
+
+    // Chain multiple operations
+    var result = (first, second)
+        .Map((a, b) => a * b)                 // Multiply values
+        .Require(x => x != 0)                 // Ensure non-zero
+        .Map(x => Math.Sqrt(x));              // Calculate square root
+
+    Console.WriteLine($"Final result: {result.Or(-1)}");
+}
+
+/// <summary>
+/// Demonstrates integration with nullable types
+/// </summary>
+static void NullableIntegrationExample()
+{
+    Console.WriteLine("\n=== Nullable Integration Example ===\n");
+
+    Option<int> numberOption = Option.Success(42);
+
+    // Convert to nullable
+    int? nullable = numberOption.OrNull();
+
+    // Fluent API with nullable types
+    var result = nullable
+        .Map(x => x * 2)                      // Transform
+        .Require(x => x > 0)                  // Validate
+        ?.ToString()                          // Use null conditional
+        ?? "No value";                        // Provide default
+
+    Console.WriteLine($"Nullable result: {result}");
+}

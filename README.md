@@ -1,86 +1,156 @@
 # Ametrin.Optional
 
-A simple and fast .NET library containing various allocation free option types written by Barion.
+A modern, allocation-free library providing robust optional types for .NET. It offers a flexible and efficient way to handle nullable values, errors, and exceptions with a fluent, monadic API.
 
-```
+```bash
 dotnet add package Ametrin.Optional
 ```
 
-# Types
-## `Option<T>`
-T or Error
-```csharp
-Option<T> a = someT; // equivalent to Option.Of(someT) - will produce Option.Error<T>() if someT is null
-Option<T> b = default; // equivalent to Option.Error<T>() 
-// careful that default is actually referencing Option<T> and not T. Especially in conditional assignments.
-Option<T> a = Option.Success(someT); // throws if someT is null
-```
-### `Option` 
-Success or Error
-```csharp
-Option success = true; // equivalent to Option.Success()
-Option error = false; // equivalent to Option.Error()
-```
-## `Result<T, E>`
-T or E
-```csharp
-Result<T, E> success = someT; // equivalent to Result.Success<T, E>(someT)  
-Result<T, E> error = someE; // equivalent to Option.Error<T, E>(someE) 
-```
-### `Result<T>`
-T or Exception
-## `ErrorState<T>`
-Success or T
-### `ErrorState`
-Success or Exception
+## Features
 
-## General API
-All option types in this library have a monadic api to interact with them. 
-### [Examples](samples/Program.cs)
-```csharp
-option.Map(value => value.ToString()).Reject(string.IsNullOrWhiteSpace).Or("John Doe");
-option.Require(a => a > 5).Map(a => a * 5).Consume(a => process(a), () => reportFailure());
-(optionA, optionB).Map((a, b) => a * b);
-(optionA, optionB).Consume((a, b) => ...);
-```
-There is an alternative for most `Try...` methods that return an option. If not, I'm happy to accept pull requests.<br>
-If you are missing something feel free to create an issue or PR (talk to me before so i agree on the design)
+- 🚀 **Zero Allocation** - Designed for high-performance scenarios
+- 🧩 **Monadic API** - Fluent interface for transformations and error handling
+- 🔄 **Easy Integration** - Seamless integration with existing C# code
+- 🎯 **Multiple Option Types** - Different types for various use cases
+- 💪 **Async Support** - First-class support for async operations
 
-### Edge Cases
-If you run into edge cases that are not covered by the API let me know so we can find a solution.<br>
-In the mean time you can use the `OptionsMarshall` to get direct access to the underlying data. This can also be used in high performance scenarious where the delegates cannot be static.
+## Core Types
+
+### `Option<T>`
+Represents a value of type `T` or nothing (error state).
+
+```csharp
+// Creating Options
+Option<T> b = Option.Success(someT);    // explicit success creation (throws if someT is null)
+Option<T> c = Option.Error<T>();        // explicit error creation
+Option<T> a = Option.Of(someT);         // returns Option.Error<T>() if someT is null
+Option<T> a = someT;                    // implicit conversion from T -> Option.Of(someT)
+Option<T> d = default;                  // default results in an error state -> Option.Error<T>() 
+```
+
+### `Result<T>` and `Result<T, E>`
+Like `Option<T>` but with error information.  
+`Result<T>` stores an Exception as error  
+`Result<T, E>` stores a custom error type
+
+```csharp
+Result<T> b = Result.Success(someT);            // explicit success creation (throws if someT is null)
+Result<T> c = Result.Error<T>(new Exception()); // explicit error creation
+Result<T> a = Result.Of(someT);                 // returns Result.Error<T>(new NullReferenceException()) if someT is null
+Result<T> a = someT;                            // implicit conversion from T -> Result.Of(someT)
+Result<T> a = new Exception();                  // implicit conversion from Exception -> Result.Error<T>(new Exception())
+// same applies for Result<T, E> (with generic arguments)
+```
+
+### `ErrorState` and `ErrorState<E>`
+Represents a success state or an error value  
+`ErrorState` stores an Exception as error  
+`ErrorState<E>` stores a custom error type
+```csharp
+ErrorState success = default;           // ErrorState.Success()
+ErrorState error = new Exception();     // ErrorState.Success(new Exception())
+// same applies for ErrorState<E> (with generic arguments)
+```
+
+### `Option`
+Represents a success state or error state. Holds no value.
+```csharp
+Option success = true;          // Option.Success();
+Option error = false;           // Option.Error();
+```
+
+## Core API
+```csharp
+// Common Operations
+option.Map(value => value * 2);         // transform value if present
+option.Require(x => x > 0);             // filter based on predicate
+option.Reject(x => x > 0);              // inverse of Require
+option.Or(defaultValue);                // provide default value
+option.OrThrow();                       // throw if error
+option.Match(                           // reduce to a value (equivalent to .Map(success).Or(error) but supports ref structs)
+    success: value => value, 
+    error: error => defaultValue
+);
+option.Consume(                         // handle success and error
+    success: value => {}, 
+    error: error => {}
+);
+```
+
+## Advanced Features
+
+### Tuple Operations
+
+```csharp
+// Combine multiple options
+(optionA, optionB).Map((a, b) => a + b);
+(optionA, optionB).Consume(
+    success: (a, b) => Console.WriteLine($"{a} + {b} = {a + b}"),
+    error: () => Console.WriteLine("One of the values was missing")
+);
+```
+
+### Async Support
+
+```csharp
+// Async operations with full option support
+var text = await new FileInfo("file.txt")
+    .RequireExists()
+    .MapAsync(f => File.ReadAllTextAsync(f.FullName))
+    .MapAsync(s => s.ToLower());
+
+await text.ConsumeAsync(text => File.WriteAllTextAsync("output.txt", text));
+```
+
+### `RefOption<T>`
+Like `Option<T>` but can hold a ref struct as value
+
+## Edge Cases
+
+For edge cases or high-performance scenarios where delegates cannot be static, use `OptionsMarshall`:
+
 ```csharp
 if(OptionsMarshall.IsSuccess(result))
 {
-    ...
+    if(OptionsMarshall.TryGetValue(result, out var value))
+    {
+        // use value
+    }
 }
 
 if(OptionsMarshall.TryGetError(result, out var error))
 {
-    ...
-}
-
-if(OptionsMarshall.TryGetValue(result, out var value))
-{
-    ...
+    // handle error
 }
 ```
 
-### Unit tests
-If you need to unit test an option you can use `Ametrin.Optional.Testing.TUnit` to to simplify the testing experience with TUnit. Feel free to contribute similar extensions for your testing framework
+## Testing
+
+For testing code using Ametrin.Optional types, use the `Ametrin.Optional.Testing.TUnit` extensions:
+
+```csharp
+await Assert.That(option).IsSuccess(expectedValue);
+await Assert.That(option).IsError();
+```
+
+## Contributing
+
+Contributions are welcome! Feel free to:
+- Create issues for bugs or feature requests
+- Submit pull requests (discuss design first)
+- Add extensions for more testing frameworks
 
 ## Performance
-Ametrin.Optional promises minimal to none performance impact on your application.
-### Example Benchmarks
-[Parsing a DateTime](/benchy/Examples/ParsingDateTimeBenchmarks.cs)
+
+The library is designed with performance in mind and has minimal to no overhead. Example benchmark for parsing a DateTime:
+
 ```
 | Method            | Mean      | Error    | StdDev   | Allocated |
 |------------------ |----------:|---------:|---------:|----------:|
 | Default_Success   | 291.30 ns | 1.093 ns | 1.022 ns |         - |
 | Option_Success    | 310.56 ns | 1.914 ns | 1.697 ns |         - |
 | RefOption_Success | 300.98 ns | 1.454 ns | 1.360 ns |         - |
-
-| Default_Error     |  72.12 ns | 0.289 ns | 0.226 ns |         - | // using TryParse (with Exceptions this would be way higher)
+| Default_Error     |  72.12 ns | 0.289 ns | 0.226 ns |         - | // using TryParse
 | Option_Error      |  67.75 ns | 0.324 ns | 0.287 ns |         - |
 | RefOption_Error   |  72.75 ns | 0.145 ns | 0.136 ns |         - |
 ```
