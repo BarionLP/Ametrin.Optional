@@ -42,21 +42,28 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
                     sb.AppendLine($"    [{attribute}]");
                 }
 
-                if (method.IsAsync)
+                var generics = string.Join(", ", type.TypeParameters.Concat(method.TypeParameters));
+                if (!string.IsNullOrEmpty(generics))
+                {
+                    generics = $"<{generics}>";
+                }
+
+                if (IsTask(method.ReturnType))
                 {
                     sb.AppendLine($$"""
-                    public static async {{method.ReturnType}} {{method.Name}}<{{string.Join(", ", type.TypeParameters.Concat(method.TypeParameters))}}>(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters)}})
+                    public static async {{method.ReturnType}} {{method.Name}}{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters)}})
                     {
-                        return await (await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
+                        {{(method.ReturnType is INamedTypeSymbol { TypeParameters.Length: > 0 } ? "return " : "")}}await (await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
                     }
                 """);
                 }
                 else
                 {
+                    // ContinueWith is 42x slower and uses 2.7x memory (.NET 9)
                     sb.AppendLine($$"""
-                    public static async Task<{{method.ReturnType}}> {{method.Name}}Async<{{string.Join(", ", type.TypeParameters.Concat(method.TypeParameters))}}>(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters)}})
+                    public static async {{(method.ReturnsVoid ? "Task" : $"Task<{method.ReturnType}>")}} {{method.Name}}Async{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters)}})
                     {
-                        return (await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
+                        {{(method.ReturnsVoid ? "" : "return ")}}(await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
                     }
                 """);
                 }
@@ -71,4 +78,5 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
 
     internal static bool HasAttribute(ISymbol symbol, Func<INamedTypeSymbol?, bool> predicate) => symbol.GetAttributes().Any(data => predicate(data.AttributeClass));
     internal static bool IsAsyncExtensionAttribute(INamedTypeSymbol? attribute) => attribute is { Name: "AsyncExtensionAttribute", ContainingAssembly.Name: "Ametrin.Optional" };
+    internal static bool IsTask(ITypeSymbol? attribute) => attribute is { Name: "Task", ContainingAssembly.Name: "System.Runtime", ContainingNamespace: { Name: "Tasks", ContainingNamespace: { Name: "Threading", ContainingNamespace.Name: "System" } } };
 }

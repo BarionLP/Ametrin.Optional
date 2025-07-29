@@ -4,9 +4,11 @@ namespace Ametrin.Optional;
 
 partial struct Option<TValue>
 {
+    [AsyncExtension]
     public Task ConsumeAsync(Func<TValue, Task>? success, Func<Task>? error)
         => _hasValue ? success?.Invoke(_value) ?? Task.CompletedTask : error?.Invoke() ?? Task.CompletedTask;
 
+    [AsyncExtension]
     public Task ConsumeAsync(Func<TValue, Task>? success, Action? error = null)
     {
         if (_hasValue)
@@ -20,6 +22,7 @@ partial struct Option<TValue>
         }
     }
 
+    [AsyncExtension]
     public Task ConsumeAsync(Action<TValue>? success, Func<Task> error)
     {
         if (_hasValue)
@@ -36,9 +39,11 @@ partial struct Option<TValue>
 
 partial struct Result<TValue>
 {
+    [AsyncExtension]
     public Task ConsumeAsync(Func<TValue, Task>? success, Func<Exception, Task>? error)
         => _hasValue ? success?.Invoke(_value) ?? Task.CompletedTask : error?.Invoke(_error) ?? Task.CompletedTask;
 
+    [AsyncExtension]
     public Task ConsumeAsync(Func<TValue, Task>? success, Action<Exception>? error = null)
     {
         if (_hasValue)
@@ -52,6 +57,7 @@ partial struct Result<TValue>
         }
     }
 
+    [AsyncExtension]
     public Task ConsumeAsync(Action<TValue>? success, Func<Exception, Task> error)
     {
         if (_hasValue)
@@ -68,9 +74,11 @@ partial struct Result<TValue>
 
 partial struct Result<TValue, TError>
 {
+    [AsyncExtension]
     public Task ConsumeAsync(Func<TValue, Task>? success, Func<TError, Task>? error)
         => _hasValue ? success?.Invoke(_value) ?? Task.CompletedTask : error?.Invoke(_error) ?? Task.CompletedTask;
 
+    [AsyncExtension]
     public Task ConsumeAsync(Func<TValue, Task>? success, Action<TError>? error = null)
     {
         if (_hasValue)
@@ -84,6 +92,7 @@ partial struct Result<TValue, TError>
         }
     }
 
+    [AsyncExtension]
     public Task ConsumeAsync(Action<TValue>? success, Func<TError, Task> error)
     {
         if (_hasValue)
@@ -100,9 +109,11 @@ partial struct Result<TValue, TError>
 
 partial struct ErrorState
 {
+    [AsyncExtension]
     public Task ConsumeAsync(Func<Task>? success, Func<Exception, Task>? error)
         => _isError ? error?.Invoke(_error) ?? Task.CompletedTask : success?.Invoke() ?? Task.CompletedTask;
 
+    [AsyncExtension]
     public Task ConsumeAsync(Func<Task>? success, Action<Exception>? error = null)
     {
         if (_isError)
@@ -116,6 +127,7 @@ partial struct ErrorState
         }
     }
 
+    [AsyncExtension]
     public Task ConsumeAsync(Action? success, Func<Exception, Task> error)
     {
         if (_isError)
@@ -132,9 +144,11 @@ partial struct ErrorState
 
 partial struct ErrorState<TError>
 {
+    [AsyncExtension]
     public Task ConsumeAsync(Func<Task>? success, Func<TError, Task>? error)
         => _isError ? error?.Invoke(_error) ?? Task.CompletedTask : success?.Invoke() ?? Task.CompletedTask;
 
+    [AsyncExtension]
     public Task ConsumeAsync(Func<Task>? success, Action<TError>? error = null)
     {
         if (_isError)
@@ -148,6 +162,7 @@ partial struct ErrorState<TError>
         }
     }
 
+    [AsyncExtension]
     public Task ConsumeAsync(Action? success, Func<TError, Task> error)
     {
         if (_isError)
@@ -160,34 +175,4 @@ partial struct ErrorState<TError>
             return Task.CompletedTask;
         }
     }
-}
-
-public static class ConsumeAsyncOptionExtensions
-{
-    public static async Task Consume<TValue>(this Task<Option<TValue>> optionTask, Action<TValue>? success, Action? error)
-        => (await optionTask).Consume(success, error);
-    public static async Task ConsumeAsync<TValue>(this Task<Option<TValue>> optionTask, Func<TValue, Task>? success, Func<Task>? error)
-        => await (await optionTask).ConsumeAsync(success, error);
-    public static async Task ConsumeAsync<TValue>(this Task<Option<TValue>> optionTask, Func<TValue, Task>? success, Action? error)
-        => await (await optionTask).ConsumeAsync(success, error);
-    public static async Task ConsumeAsync<TValue>(this Task<Option<TValue>> optionTask, Action<TValue>? success, Func<Task> error)
-        => await (await optionTask).ConsumeAsync(success, error);
-
-    public static async Task Consume<TValue>(this Task<Result<TValue>> optionTask, Action<TValue>? success, Action<Exception>? error)
-        => (await optionTask).Consume(success, error);
-    public static async Task ConsumeAsync<TValue>(this Task<Result<TValue>> optionTask, Func<TValue, Task>? success, Func<Exception, Task>? error)
-        => await (await optionTask).ConsumeAsync(success, error);
-    public static async Task ConsumeAsync<TValue>(this Task<Result<TValue>> optionTask, Func<TValue, Task>? success, Action<Exception>? error)
-        => await (await optionTask).ConsumeAsync(success, error);
-    public static async Task ConsumeAsync<TValue>(this Task<Result<TValue>> optionTask, Action<TValue>? success, Func<Exception, Task> error)
-        => await (await optionTask).ConsumeAsync(success, error);
-
-    public static async Task Consume<TValue, TError>(this Task<Result<TValue, TError>> optionTask, Action<TValue>? success, Action<TError>? error)
-        => (await optionTask).Consume(success, error);
-    public static async Task ConsumeAsync<TValue, TError>(this Task<Result<TValue, TError>> optionTask, Func<TValue, Task>? success, Func<TError, Task>? error)
-        => await (await optionTask).ConsumeAsync(success, error);
-    public static async Task ConsumeAsync<TValue, TError>(this Task<Result<TValue, TError>> optionTask, Func<TValue, Task>? success, Action<TError>? error)
-        => await (await optionTask).ConsumeAsync(success, error);
-    public static async Task ConsumeAsync<TValue, TError>(this Task<Result<TValue, TError>> optionTask, Action<TValue>? success, Func<TError, Task> error)
-        => await (await optionTask).ConsumeAsync(success, error);
 }

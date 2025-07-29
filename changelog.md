@@ -4,11 +4,13 @@
 - added `Option<T>.ToResultAsync`
 - added `Result<T(, E)>.To(Option|ErrorState)Async`
 - added `ErrorState(<E>).ToResult(Async)`
+- added `DisposeAsync` extension methods
 - made `Result<TValue>` to `Result<TValue, Exception>` explicit to prevent accidential conversions
 - marked all custom exceptions as System.Serializable (#22)
 - deprecated `ToOption` and `ToResult` on arbitary objects (they are more annoying than helpful)
 - removed obsolete `(Try)Map(Async)` overloads that took an error map
   - replaced by `MapError` (#19)
+- introduced a generator for some async extension methods. please report any breaking changes you encounter with async!  
 - updated TUnit to 0.25.21
 
 ## 0.2.4

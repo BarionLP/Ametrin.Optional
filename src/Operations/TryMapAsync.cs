@@ -13,6 +13,7 @@ namespace Ametrin.Optional;
 
 partial struct Option<TValue>
 {
+    [AsyncExtension]
     public async Task<Option<TResult>> TryMapAsync<TResult>(Func<TValue, Task<TResult>> map)
     {
         if (!_hasValue)
@@ -31,6 +32,7 @@ partial struct Option<TValue>
 
 partial struct Result<TValue>
 {
+    [AsyncExtension]
     public async Task<Result<TResult>> TryMapAsync<TResult>(Func<TValue, Task<TResult>> map)
     {
         if (!_hasValue)
@@ -48,6 +50,7 @@ partial struct Result<TValue>
 
 partial struct Result<TValue, TError>
 {
+    [AsyncExtension]
     public async Task<Result<TResult, TError>> TryMapAsync<TResult>(Func<TValue, Task<TResult>> map, Func<Exception, TError> errorMap)
     {
         if (!_hasValue)
@@ -61,22 +64,4 @@ partial struct Result<TValue, TError>
 
         return task.IsCompletedSuccessfully ? task.Result : errorMap(task.Exception is AggregateException { InnerExceptions.Count: 1 } ae ? ae.InnerException! : task.Exception!);
     }
-}
-
-public static class OptionTryMapAsyncExtensions
-{
-    public static async Task<Option<TResult>> TryMapAsync<TValue, TResult>(this Task<Option<TValue>> optionTask, Func<TValue, TResult> map)
-        => (await optionTask).TryMap(map); // ContinueWith is 42x slower and uses 2.7x memory (.NET 9)
-    public static async Task<Option<TResult>> TryMapAsync<TValue, TResult>(this Task<Option<TValue>> optionTask, Func<TValue, Task<TResult>> map)
-        => await (await optionTask).TryMapAsync(map);
-
-    public static async Task<Result<TResult>> TryMapAsync<TValue, TResult>(this Task<Result<TValue>> optionTask, Func<TValue, TResult> map)
-        => (await optionTask).TryMap(map);
-    public static async Task<Result<TResult>> TryMapAsync<TValue, TResult>(this Task<Result<TValue>> resultTask, Func<TValue, Task<TResult>> map)
-        => await (await resultTask).TryMapAsync(map);
-
-    public static async Task<Result<TResult, TError>> TryMapAsync<TValue, TError, TResult>(this Task<Result<TValue, TError>> optionTask, Func<TValue, TResult> map, Func<Exception, TError> errorMap)
-        => (await optionTask).TryMap(map, errorMap);
-    public static async Task<Result<TResult, TError>> TryMapAsync<TValue, TError, TResult>(this Task<Result<TValue, TError>> resultTask, Func<TValue, Task<TResult>> map, Func<Exception, TError> errorMap)
-        => await (await resultTask).TryMapAsync(map, errorMap);
 }

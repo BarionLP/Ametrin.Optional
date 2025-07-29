@@ -2,6 +2,7 @@ namespace Ametrin.Optional;
 
 partial struct Option<TValue>
 {
+    [AsyncExtension]
     public Option<TResult> TryMap<TResult>(Func<TValue, TResult> map)
     {
         if (_hasValue)
@@ -34,6 +35,7 @@ partial struct Option<TValue>
 
 partial struct Result<TValue>
 {
+    [AsyncExtension]
     public Result<TResult> TryMap<TResult>(Func<TValue, TResult> map)
     {
         if (!_hasValue)
@@ -72,6 +74,7 @@ partial struct Result<TValue>
 
 partial struct Result<TValue, TError>
 {
+    [AsyncExtension]
     public Result<TResult, TError> TryMap<TResult>(Func<TValue, TResult> map, Func<Exception, TError> errormap)
     {
         if (!_hasValue)

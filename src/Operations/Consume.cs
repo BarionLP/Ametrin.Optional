@@ -17,6 +17,7 @@ partial struct Option
 
 partial struct Option<TValue>
 {
+    [AsyncExtension]
     public Option Consume(Action<TValue>? success = null, Action? error = null)
     {
         if (_hasValue)
@@ -34,6 +35,7 @@ partial struct Option<TValue>
 
 partial struct Result<TValue>
 {
+    [AsyncExtension]
     public ErrorState Consume(Action<TValue>? success = null, Action<Exception>? error = null)
     {
         if (_hasValue)
@@ -51,6 +53,7 @@ partial struct Result<TValue>
 
 partial struct Result<TValue, TError>
 {
+    [AsyncExtension]
     public ErrorState<TError> Consume(Action<TValue>? success = null, Action<TError>? error = null)
     {
         if (_hasValue)
@@ -68,6 +71,7 @@ partial struct Result<TValue, TError>
 
 partial struct ErrorState
 {
+    [AsyncExtension]
     public void Consume(Action? success = null, Action<Exception>? error = null)
     {
         if (_isError)
@@ -83,6 +87,7 @@ partial struct ErrorState
 
 partial struct ErrorState<TError>
 {
+    [AsyncExtension]
     public void Consume(Action? success = null, Action<TError>? error = null)
     {
         if (_isError)

@@ -2,8 +2,10 @@ namespace Ametrin.Optional;
 
 partial struct Option<TValue>
 {
+    [AsyncExtension]
     public Option<TResult> Map<TResult>(Func<TValue, TResult> map)
         => _hasValue ? Option.Success(map(_value)) : default;
+    [AsyncExtension]
     public Option<TResult> Map<TResult>(Func<TValue, Option<TResult>> map)
         => _hasValue ? map(_value) : default;
 
@@ -15,8 +17,10 @@ partial struct Option<TValue>
 
 partial struct Result<TValue>
 {
+    [AsyncExtension]
     public Result<TResult> Map<TResult>(Func<TValue, TResult> map)
         => _hasValue ? map(_value) : _error;
+    [AsyncExtension]
     public Result<TResult> Map<TResult>(Func<TValue, Result<TResult>> map)
         => _hasValue ? map(_value) : _error;
 
@@ -28,8 +32,10 @@ partial struct Result<TValue>
 
 partial struct Result<TValue, TError>
 {
+    [AsyncExtension]
     public Result<TResult, TError> Map<TResult>(Func<TValue, TResult> map)
         => _hasValue ? map(_value) : _error;
+    [AsyncExtension]
     public Result<TResult, TError> Map<TResult>(Func<TValue, Result<TResult, TError>> map)
         => _hasValue ? map(_value) : _error;
 

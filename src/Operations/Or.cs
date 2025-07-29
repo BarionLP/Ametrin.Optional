@@ -5,52 +5,88 @@ namespace Ametrin.Optional;
 
 partial struct Option<TValue>
 {
+    [AsyncExtension]
     [OverloadResolutionPriority(1)] // to allow 'Or(default)' which would normally be ambigious
     public TValue Or(TValue other) => _hasValue ? _value : other;
+
+    [AsyncExtension]
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(string message) => _hasValue ? _value : throw new OptionIsErrorException(message);
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
 }
 
 partial struct Result<TValue>
 {
+    [AsyncExtension]
     [OverloadResolutionPriority(1)]
     public TValue Or(TValue other) => _hasValue ? _value : other;
+
+    [AsyncExtension]
     public TValue Or(Func<Exception, TValue> factory) => _hasValue ? _value : factory(_error);
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => OrThrow("Result is Error state");
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(string message) => _hasValue ? _value : throw new ResultIsErrorException(message, _error);
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(Func<Exception, string> messageSupplier) => _hasValue ? _value : throw new ResultIsErrorException(messageSupplier(_error), _error);
 }
 
 partial struct Result<TValue, TError>
 {
+    [AsyncExtension]
     [OverloadResolutionPriority(1)]
     public TValue Or(TValue other) => _hasValue ? _value! : other;
+
+    [AsyncExtension]
     public TValue Or(Func<TError, TValue> factory) => _hasValue ? _value! : factory(_error);
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => OrThrow("Result is Error state");
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(string message) => _hasValue ? _value : throw new ResultIsErrorException<TError>(message, _error);
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(Func<TError, string> messageSupplier) => _hasValue ? _value : throw new ResultIsErrorException<TError>(messageSupplier(_error), _error);
 }
 
 partial struct RefOption<TValue>
 {
+    [AsyncExtension]
     [OverloadResolutionPriority(1)]
     public TValue Or(TValue other) => _hasValue ? _value : other;
+
+    [AsyncExtension]
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(string message) => _hasValue ? _value : throw new OptionIsErrorException(message);
+
+    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
 }
