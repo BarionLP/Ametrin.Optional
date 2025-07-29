@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks>$(SupportedFrameworks)</TargetFrameworks>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);TUnitAssertions0003</NoWarn>
   </PropertyGroup>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="TUnit.Assertions" Version="0.25.21" />
-    <PackageReference Include="Ametrin.Optional" Version="0.2.4" />
+    <PackageReference Include="Ametrin.Optional" Version="0.2.5" />
   </ItemGroup>
 
 </Project>
