@@ -1,7 +1,12 @@
 ## 0.2.5
 - added `Or(Throw)Async` (#24)
 - added `OrThrow` with custom message (#23)
+- added `Option<T>.ToResultAsync`
+- added `Result<T(, E)>.To(Option|ErrorState)Async`
+- added `ErrorState(<E>).ToResult(Async)`
+- made `Result<TValue>` to `Result<TValue, Exception>` explicit to prevent accidential conversions
 - marked all custom exceptions as System.Serializable (#22)
+- deprecated `ToOption` and `ToResult` on arbitary objects (they are more annoying than helpful)
 - removed obsolete `(Try)Map(Async)` overloads that took an error map
   - replaced by `MapError` (#19)
 - updated TUnit to 0.25.21

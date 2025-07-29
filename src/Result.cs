@@ -4,6 +4,7 @@ namespace Ametrin.Optional;
 /// A simplified version of <see cref="Result{TValue, TError}"/> with <see cref="Exception"/> as error type
 /// </summary>
 /// <typeparam name="TValue">type of value</typeparam>
+[GenerateAsyncExtensions]
 public readonly partial struct Result<TValue>
 {
     internal readonly TValue _value;
@@ -26,6 +27,7 @@ public readonly partial struct Result<TValue>
 /// </summary>
 /// <typeparam name="TValue">type of value</typeparam>
 /// <typeparam name="TError">type of error</typeparam>
+[GenerateAsyncExtensions]
 public readonly partial struct Result<TValue, TError>
 {
     internal readonly TValue _value;

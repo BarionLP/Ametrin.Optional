@@ -22,4 +22,8 @@
     <None Include="..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup>
+		<ProjectReference Include="..\generator\Ametrin.Optional.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+	</ItemGroup>
+
 </Project>

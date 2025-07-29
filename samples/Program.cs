@@ -13,7 +13,7 @@ NullableIntegrationExample();
 static void BasicOptionsExample()
 {
     Console.WriteLine("=== Basic Options Example ===\n");
-    
+
     // Option<T> represents a value or nothing (error state)
     Console.Write("Input a number: ");
     Option<string> inputA = Console.ReadLine(); // Implicit conversion from string
@@ -45,8 +45,7 @@ static void ResultTypesExample()
     );
 
     // Result<T, E> allows custom error types
-    Result<int, string> parseResult = "abc"
-        .ToOption()
+    Result<int, string> parseResult = Option.Of("abc")
         .Parse<int>()
         .ToResult("Not a valid number");       // Custom error message
 
@@ -91,7 +90,7 @@ static void TupleOperationsExample()
 
     // Combine multiple options
     var combined = (first, second).Map((a, b) => a + b);
-    
+
     // Handle both success and error cases
     (first, second).Consume(
         success: (a, b) => Console.WriteLine($"Sum: {a + b}"),

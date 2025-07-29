@@ -25,6 +25,7 @@ public readonly partial struct ErrorState
 /// A struct representing either success or an error value of <typeparamref name="TError"/>
 /// </summary>
 /// <typeparam name="TError">Type of the Error</typeparam>
+[GenerateAsyncExtensions]
 public readonly partial struct ErrorState<TError>
 {
     internal readonly bool _isError;
@@ -39,10 +40,11 @@ public readonly partial struct ErrorState<TError>
     public ErrorState(ErrorState<TError> other) : this(other._isError, other._error) { }
 }
 
+[GenerateAsyncExtensions]
 partial struct ErrorState
 {
     public static ErrorState Success() => new();
-    
+
     [OverloadResolutionPriority(1)] // to avoid ambiguity with Error(TError) with subclasses of Exception
     public static ErrorState Error(Exception? error = null) => new(true, error ?? new Exception());
 

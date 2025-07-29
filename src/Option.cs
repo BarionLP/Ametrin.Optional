@@ -18,6 +18,7 @@ public readonly partial struct Option
 /// A struct representing a value of type <typeparamref name="TValue"/> or error
 /// </summary>
 /// <typeparam name="TValue">type of the value</typeparam>
+[GenerateAsyncExtensions]
 public readonly partial struct Option<TValue>
 {
     internal readonly TValue _value;
