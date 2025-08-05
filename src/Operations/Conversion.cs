@@ -23,7 +23,7 @@ partial struct Option<TValue>
         => _hasValue ? _value : error();
 
     [AsyncExtension]
-    // [OverloadResolutionPriority(1)] // would prevent ToResult(Func) from being called
+    // [OverloadResolutionPriority(1)] // would prevent ToResult(Func) from being called because TError becomes Func<T>
     public Result<TValue, TError> ToResult<TError>(TError error)
         => _hasValue ? _value : error;
     [AsyncExtension]
