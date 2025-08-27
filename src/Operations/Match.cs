@@ -44,7 +44,6 @@ partial struct ErrorState<TError>
 
 partial struct RefOption<TValue>
 {
-    [AsyncExtension]
     public TResult Match<TResult>(Func<TValue, TResult> success, Func<TResult> error) where TResult : allows ref struct
         => _hasValue ? success(_value) : error();
 }

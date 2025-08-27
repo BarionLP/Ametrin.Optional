@@ -6,6 +6,7 @@ namespace Ametrin.Optional;
 /// <summary>
 /// A simplified version of <see cref="ErrorState{TError}"/> with Exception as TError
 /// </summary>
+[GenerateAsyncExtensions]
 public readonly partial struct ErrorState
 {
     internal readonly bool _isError;
@@ -40,7 +41,6 @@ public readonly partial struct ErrorState<TError>
     public ErrorState(ErrorState<TError> other) : this(other._isError, other._error) { }
 }
 
-[GenerateAsyncExtensions]
 partial struct ErrorState
 {
     public static ErrorState Success() => new();

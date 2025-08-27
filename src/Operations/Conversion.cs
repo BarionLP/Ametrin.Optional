@@ -103,20 +103,3 @@ partial struct RefOption<TValue>
     public static implicit operator RefOption<TValue>(TValue value) => RefOption.Success(value);
     public static explicit operator Option(RefOption<TValue> option) => option._hasValue;
 }
-
-public static class OptionConversionExtensions
-{
-    [Obsolete("use Option.Of()")]
-    public static Option<TValue> ToOption<TValue>(this TValue? value) => Option.Of(value);
-    [Obsolete("use Option.Of()")]
-    public static Option<TValue> ToOption<TValue>(this TValue? value) where TValue : struct => Option.Of(value);
-    [Obsolete("use Option.Of().Require<TValue>()")]
-    public static Option<TValue> ToOption<TValue>(this object? value) => value is TValue t ? Option.Success(t) : default;
-
-    [Obsolete("use Result.Of()")]
-    public static Result<TValue> ToResult<TValue>(this TValue? value) => Result.Of(value);
-    [Obsolete("use Result.Of()")]
-    public static Result<TValue> ToResult<TValue>(this TValue? value) where TValue : struct => Result.Of(value);
-    [Obsolete("use Result.Of().Require<TValue>()")]
-    public static Result<TValue> ToResult<TValue>(this object? value) => value.ToResult().Require<TValue>();
-}

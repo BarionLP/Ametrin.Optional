@@ -71,22 +71,17 @@ partial struct Result<TValue, TError>
 
 partial struct RefOption<TValue>
 {
-    [AsyncExtension]
     [OverloadResolutionPriority(1)]
     public TValue Or(TValue other) => _hasValue ? _value : other;
 
-    [AsyncExtension]
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
 
-    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();
 
-    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(string message) => _hasValue ? _value : throw new OptionIsErrorException(message);
 
-    [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
 }
