@@ -18,7 +18,6 @@ dotnet add package Ametrin.Optional
 
 ### `Option<T>`
 Represents a value of type `T` or nothing (error state).
-
 ```csharp
 // Creating Options
 Option<T> b = Option.Success(someT);    // explicit success creation (throws if someT is null)
@@ -61,20 +60,21 @@ Option error = false;           // Option.Error();
 
 ## Core API
 ```csharp
-// Common Operations
+// common operations
 option.Map(value => value * 2);         // transform value if present
-option.Require(x => x > 0);             // filter based on predicate
-option.Reject(x => x > 0);              // inverse of Require
-option.Or(defaultValue);                // provide default value
-option.OrThrow();                       // throw if error
+option.Require(value => value > 0);     // filter based on predicate
+option.Reject(value => value > 0);      // inverse of Require
+option.Or(defaultValue);                // return value or defaultValue
+option.OrThrow();                       // return value or throw if error
 option.Match(                           // reduce to a value (equivalent to .Map(success).Or(error) but supports ref structs)
     success: value => value, 
     error: error => defaultValue
 );
 option.Consume(                         // handle success and error
-    success: value => {}, 
-    error: error => {}
+    success: value => { }, 
+    error: error => { }
 );
+// all operations have an overload that allows you to pass an argument into the delegate an avoid the closure
 ```
 
 ## Advanced Features
@@ -103,7 +103,7 @@ await text.ConsumeAsync(text => File.WriteAllTextAsync("output.txt", text));
 ```
 
 ### `RefOption<T>`
-Like `Option<T>` but can hold a ref struct as value
+A reduced version of `Option<T>` that can hold a ref struct as value
 
 ## Edge Cases
 
