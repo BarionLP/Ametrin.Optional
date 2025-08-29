@@ -23,7 +23,7 @@ partial struct Option<TValue>
     }
 
     [AsyncExtension]
-    public Task ConsumeAsync(Action<TValue>? success, Func<Task> error)
+    public Task ConsumeAsync(Action<TValue>? success, Func<Task>? error)
     {
         if (_hasValue)
         {
@@ -32,7 +32,7 @@ partial struct Option<TValue>
         }
         else
         {
-            return error.Invoke();
+            return error?.Invoke() ?? Task.CompletedTask;
         }
     }
 }
@@ -58,7 +58,7 @@ partial struct Result<TValue>
     }
 
     [AsyncExtension]
-    public Task ConsumeAsync(Action<TValue>? success, Func<Exception, Task> error)
+    public Task ConsumeAsync(Action<TValue>? success, Func<Exception, Task>? error)
     {
         if (_hasValue)
         {
@@ -67,7 +67,7 @@ partial struct Result<TValue>
         }
         else
         {
-            return error.Invoke(_error);
+            return error?.Invoke(_error) ?? Task.CompletedTask;
         }
     }
 }
@@ -93,7 +93,7 @@ partial struct Result<TValue, TError>
     }
 
     [AsyncExtension]
-    public Task ConsumeAsync(Action<TValue>? success, Func<TError, Task> error)
+    public Task ConsumeAsync(Action<TValue>? success, Func<TError, Task>? error)
     {
         if (_hasValue)
         {
@@ -102,7 +102,7 @@ partial struct Result<TValue, TError>
         }
         else
         {
-            return error.Invoke(_error);
+            return error?.Invoke(_error) ?? Task.CompletedTask;
         }
     }
 }
@@ -128,11 +128,11 @@ partial struct ErrorState
     }
 
     [AsyncExtension]
-    public Task ConsumeAsync(Action? success, Func<Exception, Task> error)
+    public Task ConsumeAsync(Action? success, Func<Exception, Task>? error)
     {
         if (_isError)
         {
-            return error.Invoke(_error);
+            return error?.Invoke(_error) ?? Task.CompletedTask;
         }
         else
         {
@@ -163,11 +163,11 @@ partial struct ErrorState<TError>
     }
 
     [AsyncExtension]
-    public Task ConsumeAsync(Action? success, Func<TError, Task> error)
+    public Task ConsumeAsync(Action? success, Func<TError, Task>? error)
     {
         if (_isError)
         {
-            return error.Invoke(_error);
+            return error?.Invoke(_error) ?? Task.CompletedTask;
         }
         else
         {

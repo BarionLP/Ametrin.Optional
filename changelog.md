@@ -1,6 +1,7 @@
 ## 0.2.6
 - removed `ToOption` and `ToResult` on arbitary objects
-  - use `Option.Of` or `Result.Of` 
+  - use `Option.Of` or `Result.Of`
+- fix nullability of error action in a `ConsumeAsync` overload
 - updated TUnit to 0.57.1
 
 ## 0.2.5
