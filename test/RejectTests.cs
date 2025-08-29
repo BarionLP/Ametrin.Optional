@@ -46,4 +46,48 @@ public sealed class RejectTests
         await Assert.That(new int?().Reject(v => v != 1)).IsNull();
         await Assert.That(((string?)null).Reject(string.IsNullOrEmpty)).IsNull();
     }
+
+    [Test]
+    public async Task Success_Reject_Arg_True_Test()
+    {
+        await Assert.That(Option.Success(1).Reject(2, static (i, arg) => i == arg)).IsSuccess(1);
+        await Assert.That(Result.Success(1).Reject(2, static (i, arg) => i == arg)).IsSuccess(1);
+        await Assert.That(Result.Success(1).Reject(2, static (i, arg) => i == arg, static (i, arg) => new ArgumentException($"{i} was {arg}"))).IsSuccess(1);
+        await Assert.That(Result.Success<int, string>(1).Reject(2, static (i, arg) => i == arg, "was 2")).IsSuccess(1);
+        await Assert.That(Result.Success<int, string>(1).Reject(2, static (i, arg) => i == arg, static (i, arg) => $"{i} was {arg}")).IsSuccess(1);
+        await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>([]).Reject(0, static (s, arg) => s.Length != arg))).IsTrue();
+
+        await Assert.That(new int?(1).Reject(1, static (v, arg) => v != arg)).IsEqualTo(1);
+        await Assert.That("".Reject("", static (v, arg) => v != arg)).IsEqualTo("");
+    }
+
+    [Test]
+    public async Task Success_Reject_Arg_False_Test()
+    {
+        await Assert.That(Option.Success(1).Reject(2, static (i, arg) => i != arg)).IsError();
+        await Assert.That(Result.Success(1).Reject(2, static (i, arg) => i != arg)).IsError();
+        await Assert.That(Result.Success(1).Reject(2, static (i, arg) => i != arg, static (i, arg) => new ArgumentException($"{i} was not {arg}"))).IsErrorOfType<int, ArgumentException>();
+        await Assert.That(Result.Success<int, string>(1).Reject(2, static (i, arg) => i != arg, "was not 2")).IsError("was not 2");
+        await Assert.That(Result.Success<int, string>(1).Reject(2, static (i, arg) => i != arg, static (i, arg) => $"{i} was not {arg}")).IsError("1 was not 2");
+        await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>(['a']).Reject(0, static (s, arg) => s.Length != arg))).IsFalse();
+
+
+        await Assert.That(new int?(1).Reject(1, static (v, arg) => v == arg)).IsNull();
+        await Assert.That("1".Reject("", static (v, arg) => v != arg)).IsNull();
+    }
+
+    [Test]
+    public async Task Error_Reject_Arg_Test()
+    {
+        await Assert.That(Option.Error<int>().Reject(2, static (i, arg) => i != arg)).IsEqualTo(default);
+        await Assert.That(Result.Error<int>(new InvalidOperationException()).Reject(2, static (i, arg) => i != arg)).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(Result.Error<int>(new InvalidOperationException()).Reject(2, static (i, arg) => i != arg, static (i, arg) => new ArgumentException($"{i} was {arg}"))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(Result.Error<int, string>("error").Reject(2, static (i, arg) => i != arg, "was 2")).IsError("error");
+        await Assert.That(Result.Error<int, string>("error").Reject(2, static (i, arg) => i != arg, static (i, arg) => $"{i} was {arg}")).IsError("error");
+        await Assert.That(OptionsMarshall.IsSuccess(RefOption.Error<Span<char>>().Reject(0, static (s, arg) => s.Length != arg))).IsFalse();
+
+
+        await Assert.That(new int?().Reject(1, static (v, arg) => v != arg)).IsNull();
+        await Assert.That(((string?)null).Reject("", static (v, arg) => v != arg)).IsNull();
+    }
 }

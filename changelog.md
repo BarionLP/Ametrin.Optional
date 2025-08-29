@@ -2,6 +2,7 @@
 - add `ErrorState.Try` (#30)
 - add `Consume` overloads with an argument (#26)
 - add `Result.Try` overload with an argument (#26, #30)
+- add `Require/Reject` overloads with an argument (#26)
 - removed `ToOption` and `ToResult` extensions on arbitary objects
   - use `Option.Of` or `Result.Of`
 - fix nullability of error action in a `ConsumeAsync` overload
