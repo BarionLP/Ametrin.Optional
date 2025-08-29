@@ -107,22 +107,18 @@ Like `Option<T>` but can hold a ref struct as value
 
 ## Edge Cases
 
-For edge cases or high-performance scenarios where delegates cannot be static, use `OptionsMarshall`:
-
+For edge cases, high-performance scenarios where delegates cannot be static or when you absolutly need to modify the controll flow use `Branch`:
 ```csharp
-if(OptionsMarshall.IsSuccess(result))
+if(result.Branch(out var value, out var error))
 {
-    if(OptionsMarshall.TryGetValue(result, out var value))
-    {
-        // use value
-    }
+    // success
 }
-
-if(OptionsMarshall.TryGetError(result, out var error))
+else
 {
-    // handle error
+    // error
 }
 ```
+If there is no way around it you can get low-level access to all option types through `OptionsMarshall`. 
 
 ## Testing
 
