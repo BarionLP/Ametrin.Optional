@@ -68,6 +68,19 @@ public static class Result
         }
     }
 
+    public static Result<TResult> Try<TArg, TResult>(TArg arg, Func<TArg, TResult> action)
+        where TArg : allows ref struct
+    {
+        try
+        {
+            return action(arg);
+        }
+        catch (Exception e)
+        {
+            return e;
+        }
+    }
+
     public static Result<TValue, TError> Success<TValue, TError>(TValue value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Success with null value") : new(value);
     public static Result<TValue, TError> Error<TValue, TError>(TError error) => new(error);

@@ -48,6 +48,33 @@ partial struct ErrorState
     [OverloadResolutionPriority(1)] // to avoid ambiguity with Error(TError) with subclasses of Exception
     public static ErrorState Error(Exception? error = null) => new(true, error ?? new Exception());
 
+    public static ErrorState Try(Action action)
+    {
+        try
+        {
+            action();
+            return default;
+        }
+        catch (Exception e)
+        {
+            return e;
+        }
+    }
+
+    public static ErrorState Try<TArg>(TArg arg, Action<TArg> action)
+        where TArg : allows ref struct
+    {
+        try
+        {
+            action(arg);
+            return default;
+        }
+        catch (Exception e)
+        {
+            return e;
+        }
+    }
+
     public static ErrorState<TError> Success<TError>() => new();
     public static ErrorState<TError> Error<TError>(TError error) => new(true, error);
 }
