@@ -7,13 +7,15 @@ namespace Ametrin.Optional;
 public static class OptionLinqExtensions
 {
     public static Option<IEnumerable<T>> RejectEmpty<T>(this IEnumerable<T> source)
-        => source is not null && source.Any() ? Option.Success(source) : default;
+        => source is not null && ContainsItems(source) ? Option.Success(source) : default;
     public static Option<IEnumerable<T>> RejectEmpty<T>(this Option<IEnumerable<T>> option)
-        => option.Require(static collection => collection.Any());
+        => option.Require(ContainsItems);
     public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option)
-        => option.RejectEmpty(static value => new ArgumentException("Sequence was empty"));
+        => option.RejectEmpty(static source => new ArgumentException("Sequence was empty"));
     public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option, Func<IEnumerable<T>, Exception> error)
-        => option.Require(static collection => collection.Any(), error);
+        => option.Require(ContainsItems, error);
+
+    private static bool ContainsItems<T>(IEnumerable<T> source) => source.TryGetNonEnumeratedCount(out var count) ? count > 0 : source.Any();
 
     public static Option<T> FirstOrError<T>(this IEnumerable<T> source)
     {
@@ -94,7 +96,7 @@ public static class OptionLinqExtensions
         return (values, errors);
     }
 
-    [Obsolete("use Select(option => option.Map). this methods made things confusing")]
+    [Obsolete("use Select(option => option.Map(map)). this method made things confusing")]
     public static IEnumerable<Option<TResult>> Select<T, TResult>(this IEnumerable<Option<T>> source, Func<T, TResult> map)
         => source.Select(option => option.Map(map));
 }
