@@ -16,13 +16,13 @@ partial struct Option<TValue>
 partial struct Result<TValue>
 {
     public Result<TValue> Require(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? (predicate(_value) ? this : error) : this;
+        => _hasValue ? (predicate(_value) ? this : Result.Error<TValue>(error)) : this;
     public Result<TValue> Require(Func<TValue, bool> predicate, Func<TValue, Exception> error)
         => _hasValue ? (predicate(_value) ? this : error(_value)) : this;
 
     public Result<TValue> Require<TArg>(TArg arg, Func<TValue, TArg, bool> predicate, Exception? error = null)
         where TArg : allows ref struct
-        => _hasValue ? (predicate(_value!, arg) ? this : error) : this;
+        => _hasValue ? (predicate(_value!, arg) ? this : Result.Error<TValue>(error)) : this;
     public Result<TValue> Require<TArg>(TArg arg, Func<TValue, TArg, bool> predicate, Func<TValue, TArg, Exception> error)
         where TArg : allows ref struct
         => _hasValue ? (predicate(_value!, arg) ? this : error(_value, arg)) : this;

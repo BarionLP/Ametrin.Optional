@@ -44,7 +44,7 @@ partial struct Result<TValue>
 
         await ((Task)task).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
-        return task.IsCompletedSuccessfully ? Result.Success(task.Result) : task.Exception is AggregateException { InnerExceptions.Count: 1 } ae ? ae.InnerException : task.Exception;
+        return task.IsCompletedSuccessfully ? Result.Success(task.Result) : Result.Error<TResult>(task.Exception is AggregateException { InnerExceptions.Count: 1 } ae ? ae.InnerException : task.Exception);
     }
 }
 

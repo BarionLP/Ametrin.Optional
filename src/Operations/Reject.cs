@@ -13,13 +13,13 @@ partial struct Option<TValue>
 partial struct Result<TValue>
 {
     public Result<TValue> Reject(Func<TValue, bool> predicate, Exception? error = null)
-        => _hasValue ? (predicate(_value) ? error : this) : this;
+        => _hasValue ? (predicate(_value) ? Result.Error<TValue>(error) : this) : this;
     public Result<TValue> Reject(Func<TValue, bool> predicate, Func<TValue, Exception> error)
         => _hasValue ? (predicate(_value) ? error(_value) : this) : this;
 
     public Result<TValue> Reject<TArg>(TArg arg, Func<TValue, TArg, bool> predicate, Exception? error = null)
         where TArg : allows ref struct
-        => _hasValue ? (predicate(_value, arg) ? error : this) : this;
+        => _hasValue ? (predicate(_value, arg) ? Result.Error<TValue>(error) : this) : this;
     public Result<TValue> Reject<TArg>(TArg arg, Func<TValue, TArg, bool> predicate, Func<TValue, TArg, Exception> error)
         where TArg : allows ref struct
         => _hasValue ? (predicate(_value, arg) ? error(_value, arg) : this) : this;
