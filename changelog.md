@@ -5,7 +5,7 @@
 - removed `ToOption` and `ToResult` extensions on arbitary objects
   - use `Option.Of` or `Result.Of`
 - fix nullability of error action in a `ConsumeAsync` overload
-- updated TUnit to 0.57.1
+- updated TUnit to 0.57.24
 
 ## 0.2.5
 - added `Or(Throw)Async` (#24)

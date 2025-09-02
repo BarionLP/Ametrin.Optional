@@ -13,7 +13,7 @@ internal sealed class OptionAssertSuccessCondition<TValue>(TValue expectValue) :
 
     protected override ValueTask<AssertionResult> GetResult(Option<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
-        var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
+        var hasValue = actualValue.Branch(out var actual);
         return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
 }
