@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Ametrin.Optional;
@@ -39,35 +38,78 @@ public static class OptionLinqExtensions
     public static IEnumerable<E> WhereError<T, E>(this IEnumerable<ErrorState<E>> source)
         => source.Where(static option => option._isError).Select(static option => option._error);
 
-    [Experimental("AO001")]
+    public static Result<IReadOnlyList<T>> ValuesOrFirstError<T>(this IEnumerable<Result<T>> results)
+    {
+        var count = results.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        if (count is 0) return Result.Success<IReadOnlyList<T>>([]);
+        var values = CreateBag<T>(count);
+
+        foreach (var result in results)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                return error;
+            }
+        }
+
+        return values;
+    }
+
+    public static void Split<T>(this IEnumerable<Result<T>> results, IList<T> values, IList<Exception> errors)
+    {
+        foreach (var result in results)
+        {
+            // result.Consume((values, errors),
+            //     success: static (v, arg) => arg.values.Add(v),
+            //     error: static (e, arg) => arg.errors.Add(e)
+            // );
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                errors.Add(error);
+            }
+        }
+    }
+
+    public static void Split<T, E>(this IEnumerable<Result<T, E>> results, IList<T> values, IList<E> errors)
+    {
+        foreach (var result in results)
+        {
+            // result.Consume((values, errors),
+            //     success: static (v, arg) => arg.values.Add(v),
+            //     error: static (e, arg) => arg.errors.Add(e)
+            // );
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                errors.Add(error);
+            }
+        }
+    }
+
     public static (IReadOnlyList<T> values, IReadOnlyList<Exception> errors) Split<T>(this IEnumerable<Result<T>> results)
     {
         ArgumentNullException.ThrowIfNull(results);
 
-        var count =  results.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        var count = results.TryGetNonEnumeratedCount(out var c) ? c : -1;
         if (count is 0) return ([], []);
 
-        // we assume most of the incoming values will be success so we preallocate the full bucket
-        var values = count > 0 ? new List<T>(capacity: count) : [];
-        // in most cases only a fraction of values are errors (this has not been benchmarked yet! first me must figure out what a common error rate is)
-        var errors = count > 0 ? new List<Exception>(capacity: count / 10) : [];
-
-        foreach (var result in results)
-        {
-            if (OptionsMarshall.TryGetError(result, out var e))
-            {
-                errors.Add(e);
-            }
-            else
-            {
-                values.Add(result.OrThrow());
-            }
-        }
+        var (values, errors) = CreateBags<T, Exception>(count);
+        results.Split(values, errors);
 
         return (values, errors);
     }
 
-    [Experimental("AO001")]
     public static (IReadOnlyList<T> values, IReadOnlyList<E> errors) Split<T, E>(this IEnumerable<Result<T, E>> results)
     {
         ArgumentNullException.ThrowIfNull(results);
@@ -75,25 +117,28 @@ public static class OptionLinqExtensions
         var count = results.TryGetNonEnumeratedCount(out var c) ? c : -1;
         if (count is 0) return ([], []);
 
-        // we assume most of the incoming values will be success so we preallocate the full bucket
-        var values = count > 0 ? new List<T>(capacity: count) : [];
-        // in most cases only a fraction of values are errors (this has not been benchmarked yet! first me must figure out what a common error rate is)
-        var errors = count > 0 ? new List<E>(capacity: count / 10) : [];
-
-        foreach (var result in results)
-        {
-            // TODO: use Branch
-            if (OptionsMarshall.TryGetError(result, out var e))
-            {
-                errors.Add(e);
-            }
-            else
-            {
-                values.Add(result.OrThrow());
-            }
-        }
+        var (values, errors) = CreateBags<T, E>(count);
+        results.Split(values, errors);
 
         return (values, errors);
+    }
+
+    private static (List<T> values, List<E> errors) CreateBags<T, E>(int count, double expectedErrorRate = 0.01)
+    {
+        // we assume most of the incoming values will be successes so we preallocate the full size
+        var values = count > 0 ? new List<T>(capacity: count) : [];
+        // in most cases only a fraction of values will be errors (this has not been benchmarked yet! first me must figure out what a common error rate is)
+        var errors = count > 0 ? new List<E>(capacity: (int)double.Round(count * expectedErrorRate)) : [];
+
+        return (values, errors);
+    }
+
+    private static List<T> CreateBag<T>(int count)
+    {
+        // we assume most of the incoming values will be successes so we preallocate the full size
+        var values = count > 0 ? new List<T>(capacity: count) : [];
+
+        return values;
     }
 
     [Obsolete("use Select(option => option.Map(map)). this method made things confusing")]
