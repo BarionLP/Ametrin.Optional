@@ -98,8 +98,8 @@ public sealed class EqualityTests
         await Assert.That(ErrorState.Success() != ErrorState.Error()).IsTrue();
         await Assert.That(ErrorState.Error(sharedException) != ErrorState.Error(sharedException)).IsFalse();
 
-        await Assert.That(ErrorState.Success().Equals(null)).IsTrue();
-        await Assert.That(ErrorState.Error().Equals(null)).IsFalse();
+        await Assert.That(ErrorState.Success().Equals(default)).IsTrue();
+        await Assert.That(ErrorState.Error().Equals(default)).IsFalse();
         await Assert.That(ErrorState.Success().Equals((object)ErrorState.Success())).IsTrue();
         await Assert.That(ErrorState.Success().Equals((object)ErrorState.Error())).IsFalse();
         await Assert.That(ErrorState.Success().Equals(7)).IsFalse();
@@ -116,7 +116,7 @@ public sealed class EqualityTests
         await Assert.That(ErrorState.Success<string>() != ErrorState.Error(string.Empty)).IsTrue();
         await Assert.That(ErrorState.Error(string.Empty) != ErrorState.Error(string.Empty)).IsFalse();
 
-        await Assert.That(ErrorState.Success<string>().Equals(null)).IsTrue();
+        await Assert.That(ErrorState.Success<string>().Equals(default)).IsTrue();
         await Assert.That(ErrorState.Success<string>().Equals((object)ErrorState.Success<string>())).IsTrue();
         await Assert.That(ErrorState.Success<string>().Equals((object)ErrorState.Error(string.Empty))).IsFalse();
         await Assert.That(ErrorState.Success<string>().Equals((object)string.Empty)).IsFalse();

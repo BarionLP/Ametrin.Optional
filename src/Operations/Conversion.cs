@@ -34,7 +34,7 @@ partial struct Option<TValue>
 partial struct Result<TValue>
 {
     public static implicit operator Result<TValue>(TValue value) => Result.Success(value);
-    public static implicit operator Result<TValue>(Exception? error) => Result.Error<TValue>(error);
+    public static implicit operator Result<TValue>(Exception error) => Result.Error<TValue>(error);
     public static implicit operator Result<TValue>(Result<TValue, Exception> other) => other._hasValue ? other._value : other._error;
     public static explicit operator Result<TValue, Exception>(Result<TValue> other) => other._hasValue ? other._value : other._error;
     public static explicit operator Option(Result<TValue> result) => result._hasValue;
@@ -68,7 +68,7 @@ partial struct Result<TValue, TError>
 
 partial struct ErrorState
 {
-    public static implicit operator ErrorState(Exception? error) => error is null ? Success() : Error(error);
+    public static implicit operator ErrorState(Exception error) => error is null ? Success() : Error(error);
     public static explicit operator Option(ErrorState error) => !error._isError;
 
     [AsyncExtension]
@@ -84,7 +84,7 @@ partial struct ErrorState
 
 partial struct ErrorState<TError>
 {
-    public static implicit operator ErrorState<TError>(TError? state) => state is TError t ? ErrorState.Error(t) : ErrorState.Success<TError>();
+    public static implicit operator ErrorState<TError>(TError state) => state is TError t ? ErrorState.Error(t) : ErrorState.Success<TError>();
     public static explicit operator Option(ErrorState<TError> error) => !error._isError;
 
     [AsyncExtension]

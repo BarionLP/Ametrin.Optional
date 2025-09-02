@@ -13,7 +13,7 @@ internal sealed class ResultAssertSuccessCondition<TValue>(TValue expectValue) :
 
     protected override ValueTask<AssertionResult> GetResult(Result<TValue> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
-        var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
+        var hasValue = actualValue.Branch(out var actual, out _);
 
         return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
@@ -27,7 +27,7 @@ internal sealed class ResultAssertSuccessCondition<TValue, TError>(TValue expect
 
     protected override ValueTask<AssertionResult> GetResult(Result<TValue, TError> actualValue, Exception? exception, AssertionMetadata assertionMetadata)
     {
-        var hasValue = OptionsMarshall.TryGetValue(actualValue, out var actual);
+        var hasValue = actualValue.Branch(out var actual, out _);
 
         return hasValue && EqualityComparer<TValue>.Default.Equals(expectValue, actual) ? AssertionResult.Passed : AssertionResult.Fail(hasValue ? $"found {actual}" : "found Error");
     }
