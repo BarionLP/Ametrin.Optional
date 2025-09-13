@@ -5,16 +5,15 @@ namespace Ametrin.Optional;
 
 public static class OptionLinqExtensions
 {
+    // any tries to get the non-enumerated count before calling the enumerator
     public static Option<IEnumerable<T>> RejectEmpty<T>(this IEnumerable<T> source)
-        => source is not null && ContainsItems(source) ? Option.Success(source) : default;
+        => source is not null && source.Any() ? Option.Success(source) : default;
     public static Option<IEnumerable<T>> RejectEmpty<T>(this Option<IEnumerable<T>> option)
-        => option.Require(ContainsItems);
+        => option.Require(Enumerable.Any);
     public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option)
         => option.RejectEmpty(static source => new ArgumentException("Sequence was empty"));
     public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option, Func<IEnumerable<T>, Exception> error)
-        => option.Require(ContainsItems, error);
-
-    private static bool ContainsItems<T>(IEnumerable<T> source) => source.TryGetNonEnumeratedCount(out var count) ? count > 0 : source.Any();
+        => option.Require(Enumerable.Any, error);
 
     public static Option<T> FirstOrError<T>(this IEnumerable<T> source)
     {
@@ -63,10 +62,6 @@ public static class OptionLinqExtensions
     {
         foreach (var result in results)
         {
-            // result.Consume((values, errors),
-            //     success: static (v, arg) => arg.values.Add(v),
-            //     error: static (e, arg) => arg.errors.Add(e)
-            // );
             if (result.Branch(out var value, out var error))
             {
                 values.Add(value);
@@ -82,10 +77,6 @@ public static class OptionLinqExtensions
     {
         foreach (var result in results)
         {
-            // result.Consume((values, errors),
-            //     success: static (v, arg) => arg.values.Add(v),
-            //     error: static (e, arg) => arg.errors.Add(e)
-            // );
             if (result.Branch(out var value, out var error))
             {
                 values.Add(value);
@@ -136,9 +127,7 @@ public static class OptionLinqExtensions
     private static List<T> CreateBag<T>(int count)
     {
         // we assume most of the incoming values will be successes so we preallocate the full size
-        var values = count > 0 ? new List<T>(capacity: count) : [];
-
-        return values;
+        return count > 0 ? new List<T>(capacity: count) : [];
     }
 
     [Obsolete("use Select(option => option.Map(map)). this method made things confusing")]
