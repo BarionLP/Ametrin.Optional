@@ -16,8 +16,6 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 
     public override void Initialize(AnalysisContext context)
     {
-        Debugger.Break();
-
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 

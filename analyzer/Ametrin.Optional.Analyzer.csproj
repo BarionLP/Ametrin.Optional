@@ -9,29 +9,26 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputItemType>Analyzer</OutputItemType>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+
     <PackageId>Ametrin.Optional.Analyzer</PackageId>
     <Version>0.0.1</Version>
     <Authors>Barion</Authors>
     <Company>Ametrin Studios</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <OutputItemType>Analyzer</OutputItemType>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
+    
+    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="..\LICENSE" Pack="true" PackagePath="" />
-    <None Include="$(OutputPath)$(AssemblyName).dll"
-          Pack="true"
-          PackagePath="analyzers/dotnet/cs" />
   </ItemGroup>
 
 </Project>
