@@ -23,7 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-		<ProjectReference Include="..\generator\Ametrin.Optional.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-	</ItemGroup>
+    <ProjectReference Include="..\generator\Ametrin.Optional.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ametrin.Optional.Analyzer" Version="0.0.1" />
+  </ItemGroup>
 
 </Project>
