@@ -2,5 +2,7 @@
   <PropertyGroup>
     <SupportedFrameworks>net9.0</SupportedFrameworks>
     <DotNetVersion>net9.0</DotNetVersion>
+    <PackVersion>0.2.7</PackVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 </Project>
