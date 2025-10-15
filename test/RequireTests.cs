@@ -114,7 +114,7 @@ public sealed class RequireTests
     public async Task Error_Require_Cast_Test()
     {
         await Assert.That(Option.Error<object>().Require<string>()).IsError();
-        await Assert.That(Result.Error<object>().Require<string>()).IsErrorNotOfType<string, InvalidOperationException>();
+        await Assert.That(Result.Error<object>().Require<string>()).IsErrorNotOfType<string, InvalidCastException>();
         await Assert.That(Result.Error<object>().Require<string>(static val => new InvalidOperationException())).IsErrorNotOfType<string, InvalidOperationException>();
         await Assert.That(Result.Error<object, int>(1).Require<string>(error: -1)).IsError(1);
         await Assert.That(Result.Error<object, int>(1).Require<string>(error: static val => -2)).IsError(1);
