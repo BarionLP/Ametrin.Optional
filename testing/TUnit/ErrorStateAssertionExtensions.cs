@@ -27,7 +27,7 @@ public static class ErrorStateAssertionExtensions
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [GenerateAssertion(ExpectationMessage = EXPECTED_SUCCESS_MESSAGE)]
-    public static bool IsSuccess<TError>(this ErrorState errorState)
+    public static bool IsSuccess(this ErrorState errorState)
     {
         return OptionsMarshall.IsSuccess(errorState);
     }
@@ -48,7 +48,7 @@ public static class ErrorStateAssertionExtensions
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
-    public static bool IsError<TError>(this ErrorState errorState)
+    public static bool IsError(this ErrorState errorState)
     {
         return !OptionsMarshall.IsSuccess(errorState);
     }
@@ -80,6 +80,6 @@ public static class ErrorStateAssertionExtensions
     [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
     public static bool IsErrorNotOfType<TError>(this ErrorState errorState) where TError : Exception
     {
-        return errorState.Branch(out var error) ? false : error is not TError;
+        return errorState.Branch(out var error) ? false : error is not null and not TError;
     }
 }

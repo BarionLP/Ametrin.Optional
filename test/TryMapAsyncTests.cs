@@ -41,8 +41,8 @@ public sealed class TryMapAsyncTests
     [Test]
     public async Task MapAsnyc_Error_Test()
     {
-        await Assert.That(Option.Error<int>().TryMapAsync(async i => i + 1)).IsError();
-        await Assert.That(Result.Error<int>().TryMapAsync(async i => i + 1)).IsError();
-        await Assert.That(Result.Error<int, string>("").TryMapAsync(async i => i + 1, e => e.Message)).IsError("");
+        await Assert.That(await Option.Error<int>().TryMapAsync(async i => i + 1)).IsError();
+        await Assert.That(await Result.Error<int>().TryMapAsync(async i => i + 1)).IsError();
+        await Assert.That(await Result.Error<int, string>("").TryMapAsync(async i => i + 1, e => e.Message)).IsError("");
     }
 }
