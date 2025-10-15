@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 using static Ametrin.Optional.Analyzer.Helper;
 
 namespace Ametrin.Optional.Analyzer;
@@ -9,47 +10,46 @@ namespace Ametrin.Optional.Analyzer;
 public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 {
 
-    public static readonly DiagnosticDescriptor InvalidConverter
-        = new(id: "AmOptional001", title: "Invalid Converter", messageFormat: "Invalid Converter, all converters have to implement ISerializationConverter", category: "Usage", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
+    public static readonly DiagnosticDescriptor ImpossibleRequire
+        = new(id: "AmOptional001", title: "Impossible Require call", messageFormat: "{0} can never be {1}. If a conversion exists use .Map to explicitly use it.", category: "Usage", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [InvalidConverter];
+    public static readonly DiagnosticDescriptor UnnecessaryRequire
+        = new(id: "AmOptional002", title: "Unnecessary Require call", messageFormat: "type already is {0}", category: "Usage", defaultSeverity: DiagnosticSeverity.Warning, isEnabledByDefault: true);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [ImpossibleRequire, UnnecessaryRequire];
 
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-        context.RegisterSymbolAction(static context =>
+        context.RegisterCompilationStartAction(static context =>
         {
-            context.ReportDiagnostic(Diagnostic.Create(InvalidConverter, context.Symbol.Locations[0]));
-        }, SymbolKind.Field, SymbolKind.Property);
+            // var targetType = context.Compilation.GetTypeByMetadataName("Ametrin.Optional.Option")!;
+            // var methods = targetType.GetMembers("Map").OfType<IMethodSymbol>().ToImmutableArray();
+
+            context.RegisterOperationAction(static context =>
+            {
+                var invocation = (IInvocationOperation)context.Operation;
+                var targetMethod = invocation.TargetMethod;
+
+                if (IsRequireCastMethod(targetMethod))
+                {
+                    var currentType = targetMethod.ContainingType.TypeArguments[0];
+                    var targetType = targetMethod.TypeArguments[0];
+
+                    var conversion = context.Compilation.ClassifyConversion(currentType, targetType);
+                    if (conversion.IsIdentity)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(UnnecessaryRequire, invocation.Syntax.GetLocation(), targetType.ToDisplayString()));
+                    }
+                    else if (!conversion.Exists || conversion.IsUserDefined)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(ImpossibleRequire, invocation.Syntax.GetLocation(), currentType.ToDisplayString(), targetType.ToDisplayString()));
+                    }
+                }
+
+            }, OperationKind.Invocation);
+        });
     }
-}
-
-internal static class SymbolExtensions
-{
-    public static bool HasAttribute(this ISymbol symbol, Func<INamedTypeSymbol, bool> condition)
-        => symbol.GetAttributes().Any(attributeData => attributeData.AttributeClass is not null && condition(attributeData.AttributeClass));
-    public static AttributeData? GetAttribute(this ISymbol symbol, Func<INamedTypeSymbol, bool> condition)
-        => symbol.GetAttributes().FirstOrDefault(attributeData => attributeData.AttributeClass is not null && condition(attributeData.AttributeClass));
-}
-
-internal static class Helper
-{
-    internal static bool IsSerializablePropertyType(ITypeSymbol typeSymbol)
-    {
-        return IsTypeSupportedByWriter(typeSymbol) || typeSymbol.TypeKind is TypeKind.Enum || typeSymbol.HasAttribute(IsGenerateSerializerAttribute);
-    }
-
-    internal static bool IsTypeSupportedByWriter(ITypeSymbol type) => type.SpecialType is SpecialType.System_String or SpecialType.System_Int32 or SpecialType.System_Single or SpecialType.System_Double or SpecialType.System_Boolean or SpecialType.System_DateTime;
-
-    internal static bool IsGenerateSerializerAttribute(INamedTypeSymbol attribute) => attribute is { Name: "GenerateSerializerAttribute", ContainingAssembly.Name: "Ametrin.Serializer" };
-    internal static bool IsSerializeAttribute(INamedTypeSymbol attribute) => attribute is { Name: "SerializeAttribute", ContainingAssembly.Name: "Ametrin.Serializer" };
-    internal static bool IsSerializationConverter(ITypeSymbol type) => type.AllInterfaces.Any(i => i is { Name: "ISerializationConverter" });
-    internal static ITypeSymbol GetMemberType(ISymbol member) => member switch
-    {
-        IPropertySymbol property => property.Type,
-        IFieldSymbol property => property.Type,
-        _ => throw new InvalidOperationException($"Tried to deserialize a {member}"),
-    };
 }
