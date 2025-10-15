@@ -20,10 +20,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Build Analyzer
       run: dotnet pack ./analyzer
+    - name: Restore dependencies
+      run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
