@@ -10,7 +10,7 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 {
 
     public static readonly DiagnosticDescriptor InvalidConverter
-        = new(id: "Option001", title: "Invalid Converter", messageFormat: "Invalid Converter, all converters have to implement ISerializationConverter", category: "Usage", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
+        = new(id: "AmOptional001", title: "Invalid Converter", messageFormat: "Invalid Converter, all converters have to implement ISerializationConverter", category: "Usage", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [InvalidConverter];
 
