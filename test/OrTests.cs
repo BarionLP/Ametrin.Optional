@@ -1,5 +1,4 @@
 using Ametrin.Optional.Exceptions;
-using TUnit.Assertions.AssertConditions.Throws;
 
 namespace Ametrin.Optional.Test;
 
@@ -52,12 +51,12 @@ public sealed class OrTests
         await Assert.That(() => RefOption.Error<int>().OrThrow()).Throws<OptionIsErrorException>();
 
 
-        await Assert.That(Option.Error<int>().OrNull()).IsEqualTo(null);
-        await Assert.That(Result.Error<int>().OrNull()).IsEqualTo(null);
+        await Assert.That(Option.Error<int>().OrNull()).IsNull();
+        await Assert.That(Result.Error<int>().OrNull()).IsNull();
         await Assert.That(Result.Error<int, string>("").OrNull()).IsEqualTo(null);
 
-        await Assert.That(Option.Error<string>().OrNull()).IsEqualTo(null);
-        await Assert.That(Result.Error<string>().OrNull()).IsEqualTo(null);
-        await Assert.That(Result.Error<string, int>(-2).OrNull()).IsEqualTo(null);
+        await Assert.That(Option.Error<string>().OrNull()).IsNull();
+        await Assert.That(Result.Error<string>().OrNull()).IsNull();
+        await Assert.That(Result.Error<string, int>(-2).OrNull()).IsNull();
     }
 }
