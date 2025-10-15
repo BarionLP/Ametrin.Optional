@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 10.0.x
     - name: Make analyzer nuget directory
-      run: mkdir ./analyzer/bin/Release
+      run: mkdir ./analyzer/bin/Release -p
     - name: Pack analyzer
       run: dotnet pack ./analyzer
     - name: Build
