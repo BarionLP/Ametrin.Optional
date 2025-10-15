@@ -20,6 +20,10 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 10.0.x
+    - name: Make analyzer nuget directory
+      run: mkdir ./analyzer/bin/Release
+    - name: Pack analyzer
+      run: dotnet pack ./analyzer
     - name: Build
       run: dotnet build
     - name: Test

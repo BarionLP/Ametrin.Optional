@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\analyzer\Ametrin.Optional.Analyzer.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
-    <!-- <PackageReference Include="Ametrin.Optional.Analyzer" Version="0.0.1" /> -->
+    <!-- <ProjectReference Include="..\analyzer\Ametrin.Optional.Analyzer.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" /> -->
+    <PackageReference Include="Ametrin.Optional.Analyzer" Version="0.0.1" />
   </ItemGroup>
 
 </Project>
