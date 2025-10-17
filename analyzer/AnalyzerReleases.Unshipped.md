@@ -6,3 +6,4 @@ Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 AmOptional001 | Usage | Error | AmetrinOptionalAnalyzer
 AmOptional002 | Usage | Warning | AmetrinOptionalAnalyzer
+AmOptional003 | Usage | Info | AmetrinOptionalAnalyzer
