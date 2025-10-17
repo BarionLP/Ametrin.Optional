@@ -5,7 +5,7 @@ namespace Ametrin.Optional;
 
 public static class OptionLinqExtensions
 {
-    // any tries to get the non-enumerated count before calling the enumerator
+    // any already tries to get the non-enumerated count before calling the enumerator
     public static Option<IEnumerable<T>> RejectEmpty<T>(this IEnumerable<T> source)
         => source is not null && source.Any() ? Option.Success(source) : default;
     public static Option<IEnumerable<T>> RejectEmpty<T>(this Option<IEnumerable<T>> option)
@@ -51,6 +51,7 @@ public static class OptionLinqExtensions
             }
             else
             {
+                values.Clear();
                 return error;
             }
         }
