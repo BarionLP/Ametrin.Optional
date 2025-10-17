@@ -27,7 +27,7 @@ jobs:
     - name: Pack analyzer
       run: dotnet pack ./analyzer
     - name: Pack source
-      run: dotnet pack ./source
+      run: dotnet pack ./src
     - name: Complete Build
       run: dotnet build
     - name: Run Tests
