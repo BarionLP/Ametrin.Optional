@@ -1,5 +1,7 @@
 namespace Ametrin.Optional.Test;
 
+#nullable disable
+
 public sealed class MatchAsyncTests
 {
     [Test]
