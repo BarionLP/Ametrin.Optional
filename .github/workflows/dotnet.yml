@@ -22,9 +22,13 @@ jobs:
         dotnet-version: 10.0.x
     - name: Make analyzer nuget directory
       run: mkdir ./analyzer/bin/Release -p
+    - name: Make source nuget directory
+      run: mkdir ./src/bin/Release -p
     - name: Pack analyzer
       run: dotnet pack ./analyzer
-    - name: Build
+    - name: Pack source
+      run: dotnet pack ./source
+    - name: Complete Build
       run: dotnet build
-    - name: Test
+    - name: Run Tests
       run: dotnet test --no-build --verbosity normal

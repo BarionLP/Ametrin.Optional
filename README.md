@@ -107,7 +107,7 @@ A reduced version of `Option<T>` that can hold a ref struct as value
 
 ## Edge Cases
 
-For edge cases, high-performance scenarios where delegates cannot be static or when you absolutly need to modify the controll flow use `Branch`:
+For edge cases, high-performance scenarios where delegates cannot be static or when you absolutly need to modify the control flow use `Branch`:
 ```csharp
 if(result.Branch(out var value, out var error))
 {

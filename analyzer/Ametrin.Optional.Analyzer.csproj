@@ -13,10 +13,11 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
     <PackageId>Ametrin.Optional.Analyzer</PackageId>
-    <Version>0.0.1</Version>
+    <Version>$(PackVersion)</Version>
     <Authors>Barion</Authors>
     <Company>Ametrin Studios</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     
     <DevelopmentDependency>true</DevelopmentDependency>
@@ -29,6 +30,7 @@
   <ItemGroup>
     <None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath="" />
     <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
     <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
   </ItemGroup>
