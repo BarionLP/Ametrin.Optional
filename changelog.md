@@ -1,4 +1,6 @@
 ## 0.2.7
+- add `As<T>` operation for save up-casting (#33)
+- add a basic analyzer to detect misusage
 - made implicit `Exception`/`TError` to `Result`/`ErrorState` conversions not nullable
   - if you really need nullable exceptions `Result/Exception.Error` still accepts `Exception?`
   - for `TError` you need to provide a default error  
