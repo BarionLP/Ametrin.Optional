@@ -39,14 +39,14 @@ public sealed class MapAsyncTests
     [Test]
     public async Task MapAsnyc_Error_Test()
     {
-        await Assert.That(Option.Error<int>().MapAsync(async i => i + 1)).IsError();
-        await Assert.That(Option.Error<int>().MapAsync(async i => Option.Success(i))).IsError();
-        await Assert.That(Option.Success(1).MapAsync(async i => Option.Error<int>())).IsError();
-        await Assert.That(Result.Error<int>().MapAsync(async i => i + 1)).IsError();
-        await Assert.That(Result.Error<int>(new FormatException()).MapAsync(async i => Result.Success(i))).IsErrorOfType<int, FormatException>();
-        await Assert.That(Result.Success(1).MapAsync(async i => Result.Error<int>(new ArgumentException()))).IsErrorOfType<int, ArgumentException>();
-        await Assert.That(Result.Error<int, string>("").MapAsync(async i => i + 1)).IsError("");
-        await Assert.That(Result.Error<int, string>("nay").MapAsync(async i => Result.Success<int, string>(i))).IsError("nay");
-        await Assert.That(Result.Success<int, string>(1).MapAsync(async i => Result.Error<int, string>("nay"))).IsError("nay");
+        await Assert.That(await Option.Error<int>().MapAsync(async i => i + 1)).IsError();
+        await Assert.That(await Option.Error<int>().MapAsync(async i => Option.Success(i))).IsError();
+        await Assert.That(await Option.Success(1).MapAsync(async i => Option.Error<int>())).IsError();
+        await Assert.That(await Result.Error<int>().MapAsync(async i => i + 1)).IsError();
+        await Assert.That(await Result.Error<int>(new FormatException()).MapAsync(async i => Result.Success(i))).IsErrorOfType<int, FormatException>();
+        await Assert.That(await Result.Success(1).MapAsync(async i => Result.Error<int>(new ArgumentException()))).IsErrorOfType<int, ArgumentException>();
+        await Assert.That(await Result.Error<int, string>("").MapAsync(async i => i + 1)).IsError("");
+        await Assert.That(await Result.Error<int, string>("nay").MapAsync(async i => Result.Success<int, string>(i))).IsError("nay");
+        await Assert.That(await Result.Success<int, string>(1).MapAsync(async i => Result.Error<int, string>("nay"))).IsError("nay");
     }
 }

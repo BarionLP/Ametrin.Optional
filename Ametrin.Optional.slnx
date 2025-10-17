@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="generator/Ametrin.Optional.Generator.csproj" />
+  <Project Path="analyzer/Ametrin.Optional.Analyzer.csproj" />
   <Project Path="benchy/Ametrin.Optional.Benchy.csproj" />
   <Project Path="samples/Ametrin.Optional.Samples.csproj" />
   <Project Path="src/Ametrin.Optional.csproj" />

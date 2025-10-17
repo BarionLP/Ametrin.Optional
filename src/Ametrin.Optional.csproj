@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(SupportedFrameworks)</TargetFrameworks>
-    <Nullable>enable</Nullable>
     <IsAotCompatible>true</IsAotCompatible>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>Ametrin.Optional</PackageId>
-    <Version>0.2.6</Version>
+    <Version>$(PackVersion)</Version>
     <Authors>Barion</Authors>
     <Company>Ametrin Studios</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -23,7 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-		<ProjectReference Include="..\generator\Ametrin.Optional.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-	</ItemGroup>
+    <ProjectReference Include="..\generator\Ametrin.Optional.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- <ProjectReference Include="..\analyzer\Ametrin.Optional.Analyzer.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" /> -->
+    <PackageReference Include="Ametrin.Optional.Analyzer" Version="0.0.1" />
+  </ItemGroup>
 
 </Project>

@@ -1,3 +1,9 @@
+## 0.2.7
+- made implicit `Exception`/`TError` to `Result`/`ErrorState` conversions not nullable
+  - if you really need nullable exceptions `Result/Exception.Error` still accepts `Exception?`
+  - for `TError` you need to provide a default error  
+- updated TUnit to 0.71.4
+
 ## 0.2.6
 - add `Consume/Match/Require/Reject` overloads with an argument (#26)
 - add `ErrorState.Try` (#30)
