@@ -6,29 +6,17 @@ namespace Ametrin.Optional.Benchy.Examples;
 public class ParsingDateTimeBenchmarks
 {
     const string Valid = "09/01/2025 16:16:32";
-    const string Invalid = "dfhalskdjfhdf";
+    const string Invalid = "dfhalskdjfhdf(/&)";
     [Benchmark]
     public DateTime Option_Success()
     {
-        return Option.Success(Valid).Parse<DateTime>().Or(DateTime.MaxValue);
+        return DateTime.TryParse(Valid).Or(DateTime.MinValue);
     }
 
     [Benchmark]
     public DateTime Option_Error()
     {
-        return Option.Success(Invalid).Parse<DateTime>().Or(DateTime.MaxValue);
-    }
-    
-    [Benchmark]
-    public DateTime RefOption_Success()
-    {
-        return RefOption.Success<ReadOnlySpan<char>>(Valid).Parse<DateTime>().Or(DateTime.MaxValue);
-    }
-
-    [Benchmark]
-    public DateTime RefOption_Error()
-    {
-        return RefOption.Success<ReadOnlySpan<char>>(Invalid).Parse<DateTime>().Or(DateTime.MaxValue);
+        return DateTime.TryParse(Invalid).Or(DateTime.MinValue);
     }
     
     [Benchmark]
@@ -39,7 +27,7 @@ public class ParsingDateTimeBenchmarks
             return result;
         }
 
-        return DateTime.MaxValue;    
+        return DateTime.MinValue;    
     }
 
     [Benchmark]
@@ -50,6 +38,6 @@ public class ParsingDateTimeBenchmarks
             return result;
         }
 
-        return DateTime.MaxValue;
+        return DateTime.MinValue;
     }
 }
