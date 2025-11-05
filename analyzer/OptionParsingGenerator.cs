@@ -43,7 +43,7 @@ public sealed class OptionParsingGenerator : IIncrementalGenerator
             }
 
             sb.AppendLine($$"""
-            {{BuildTypeHeader(type)}} : IOptionSpanParsable<Test>, ISpanParsable<{{type.Name}}>
+            {{BuildTypeHeader(type)}} : ISpanParsable<{{type.Name}}>
             {
                 public static {{type.Name}} Parse(string? s, IFormatProvider? provider = null)
                     => {{type.Name}}.TryParse(s, provider).OrThrow();
@@ -79,9 +79,8 @@ public sealed class OptionParsingGenerator : IIncrementalGenerator
             _ => "class",
         };
 
-        var readonlyMod = type is { IsReadOnly: true, TypeKind: TypeKind.Struct } ? "readonly " : "";
         var refMod = type is { IsRefLikeType: true, TypeKind: TypeKind.Struct } ? "ref " : "";
 
-        return $"partial {readonlyMod}{refMod}{kind} {type.Name}";
+        return $"{refMod}partial {kind} {type.Name}";
     }
 }

@@ -14,3 +14,12 @@ AmOptional004 | Usage | Error | AmetrinOptionalAnalyzer
 AmOptional005 | Usage | Warning | AmetrinOptionalAnalyzer
 AmOptional006 | Usage | Info | AmetrinOptionalAnalyzer
 AmOptional007 | Usage | Warning | AmetrinOptionalAnalyzer
+
+
+## Release 0.2.9
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+AmOptional008 | Usage | Error | AmetrinOptionalAnalyzer

@@ -35,19 +35,21 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
     public static readonly DiagnosticDescriptor DontUseDefaultForResult
         = new(id: "AmOptional007", title: "Do not use default for Result", messageFormat: "Do not create Result using the default keyword", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
+    public static readonly DiagnosticDescriptor GenerateParsingRequirements
+        = new(id: "AmOptional008", title: "GenerateParsingAttribute requirements", messageFormat: "GenerateParsingAttribute requires IOptionSpanParsable to be implemented", category: "Usage", DiagnosticSeverity.Error, isEnabledByDefault: true);
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [
         ImpossibleRequire, UnnecessaryRequire,
         WrongConditionalType,
         ImpossibleAs, UnnecessaryAs, UseAsForUpCast,
         DontUseDefaultForResult,
-        
+        GenerateParsingRequirements
     ];
 
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-
 
         context.RegisterOperationAction(static context =>
         {
@@ -119,5 +121,15 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
                 context.ReportDiagnostic(Diagnostic.Create(DontUseDefaultForResult, operation.Syntax.GetLocation()));
             }
         }, OperationKind.DefaultValue);
+
+        context.RegisterSymbolAction(static context =>
+        {
+            var type = (INamedTypeSymbol)context.Symbol;
+
+            if(HasAttribute(type, IsGenerateParsingAttribute) && !type.Interfaces.Any(IsIOptionSpanParsable))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(GenerateParsingRequirements, type.Locations[0]));
+            }
+        }, SymbolKind.NamedType);
     }
 }
