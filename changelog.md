@@ -1,3 +1,8 @@
+## 0.2.8
+- add OptionParsingGenerator
+  - add `GenerateParsingAttribute` to any type implementing `IOptionSpanParsable` to generate the `ISpanParsable` implementation
+- updated TUnit to 0.90.45
+
 ## 0.2.7
 - add `As<T>` operation for save up-casting (#33)
 - add a basic analyzer to detect misusage

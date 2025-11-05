@@ -3,7 +3,10 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
-using static Ametrin.Optional.Analyzer.Helper;
+
+// when testing locally delete the package cache: 
+// ps: Remove -Item "$env:USERPROFILE\.nuget\packages\ametrin.optional.analyzer" -Recurse -Force -ErrorAction SilentlyContinue
+// bash: rm -r ~/.nuget/packages/ametrin.optional.analyzer
 
 namespace Ametrin.Optional.Analyzer;
 
@@ -32,7 +35,13 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
     public static readonly DiagnosticDescriptor DontUseDefaultForResult
         = new(id: "AmOptional007", title: "Do not use default for Result", messageFormat: "Do not create Result using the default keyword", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [ImpossibleRequire, UnnecessaryRequire, WrongConditionalType, ImpossibleAs, UnnecessaryAs, UseAsForUpCast, DontUseDefaultForResult];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [
+        ImpossibleRequire, UnnecessaryRequire,
+        WrongConditionalType,
+        ImpossibleAs, UnnecessaryAs, UseAsForUpCast,
+        DontUseDefaultForResult,
+        
+    ];
 
     public override void Initialize(AnalysisContext context)
     {
