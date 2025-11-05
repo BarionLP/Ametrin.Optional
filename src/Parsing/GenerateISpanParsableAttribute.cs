@@ -1,4 +1,4 @@
 namespace Ametrin.Optional.Parsing;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
-public sealed class GenerateParsingAttribute : Attribute;
+public sealed class GenerateISpanParsableAttribute : Attribute;

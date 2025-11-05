@@ -1,6 +1,11 @@
+## 0.2.9
+- minor `SpanParsableGenerator` fixes
+  - add analyzer rule
+- (net10) add `TryParse` extension to all `IParsable` and `ISpanParsable`
+
 ## 0.2.8
-- add OptionParsingGenerator
-  - add `GenerateParsingAttribute` to any type implementing `IOptionSpanParsable` to generate the `ISpanParsable` implementation
+- add `SpanParsableGenerator`
+  - add `GenerateISpanParsableAttribute` to any type implementing `IOptionSpanParsable` to generate the `ISpanParsable` implementation
 - updated TUnit to 0.90.45
 
 ## 0.2.7

@@ -5,12 +5,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Ametrin.Optional.Analyzer;
 
 [Generator]
-public sealed class OptionParsingGenerator : IIncrementalGenerator
+public sealed class SpanParsableGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var nodes = context.SyntaxProvider.ForAttributeWithMetadataName(
-            "Ametrin.Optional.Parsing.GenerateParsingAttribute",
+            "Ametrin.Optional.Parsing.GenerateISpanParsableAttribute",
             static (node, _) => node is ClassDeclarationSyntax or StructDeclarationSyntax or RecordDeclarationSyntax,
             static (ctx, cancellationToken) => (INamedTypeSymbol)ctx.SemanticModel.GetDeclaredSymbol(ctx.TargetNode, cancellationToken)!
         );
