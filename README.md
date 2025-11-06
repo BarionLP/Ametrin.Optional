@@ -8,7 +8,7 @@ dotnet add package Ametrin.Optional
 
 ## Features
 
-- 🚀 **Zero Allocation** - Designed for high-performance scenarios
+- 🚀 **Zero Allocations** - Designed for high-performance scenarios
 - 🧩 **Monadic API** - Fluent interface for transformations and error handling
 - 🔄 **Easy Integration** - Seamless integration with existing C# code
 - 🎯 **Multiple Option Types** - Different types for various use cases
@@ -47,7 +47,7 @@ Represents a success state or an error value
 `ErrorState<E>` stores a custom error type
 ```csharp
 ErrorState success = default;           // ErrorState.Success()
-ErrorState error = new Exception();     // ErrorState.Success(new Exception())
+ErrorState error = new Exception();     // ErrorState.Error(new Exception())
 // same applies for ErrorState<E> (with generic arguments)
 ```
 
@@ -140,7 +140,7 @@ Contributions are welcome! Feel free to:
 
 The library is designed with performance in mind and has minimal to no overhead thanks to the jit.  
 
-Example benchmark for parsing a DateTime:  
+Example benchmark for [parsing a DateTime](./benchy/Examples/ParsingDateTimeBenchmarks.cs):  
 ```
 | Method          | Mean     | Error    | StdDev   | Allocated |
 |---------------- |---------:|---------:|---------:|----------:|
