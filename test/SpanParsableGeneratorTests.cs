@@ -25,7 +25,7 @@ internal sealed partial class SpanParsableGeneratorTests
     }
 
     [GenerateISpanParsable]
-    internal partial class TestType
+    internal partial class TestType : IOptionSpanParsable<TestType>
     {
         public static Option<TestType> TryParse(ReadOnlySpan<char> span, IFormatProvider? provider = null)
         {

@@ -1,6 +1,20 @@
+## 0.3.0
+- improved Option joining (#37)
+  - `Result/ErrorState.CombineErrors` API
+  - `Map` for `(Result<T>, Result<T>)` and `(Result<T, E>, Result<T, E>)`
+  - `Map` and `Consume` extensions for tuples overloads with a argument parameter
+  - experimental `Consume` for `(Result<T, E>, Result<T, E>)`
+- `SpanParsableGenerator` improvements
+  - fixed nesting in static classes
+  - fixed `AmOptional008` not triggering
+- warning for empty `Consume` calls (`AmOptional009`)
+- improvements to Wrong conditional return type (AmOptional003) analyzer
+- (TUnit) `IsError(condition)` for `Result<T>`, `Result<T, E>`, `ErrorState` and `ErrorState<E>`
+- updated TUnit to 1.0.30
+
 ## 0.2.9
 - minor `SpanParsableGenerator` fixes
-  - add analyzer rule
+  - add analyzer rule (`AmOptional008`)
 - (net10) add `TryParse` extension to all `IParsable` and `ISpanParsable`
 
 ## 0.2.8
@@ -12,7 +26,7 @@
 - add `As<T>` operation for save up-casting (#33)
 - add a basic analyzer to detect misusage
 - made implicit `Exception`/`TError` to `Result`/`ErrorState` conversions not nullable
-  - if you really need nullable exceptions `Result/Exception.Error` still accepts `Exception?`
+  - if you really need nullable exceptions `Result/ErrorState.Error` still accepts `Exception?`
   - for `TError` you need to provide a default error  
 - updated TUnit to 0.73.4
 

@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+
 namespace Ametrin.Optional;
 
 partial struct Option<TValue>
@@ -96,4 +99,52 @@ public static class OptionMapExtensions
         where TArg : allows ref struct
         where TResult : struct, allows ref struct
         => option._hasValue ? RefOption.Success(map(option._value, arg)) : default;
+}
+
+partial class OptionTupleExtensions
+{
+    public static Option<R> Map<T1, T2, R>(this (Option<T1>, Option<T2>) options, Func<T1, T2, R> selector)
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : Option.Error<R>();
+
+    public static Option<R> Map<T1, T2, R>(this (Option<T1>, Option<T2>) options, Func<T1, T2, Option<R>> selector)
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : default;
+
+    public static Option<R> Map<T1, T2, TArg, R>(this (Option<T1>, Option<T2>) options, TArg arg, Func<T1, T2, TArg, R> selector)
+        where TArg : allows ref struct
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value, arg) : Option.Error<R>();
+
+    public static Option<R> Map<T1, T2, TArg, R>(this (Option<T1>, Option<T2>) options, TArg arg, Func<T1, T2, TArg, Option<R>> selector)
+        where TArg : allows ref struct
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value, arg) : default;
+
+    public static Result<R> Map<T1, T2, R>(this (Result<T1>, Result<T2>) options, Func<T1, T2, R> selector)
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : Result.CombineErrors(options.Item1, options.Item2).ToResult(Unreachable<R>);
+
+    public static Result<R> Map<T1, T2, R>(this (Result<T1>, Result<T2>) options, Func<T1, T2, Result<R>> selector)
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : Result.CombineErrors(options.Item1, options.Item2).ToResult(Unreachable<R>);
+
+    public static Result<R> Map<T1, T2, TArg, R>(this (Result<T1>, Result<T2>) options, TArg arg, Func<T1, T2, TArg, R> selector)
+        where TArg : allows ref struct
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value, arg) : Result.CombineErrors(options.Item1, options.Item2).ToResult(Unreachable<R>);
+
+    public static Result<R> Map<T1, T2, TArg, R>(this (Result<T1>, Result<T2>) options, TArg arg, Func<T1, T2, TArg, Result<R>> selector)
+        where TArg : allows ref struct
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value, arg) : Result.CombineErrors(options.Item1, options.Item2).ToResult(Unreachable<R>);
+
+    public static Result<R, E> Map<T1, T2, E, R>(this (Result<T1, E>, Result<T2, E>) options, Func<T1, T2, R> selector, Func<E, E, E> errorCombiner)
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : Result.CombineErrors(options.Item1, options.Item2, errorCombiner).ToResult(Unreachable<R>);
+
+    public static Result<R, E> Map<T1, T2, E, R>(this (Result<T1, E>, Result<T2, E>) options, Func<T1, T2, Result<R, E>> selector, Func<E, E, E> errorCombiner)
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value) : Result.CombineErrors(options.Item1, options.Item2, errorCombiner).ToResult(Unreachable<R>);
+
+    public static Result<R, E> Map<T1, T2, E, TArg, R>(this (Result<T1, E>, Result<T2, E>) options, TArg arg, Func<T1, T2, TArg, R> selector, Func<E, E, TArg, E> errorCombiner)
+        where TArg : allows ref struct
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value, arg) : Result.CombineErrors(options.Item1, options.Item2, arg, errorCombiner).ToResult(Unreachable<R>);
+
+    public static Result<R, E> Map<T1, T2, E, TArg, R>(this (Result<T1, E>, Result<T2, E>) options, TArg arg, Func<T1, T2, TArg, Result<R, E>> selector, Func<E, E, TArg, E> errorCombiner)
+        where TArg : allows ref struct
+        => options.Item1._hasValue && options.Item2._hasValue ? selector(options.Item1._value, options.Item2._value, arg) : Result.CombineErrors(options.Item1, options.Item2, arg, errorCombiner).ToResult(Unreachable<R>);
+
+    [DoesNotReturn]
+    private static TValue Unreachable<TValue>() => throw new UnreachableException();
 }

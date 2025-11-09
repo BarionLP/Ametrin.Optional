@@ -17,7 +17,7 @@ internal static class Helper
     internal static bool IsResultType(ITypeSymbol type) => type is { Name: "Result", ContainingAssembly.Name: "Ametrin.Optional" };
     internal static bool IsDefaultLiteral(IOperation operation) => operation.Syntax.IsKind(SyntaxKind.DefaultLiteralExpression);
     internal static bool HasAttribute(ISymbol symbol, Func<INamedTypeSymbol?, bool> predicate) => symbol.GetAttributes().Any(data => predicate(data.AttributeClass));
-    internal static bool IsGenerateParsingAttribute(INamedTypeSymbol? attribute) => attribute is { Name: "GenerateParsingAttribute", ContainingAssembly.Name: "Ametrin.Optional" };
+    internal static bool IsGenerateISpanParsableAttribute(INamedTypeSymbol? attribute) => attribute is { Name: "GenerateISpanParsableAttribute", ContainingAssembly.Name: "Ametrin.Optional" };
     internal static bool IsIOptionSpanParsable(INamedTypeSymbol? attribute) => attribute is { Name: "IOptionSpanParsable", TypeArguments.Length: 1, ContainingAssembly.Name: "Ametrin.Optional" };
     internal static bool IsNull(IOperation? argument) => (argument is IConversionOperation co && IsNull(co.Operand)) || argument is IDefaultValueOperation { ConstantValue: { HasValue: true, Value: null } } or ILiteralOperation { ConstantValue: { HasValue: true, Value: null } };
 }

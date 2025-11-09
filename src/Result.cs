@@ -12,7 +12,7 @@ public readonly partial struct Result<TValue>
     internal readonly bool _hasValue = false;
 
     public Result() : this(null) { }
-    internal Result(TValue value) 
+    internal Result(TValue value)
         : this(value, default!, true) { }
     internal Result(Exception? error = null)
         : this(default!, error ?? new Exception(), false) { }
@@ -35,9 +35,9 @@ public readonly partial struct Result<TValue, TError>
     internal readonly bool _hasValue = false;
 
     public Result() : this(default(TError)!) { }
-    internal Result(TValue value) 
+    internal Result(TValue value)
         : this(value, default!, true) { }
-    internal Result(TError error) 
+    internal Result(TError error)
         : this(default!, error ?? throw new ArgumentNullException(nameof(error), "Cannot create Error with null"), false) { }
     internal Result(TValue value, TError error, bool hasValue)
         => (_value, _error, _hasValue) = (value, error, hasValue);
@@ -84,4 +84,14 @@ public static class Result
     public static Result<TValue, TError> Success<TValue, TError>(TValue value)
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Success with null value") : new(value);
     public static Result<TValue, TError> Error<TValue, TError>(TError error) => new(error);
+
+    public static ErrorState CombineErrors<T1, T2>(Result<T1> a, Result<T2> b)
+        => ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState());
+    public static ErrorState<E> CombineErrors<T1, T2, E>(Result<T1, E> a, Result<T2, E> b, Func<E, E, E> errorCombiner)
+        => ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState(), errorCombiner);
+    public static ErrorState<E> CombineErrors<T1, T2, E, TArg>(Result<T1, E> a, Result<T2, E> b, TArg arg, Func<E, E, TArg, E> errorCombiner)
+        where TArg : allows ref struct
+        => ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState(), arg, errorCombiner);
+    public static ErrorState CombineErrors<T1, T2>(Result<T1> a, Result<T2> b, Result<T2> c)
+        => ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState(), c.ToErrorState());
 }

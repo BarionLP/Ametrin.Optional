@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
@@ -13,7 +12,7 @@ namespace Ametrin.Optional.Analyzer;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 {
-
+    // AmOptional000 is experimental
     public static readonly DiagnosticDescriptor ImpossibleRequire
         = new(id: "AmOptional001", title: "Impossible Require call", messageFormat: "{0} can never be {1}. If a conversion exists use .Map to explicitly use it.", category: "Usage", DiagnosticSeverity.Error, isEnabledByDefault: true);
 
@@ -129,10 +128,15 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 
             if (conversion.Operand is not IConditionalOperation condition || IsOptionalType(condition.Type!)) return;
 
-            var hasDefault = IsDefaultLiteral(condition.WhenTrue) || IsDefaultLiteral(condition.WhenFalse!);
-            if (!hasDefault) return;
+            if (IsDefaultLiteral(condition.WhenTrue))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.WhenTrue.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+            }
 
-            context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+            if (condition.WhenFalse is not null && IsDefaultLiteral(condition.WhenFalse))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.WhenFalse.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+            }
 
         }, OperationKind.Conversion);
 
@@ -150,7 +154,7 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
         {
             var type = (INamedTypeSymbol)context.Symbol;
 
-            if (HasAttribute(type, IsGenerateParsingAttribute) && !type.Interfaces.Any(IsIOptionSpanParsable))
+            if (HasAttribute(type, IsGenerateISpanParsableAttribute) && !type.Interfaces.Any(IsIOptionSpanParsable))
             {
                 context.ReportDiagnostic(Diagnostic.Create(GenerateParsingRequirements, type.Locations[0]));
             }

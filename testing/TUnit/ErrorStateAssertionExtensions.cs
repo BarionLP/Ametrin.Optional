@@ -54,6 +54,26 @@ public static class ErrorStateAssertionExtensions
     }
 
     /// <summary>
+    /// Asserts the ErrorState is an Error state matching the <paramref name="condition"/>
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    public static bool IsError<TError>(this ErrorState<TError> result, Func<TError, bool> condition)
+    {
+        return !result.Branch(out var error) && condition(error);
+    }
+
+    /// <summary>
+    /// Asserts the ErrorState is an Error state matching the <paramref name="condition"/>
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    public static bool IsError(this ErrorState result, Func<Exception, bool> condition)
+    {
+        return !result.Branch(out var error) && condition(error);
+    }
+
+    /// <summary>
     /// Asserts the ErrorState is Error with a specific error value
     /// </summary>
     /// <typeparam name="TError">type parameter of <see cref="ErrorState{TError}"/></typeparam>
