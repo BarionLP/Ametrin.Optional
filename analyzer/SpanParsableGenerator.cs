@@ -56,6 +56,12 @@ public sealed class SpanParsableGenerator : IIncrementalGenerator
                 
                 public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out {{type.Name}} result)
                     => {{type.Name}}.TryParse(s, provider).Branch(out result);
+
+                public static bool TryParse(string? s, [MaybeNullWhen(false)] out {{type.Name}} result)
+                    => {{type.Name}}.TryParse(s, null).Branch(out result);
+                
+                public static bool TryParse(ReadOnlySpan<char> s, [MaybeNullWhen(false)] out {{type.Name}} result)
+                    => {{type.Name}}.TryParse(s, null).Branch(out result);
             """);
 
             sb.AppendLine("}");
@@ -80,7 +86,8 @@ public sealed class SpanParsableGenerator : IIncrementalGenerator
         };
 
         var refMod = type is { IsRefLikeType: true, TypeKind: TypeKind.Struct } ? "ref " : "";
+        var staticMod = type.IsStatic ? "static " : "";
 
-        return $"{refMod}partial {kind} {type.Name}";
+        return $"{staticMod}{refMod}partial {kind} {type.Name}";
     }
 }

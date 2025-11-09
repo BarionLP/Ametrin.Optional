@@ -38,12 +38,16 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
     public static readonly DiagnosticDescriptor GenerateParsingRequirements
         = new(id: "AmOptional008", title: "GenerateParsingAttribute requirements", messageFormat: "GenerateParsingAttribute requires IOptionSpanParsable to be implemented", category: "Usage", DiagnosticSeverity.Error, isEnabledByDefault: true);
 
+    public static readonly DiagnosticDescriptor EmptyConsume
+        = new(id: "AmOptional009", title: "Empty Consume call", messageFormat: "Your Consume call does not do anything {0}", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [
         ImpossibleRequire, UnnecessaryRequire,
         WrongConditionalType,
         ImpossibleAs, UnnecessaryAs, UseAsForUpCast,
         DontUseDefaultForResult,
-        GenerateParsingRequirements
+        EmptyConsume,
+        GenerateParsingRequirements,
     ];
 
     public override void Initialize(AnalysisContext context)
@@ -93,6 +97,26 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
                 }
             }
 
+            if (IsConsumeMethod(targetMethod))
+            {
+                if (IsDirectConsumeMethod(targetMethod) && IsNull(invocation.Arguments[0].Value) && IsNull(invocation.Arguments[1].Value))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments[0].Value));
+                }
+                else if (IsDirectArgsConsumeMethod(targetMethod) && IsNull(invocation.Arguments[1].Value) && IsNull(invocation.Arguments[2].Value))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments[0]));
+                }
+                else if (IsExtensionConsumeMethod(targetMethod) && IsNull(invocation.Arguments[1].Value) && IsNull(invocation.Arguments[2].Value))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments[1].Value));
+                }
+                else if (IsExtensionArgsConsumeMethod(targetMethod) && IsNull(invocation.Arguments[2].Value) && IsNull(invocation.Arguments[3].Value))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments.Length));
+                }
+            }
+
         }, OperationKind.Invocation);
 
         context.RegisterOperationAction(static context =>
@@ -126,7 +150,7 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
         {
             var type = (INamedTypeSymbol)context.Symbol;
 
-            if(HasAttribute(type, IsGenerateParsingAttribute) && !type.Interfaces.Any(IsIOptionSpanParsable))
+            if (HasAttribute(type, IsGenerateParsingAttribute) && !type.Interfaces.Any(IsIOptionSpanParsable))
             {
                 context.ReportDiagnostic(Diagnostic.Create(GenerateParsingRequirements, type.Locations[0]));
             }

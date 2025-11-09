@@ -10,6 +10,7 @@
 
   <PropertyGroup>
     <OutputItemType>Analyzer</OutputItemType>
+    <IsRoslynComponent>true</IsRoslynComponent>
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
     <PackageId>Ametrin.Optional.Analyzer</PackageId>

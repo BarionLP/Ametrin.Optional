@@ -48,10 +48,26 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
                     generics = $"<{generics}>";
                 }
 
+                var format = new SymbolDisplayFormat(
+                    typeQualificationStyle:
+                        SymbolDisplayTypeQualificationStyle.NameOnly,
+                    genericsOptions:
+                        SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                    parameterOptions:
+                        SymbolDisplayParameterOptions.IncludeName |
+                        SymbolDisplayParameterOptions.IncludeType |
+                        SymbolDisplayParameterOptions.IncludeModifiers |
+                        SymbolDisplayParameterOptions.IncludeDefaultValue,
+                    miscellaneousOptions:
+                        SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+                        SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier |
+                        SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+                );
+
                 if (IsTask(method.ReturnType))
                 {
                     sb.AppendLine($$"""
-                    public static async {{method.ReturnType}} {{method.Name}}{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters)}})
+                    public static async {{method.ReturnType}} {{method.Name}}{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters.Select(p => p.ToDisplayString(format)))}})
                     {
                         {{(method.ReturnType is INamedTypeSymbol { TypeParameters.Length: > 0 } ? "return " : "")}}await (await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
                     }
