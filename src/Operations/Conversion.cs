@@ -14,8 +14,8 @@ partial struct Option<TValue>
     public static explicit operator Option(Option<TValue> option) => option._hasValue;
 
     [AsyncExtension]
-    public Result<TValue> ToResult()
-        => _hasValue ? _value : Result.Error<TValue>();
+    public Result<TValue> ToResult(Exception? error = null)
+        => _hasValue ? _value : Result.Error<TValue>(error);
 
     [AsyncExtension]
     [OverloadResolutionPriority(1)]
@@ -89,7 +89,7 @@ partial struct ErrorState<TError>
 
     [AsyncExtension]
     public Result<TValue, TError> ToResult<TValue>(TValue value)
-    => _isError ? _error : value;
+        => _isError ? _error : value;
     [AsyncExtension]
     public Result<TValue, TError> ToResult<TValue>(Func<TValue> value)
         => _isError ? _error : value();

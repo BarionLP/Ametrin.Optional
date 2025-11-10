@@ -77,7 +77,7 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
                 {
                     // ContinueWith is 42x slower and uses 2.7x memory (.NET 9)
                     sb.AppendLine($$"""
-                    public static async {{(method.ReturnsVoid ? "Task" : $"Task<{method.ReturnType}>")}} {{method.Name}}Async{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters)}})
+                    public static async {{(method.ReturnsVoid ? "Task" : $"Task<{method.ReturnType}>")}} {{method.Name}}Async{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters.Select(p => p.ToDisplayString(format)))}})
                     {
                         {{(method.ReturnsVoid ? "" : "return ")}}(await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
                     }

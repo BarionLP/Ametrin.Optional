@@ -1,5 +1,6 @@
 ## 0.3.0
 - improved Option joining (#37)
+  - `Join` API for `Option<T>`, `Result<T>` and `Result<T, E>` up to 4 elements (after that it starts nesting)
   - `Result/ErrorState.CombineErrors` API
   - `Map` for `(Result<T>, Result<T>)` and `(Result<T, E>, Result<T, E>)`
   - `Map` and `Consume` extensions for tuples overloads with a argument parameter
@@ -7,6 +8,7 @@
 - `SpanParsableGenerator` improvements
   - fixed nesting in static classes
   - fixed `AmOptional008` not triggering
+- fixed missing default values in generated async extension methods 
 - warning for empty `Consume` calls (`AmOptional009`)
 - improvements to Wrong conditional return type (AmOptional003) analyzer
 - (TUnit) `IsError(condition)` for `Result<T>`, `Result<T, E>`, `ErrorState` and `ErrorState<E>`
