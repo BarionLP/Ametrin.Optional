@@ -14,6 +14,7 @@
 - fixed missing default values in generated async extension methods 
 - warning for empty `Consume` calls (`AmOptional009`)
 - improvements to Wrong conditional return type (AmOptional003) analyzer
+- (TUnit) `IsSuccess(condition)` for `Option<T>` `Result<T>` and `Result<T, E>`
 - (TUnit) `IsError(condition)` for `Result<T>`, `Result<T, E>`, `ErrorState` and `ErrorState<E>`
 - updated TUnit to 1.0.30
 

@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using TUnit.Assertions.Attributes;
 using TUnit.Assertions.Conditions;
 using TUnit.Assertions.Core;
@@ -13,7 +13,14 @@ public static class OptionAssertionExtensions
     [GenerateAssertion(ExpectationMessage = "to be {expected}")]
     public static bool IsSuccess<TValue>(this Option<TValue> option, TValue expected)
     {
-        return option.Branch(out var value) ? EqualityComparer<TValue>.Default.Equals(value, expected) : false;
+        return option.Branch(out var value) && EqualityComparer<TValue>.Default.Equals(value, expected);
+    }
+    
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
+    public static bool IsSuccess<TValue>(this Option<TValue> option, Func<TValue, bool> condition)
+    {
+        return option.Branch(out var value) && condition(value);
     }
     
     [EditorBrowsable(EditorBrowsableState.Never)]
