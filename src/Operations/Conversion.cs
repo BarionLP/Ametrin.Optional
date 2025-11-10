@@ -14,13 +14,16 @@ partial struct Option<TValue>
     public static explicit operator Option(Option<TValue> option) => option._hasValue;
 
     [AsyncExtension]
-    public Result<TValue> ToResult()
-        => _hasValue ? _value : Result.Error<TValue>();
+    public Result<TValue> ToResult(Exception? error = null)
+        => _hasValue ? _value : Result.Error<TValue>(error);
 
     [AsyncExtension]
     [OverloadResolutionPriority(1)]
     public Result<TValue> ToResult(Func<Exception> error)
         => _hasValue ? _value : error();
+    public Result<TValue> ToResult<TArg>(TArg arg, Func<TArg, Exception> error)
+        where TArg : allows ref struct
+        => _hasValue ? _value : error(arg);
 
     [AsyncExtension]
     // [OverloadResolutionPriority(1)] // would prevent ToResult(Func) from being called because TError becomes Func<T>
@@ -29,6 +32,10 @@ partial struct Option<TValue>
     [AsyncExtension]
     public Result<TValue, TError> ToResult<TError>(Func<TError> error)
         => _hasValue ? _value : error();
+    public Result<TValue, TError> ToResult<TError, TArg>(TArg arg, Func<TArg, TError> error)
+        where TArg : allows ref struct
+        => _hasValue ? _value : error(arg);
+
 }
 
 partial struct Result<TValue>
@@ -77,6 +84,9 @@ partial struct ErrorState
     [AsyncExtension]
     public Result<TValue> ToResult<TValue>(Func<TValue> value)
         => _isError ? _error : value();
+    public Result<TValue> ToResult<TValue, TArg>(TArg arg, Func<TArg, TValue> value)
+        where TArg : allows ref struct
+        => _isError ? _error : value(arg);
     [AsyncExtension]
     public async Task<Result<TValue>> ToResultAsync<TValue>(Func<Task<TValue>> value)
         => _isError ? _error : await value();
@@ -89,10 +99,13 @@ partial struct ErrorState<TError>
 
     [AsyncExtension]
     public Result<TValue, TError> ToResult<TValue>(TValue value)
-    => _isError ? _error : value;
+        => _isError ? _error : value;
     [AsyncExtension]
     public Result<TValue, TError> ToResult<TValue>(Func<TValue> value)
         => _isError ? _error : value();
+    public Result<TValue, TError> ToResult<TValue, TArg>(TArg arg, Func<TArg, TValue> value)
+        where TArg : allows ref struct
+        => _isError ? _error : value(arg);
     [AsyncExtension]
     public async Task<Result<TValue, TError>> ToResultAsync<TValue>(Func<Task<TValue>> value)
         => _isError ? _error : await value();

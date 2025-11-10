@@ -34,7 +34,7 @@ public sealed class RequireTests
     [Test]
     public async Task Error_Require_Test()
     {
-        await Assert.That(Option.Error<int>().Require(static i => i != 2)).IsEqualTo(default);
+        await Assert.That(Option.Error<int>().Require(static i => i != 2)).EqualTo(default);
         await Assert.That(Result.Error<int>(new InvalidOperationException()).Require(static i => i != 2)).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(Result.Error<int>(new InvalidOperationException()).Require(static i => i != 2, static i => new ArgumentException($"{i} was 2"))).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(Result.Error<int, string>("error").Require(static i => i != 2, "was 2")).IsError("error");
@@ -78,7 +78,7 @@ public sealed class RequireTests
     [Test]
     public async Task Error_Require_Arg_Test()
     {
-        await Assert.That(Option.Error<int>().Require(2, static (i, arg) => i != arg)).IsEqualTo(default);
+        await Assert.That(Option.Error<int>().Require(2, static (i, arg) => i != arg)).EqualTo(default);
         await Assert.That(Result.Error<int>(new InvalidOperationException()).Require(2, static (i, arg) => i != arg)).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(Result.Error<int>(new InvalidOperationException()).Require(2, static (i, arg) => i != arg, static (i, arg) => new ArgumentException($"{i} was {arg}"))).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(Result.Error<int, string>("error").Require(2, static (i, arg) => i != arg, "was 2")).IsError("error");

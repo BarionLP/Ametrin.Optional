@@ -16,7 +16,7 @@ public static class ResultAssertionExtensions
     [GenerateAssertion(ExpectationMessage = "to be {expected}")]
     public static bool IsSuccess<TValue>(this Result<TValue> result, TValue expected)
     {
-        return result.Branch(out var value, out _) ? EqualityComparer<TValue>.Default.Equals(value, expected) : false;
+        return result.Branch(out var value, out _) && EqualityComparer<TValue>.Default.Equals(value, expected);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -27,10 +27,17 @@ public static class ResultAssertionExtensions
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsError<TValue>(this Result<TValue> result)
     {
         return !OptionsMarshall.IsSuccess(result);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
+    public static bool IsError<TValue>(this Result<TValue> result, Func<Exception, bool> condition)
+    {
+        return !result.Branch(out _, out var error) && condition(error);
     }
 
     /// <summary>
@@ -40,7 +47,7 @@ public static class ResultAssertionExtensions
     [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsErrorOfType<TValue, TError>(this Result<TValue> result) where TError : Exception
     {
-        return result.Branch(out _, out var error) ? false : error is TError;
+        return !result.Branch(out _, out var error) && error is TError;
     }
 
     /// <summary>
@@ -50,7 +57,7 @@ public static class ResultAssertionExtensions
     [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsErrorNotOfType<TValue, TError>(this Result<TValue> result) where TError : Exception
     {
-        return result.Branch(out _, out var error) ? false : error is not null and not TError;
+        return !result.Branch(out _, out var error) && error is not null and not TError;
     }
 
     /// <summary>
@@ -62,9 +69,9 @@ public static class ResultAssertionExtensions
     [GenerateAssertion(ExpectationMessage = "to be {expected}")]
     public static bool IsSuccess<TValue, TError>(this Result<TValue, TError> result, TValue expected)
     {
-        return result.Branch(out var value, out _) ? EqualityComparer<TValue>.Default.Equals(value, expected) : false;
+        return result.Branch(out var value, out _) && EqualityComparer<TValue>.Default.Equals(value, expected);
     }
-    
+
     /// <summary>
     /// Asserts the <see cref="Result{TValue, TError}"/> is Error with a specific value
     /// </summary>
@@ -74,7 +81,14 @@ public static class ResultAssertionExtensions
     [GenerateAssertion(ExpectationMessage = "to be {expected}")]
     public static bool IsError<TValue, TError>(this Result<TValue, TError> result, TError expected)
     {
-        return result.Branch(out _, out var error) ? false : EqualityComparer<TError>.Default.Equals(error, expected);
+        return !result.Branch(out _, out var error) && EqualityComparer<TError>.Default.Equals(error, expected);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
+    public static bool IsError<TValue, TError>(this Result<TValue, TError> result, Func<TError, bool> condition)
+    {
+        return !result.Branch(out _, out var error) && condition(error);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]

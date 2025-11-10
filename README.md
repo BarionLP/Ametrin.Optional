@@ -8,7 +8,7 @@ dotnet add package Ametrin.Optional
 
 ## Features
 
-- 🚀 **Zero Allocation** - Designed for high-performance scenarios
+- 🚀 **Zero Allocations** - Designed for high-performance scenarios
 - 🧩 **Monadic API** - Fluent interface for transformations and error handling
 - 🔄 **Easy Integration** - Seamless integration with existing C# code
 - 🎯 **Multiple Option Types** - Different types for various use cases
@@ -47,7 +47,7 @@ Represents a success state or an error value
 `ErrorState<E>` stores a custom error type
 ```csharp
 ErrorState success = default;           // ErrorState.Success()
-ErrorState error = new Exception();     // ErrorState.Success(new Exception())
+ErrorState error = new Exception();     // ErrorState.Error(new Exception())
 // same applies for ErrorState<E> (with generic arguments)
 ```
 
@@ -107,7 +107,7 @@ A reduced version of `Option<T>` that can hold a ref struct as value
 
 ## Edge Cases
 
-For edge cases, high-performance scenarios where delegates cannot be static or when you absolutly need to modify the controll flow use `Branch`:
+For edge cases, high-performance scenarios where delegates cannot be static or when you absolutly need to modify the control flow use `Branch`:
 ```csharp
 if(result.Branch(out var value, out var error))
 {
@@ -138,15 +138,14 @@ Contributions are welcome! Feel free to:
 
 ## Performance
 
-The library is designed with performance in mind and has minimal to no overhead. Example benchmark for parsing a DateTime:
+The library is designed with performance in mind and has minimal to no overhead thanks to the jit.  
 
+Example benchmark for [parsing a DateTime](./benchy/Examples/ParsingDateTimeBenchmarks.cs):  
 ```
-| Method            | Mean      | Error    | StdDev   | Allocated |
-|------------------ |----------:|---------:|---------:|----------:|
-| Default_Success   | 291.30 ns | 1.093 ns | 1.022 ns |         - |
-| Option_Success    | 310.56 ns | 1.914 ns | 1.697 ns |         - |
-| RefOption_Success | 300.98 ns | 1.454 ns | 1.360 ns |         - |
-| Default_Error     |  72.12 ns | 0.289 ns | 0.226 ns |         - | // using TryParse
-| Option_Error      |  67.75 ns | 0.324 ns | 0.287 ns |         - |
-| RefOption_Error   |  72.75 ns | 0.145 ns | 0.136 ns |         - |
+| Method          | Mean     | Error    | StdDev   | Allocated |
+|---------------- |---------:|---------:|---------:|----------:|
+| Default_Success | 87.31 ns | 1.696 ns | 1.666 ns |         - |
+| Option_Success  | 89.95 ns | 1.821 ns | 2.492 ns |         - |
+| Default_Error   | 73.27 ns | 1.462 ns | 2.361 ns |         - | // using TryParse
+| Option_Error    | 74.05 ns | 1.464 ns | 1.504 ns |         - |
 ```

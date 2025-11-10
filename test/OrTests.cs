@@ -53,7 +53,7 @@ public sealed class OrTests
 
         await Assert.That(Option.Error<int>().OrNull()).IsNull();
         await Assert.That(Result.Error<int>().OrNull()).IsNull();
-        await Assert.That(Result.Error<int, string>("").OrNull()).IsEqualTo(null);
+        await Assert.That(Result.Error<int, string>("").OrNull()).EqualTo(null);
 
         await Assert.That(Option.Error<string>().OrNull()).IsNull();
         await Assert.That(Result.Error<string>().OrNull()).IsNull();

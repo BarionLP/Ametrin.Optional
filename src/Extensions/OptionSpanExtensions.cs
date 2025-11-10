@@ -1,4 +1,4 @@
-namespace Ametrin.Optional.Extensions;
+namespace Ametrin.Optional;
 
 public static class OptionSpanExtensions
 {

@@ -50,13 +50,71 @@ public sealed class ConsumeTests
         Assert.Throws<ErrorE>(static () => RefOption.Error<int>().Consume(1, Success, Error));
     }
 
+    [Test]
+    public void Consume_Success_Success_Test()
+    {
+        Assert.Throws<SuccessE>(static () => (Option.Success(1), Option.Success(1)).Consume(Success, Error));
+        Assert.Throws<SuccessE>(static () => (Result.Success(1), Result.Success(1)).Consume(Success, Error));
+    }
+
+    [Test]
+    public void Consume_Success_Error_Test()
+    {
+        Assert.Throws<ErrorE>(static () => (Option.Success(1), Option.Error<int>()).Consume(Success, Error));
+        Assert.Throws<ErrorE>(static () => (Result.Success(1), Result.Error<int>()).Consume(Success, Error));
+    }
+
+    [Test]
+    public void Consume_Error_Success_Test()
+    {
+        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Success(1)).Consume(Success, Error));
+        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Success(1)).Consume(Success, Error));
+    }
+
+    [Test]
+    public void Consume_Error_Error_Test()
+    {
+        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Error<int>()).Consume(Success, Error));
+        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Error<int>()).Consume(Success, Error));
+    }
+
+    [Test]
+    public void Consume_Arg_Success_Success_Test()
+    {
+        Assert.Throws<SuccessE>(static () => (Option.Success(1), Option.Success(1)).Consume(true, Success, Error));
+        Assert.Throws<SuccessE>(static () => (Result.Success(1), Result.Success(1)).Consume(true, Success, Error));
+    }
+
+    [Test]
+    public void Consume_Arg_Success_Error_Test()
+    {
+        Assert.Throws<ErrorE>(static () => (Option.Success(1), Option.Error<int>()).Consume(true, Success, Error));
+        Assert.Throws<ErrorE>(static () => (Result.Success(1), Result.Error<int>()).Consume(true, Success, Error));
+    }
+
+    [Test]
+    public void Consume_Arg_Error_Success_Test()
+    {
+        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Success(1)).Consume(true, Success, Error));
+        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Success(1)).Consume(true, Success, Error));
+    }
+
+    [Test]
+    public void Consume_Arg_Error_Error_Test()
+    {
+        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Error<int>()).Consume(true, Success, Error));
+        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Error<int>()).Consume(true, Success, Error));
+    }
+
     private static void Success() => throw new SuccessE();
-    private static void Success<T>(T v) => throw new SuccessE();
-    private static void Success<T, T2>(T v, T2 a) => throw new SuccessE();
+    private static void Success<T1>(T1 v) => throw new SuccessE();
+    private static void Success<T1, T2>(T1 v, T2 a) => throw new SuccessE();
+    private static void Success<T1, T2, T3>(T1 v, T2 a, T3 c) => throw new SuccessE();
+
     private static void Error() => throw new ErrorE();
-    private static void Error<T>(T v) => throw new ErrorE();
-    private static void Error<T, T2>(T v, T2 a) => throw new ErrorE();
+    private static void Error<T1>(T1 v) => throw new ErrorE();
+    private static void Error<T1, T2>(T1 v, T2 a) => throw new ErrorE();
 }
 
-internal sealed class SuccessE: Exception;
-internal sealed class ErrorE : Exception;
+file sealed class SuccessE : Exception;
+file sealed class ErrorE : Exception;

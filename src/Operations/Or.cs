@@ -10,7 +10,11 @@ partial struct Option<TValue>
     public TValue Or(TValue other) => _hasValue ? _value : other;
 
     [AsyncExtension]
-    public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+    public TValue Or(Func<TValue> factory) => _hasValue ? _value : factory();
+
+    public TValue Or<TArg>(TArg arg, Func<TArg, TValue> factory)
+        where TArg : allows ref struct
+        => _hasValue ? _value : factory(arg);
 
     [AsyncExtension]
     [StackTraceHidden]
@@ -34,6 +38,10 @@ partial struct Result<TValue>
     [AsyncExtension]
     public TValue Or(Func<Exception, TValue> factory) => _hasValue ? _value : factory(_error);
 
+    public TValue Or<TArg>(TArg arg, Func<Exception, TArg, TValue> factory)
+        where TArg : allows ref struct
+        => _hasValue ? _value : factory(_error, arg);
+
     [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => OrThrow("Result is Error state");
@@ -56,6 +64,10 @@ partial struct Result<TValue, TError>
     [AsyncExtension]
     public TValue Or(Func<TError, TValue> factory) => _hasValue ? _value! : factory(_error);
 
+    public TValue Or<TArg>(TArg arg, Func<TError, TArg, TValue> factory)
+        where TArg : allows ref struct
+        => _hasValue ? _value : factory(_error, arg);
+
     [AsyncExtension]
     [StackTraceHidden]
     public TValue OrThrow() => OrThrow("Result is Error state");
@@ -75,6 +87,10 @@ partial struct RefOption<TValue>
     public TValue Or(TValue other) => _hasValue ? _value : other;
 
     public TValue Or(Func<TValue> factory) => _hasValue ? _value! : factory();
+
+    public TValue Or<TArg>(TArg arg, Func<TArg, TValue> factory)
+        where TArg : allows ref struct
+        => _hasValue ? _value! : factory(arg);
 
     [StackTraceHidden]
     public TValue OrThrow() => _hasValue ? _value : throw new OptionIsErrorException();

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Ametrin.Optional.csproj" />
+    <PackageReference Include="Ametrin.Optional" Version="$(PackVersion)" />
   </ItemGroup>
 
 </Project>
