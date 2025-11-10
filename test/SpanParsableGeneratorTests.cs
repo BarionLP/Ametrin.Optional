@@ -2,9 +2,9 @@ using Ametrin.Optional.Parsing;
 
 namespace Ametrin.Optional.Test;
 
-internal sealed partial class SpanParsableGeneratorTests
+internal static partial class SpanParsableGeneratorTests
 {
-    void String()
+    static void String()
     {
         TestType.Parse("");
         TestType.Parse("", null);
@@ -13,7 +13,7 @@ internal sealed partial class SpanParsableGeneratorTests
         Option<TestType> c = TestType.TryParse("");
         Option<TestType> d = TestType.TryParse("", null);
     }
-    void Span()
+    static void Span()
     {
         ReadOnlySpan<char> s = "";
         TestType.Parse(s);

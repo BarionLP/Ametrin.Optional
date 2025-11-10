@@ -46,10 +46,10 @@ public sealed class SpanParsableGenerator : IIncrementalGenerator
             {{BuildTypeHeader(type)}} : ISpanParsable<{{type.Name}}>
             {
                 public static {{type.Name}} Parse(string? s, IFormatProvider? provider = null)
-                    => {{type.Name}}.TryParse(s, provider).OrThrow();
+                    => {{type.Name}}.TryParse(s, provider).Branch(out var value) ? value : throw new FormatException($"The input string '{s}' was not in a correct format.");
 
                 public static {{type.Name}} Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
-                    => {{type.Name}}.TryParse(s, provider).OrThrow();
+                    => {{type.Name}}.TryParse(s, provider).Branch(out var value) ? value : throw new FormatException($"The input string '{s}' was not in a correct format.");
 
                 public static bool TryParse(string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out {{type.Name}} result)
                     => {{type.Name}}.TryParse(s, provider).Branch(out result);

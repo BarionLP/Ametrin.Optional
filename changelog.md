@@ -6,6 +6,7 @@
   - `Map` and `Consume` extensions for tuples overloads with a argument parameter
   - experimental `Consume` for `(Result<T, E>, Result<T, E>)`
 - `SpanParsableGenerator` improvements
+  - improved exception message
   - fixed nesting in static classes
   - fixed `AmOptional008` not triggering
 - fixed missing default values in generated async extension methods 
