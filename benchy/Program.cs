@@ -1,6 +1,4 @@
-﻿using Ametrin.Optional;
-using Ametrin.Optional.Benchy;
-using Ametrin.Optional.Benchy.Examples;
+﻿using Ametrin.Optional.Benchy;
 using BenchmarkDotNet.Running;
 
 BenchmarkRunner.Run<TestBenchmarks>();

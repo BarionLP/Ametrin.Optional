@@ -21,6 +21,13 @@ public static class ResultAssertionExtensions
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
+    public static bool IsSuccess<TValue>(this Result<TValue> result, Func<TValue, bool> condition)
+    {
+        return result.Branch(out var value, out _) && condition(value);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
     public static bool IsSuccess<TValue>(this Result<TValue> result)
     {
         return OptionsMarshall.IsSuccess(result);
@@ -71,6 +78,14 @@ public static class ResultAssertionExtensions
     {
         return result.Branch(out var value, out _) && EqualityComparer<TValue>.Default.Equals(value, expected);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
+    public static bool IsSuccess<TValue, TError>(this Result<TValue, TError> result, Func<TValue, bool> condition)
+    {
+        return result.Map(condition).Or(false);
+    }
+
 
     /// <summary>
     /// Asserts the <see cref="Result{TValue, TError}"/> is Error with a specific value
