@@ -5,8 +5,17 @@
   - `Map` for `(Result<T>, Result<T>)` and `(Result<T, E>, Result<T, E>)`
   - `Map` and `Consume` extensions for tuples overloads with an argument parameter
   - experimental `Consume` for `(Result<T, E>, Result<T, E>)`
+- improved LINQ integration (#32)
+  - `WhereSuccess`
+  - `WhereError`
+  - `Branch` for sequences of `Result<T>` and `Result<T, E>`
+    - splits the sequence into two lists, one for values and one for errors (only enumerates once)
+  - `ValuesOrFirstError` for sequences of `Result<T>` and `Result<T, E>`
+  - `ValuesOrError` for sequences of `Option<T>`
+  - rename `IEnumerable<T>.FirstOrError` to `TryFirst`
 - `Or` overloads with an argument
 - `Option.ToResult` and `ErrorState.ToResult` overloads with an argument
+- `TryIndexOf` for `ReadOnlySpan<T>`
 - `SpanParsableGenerator` improvements
   - improved exception message
   - fixed nesting in static classes
@@ -16,7 +25,7 @@
 - improvements to Wrong conditional return type (AmOptional003) analyzer
 - (TUnit) `IsSuccess(condition)` for `Option<T>` `Result<T>` and `Result<T, E>`
 - (TUnit) `IsError(condition)` for `Result<T>`, `Result<T, E>`, `ErrorState` and `ErrorState<E>`
-- updated TUnit to 1.0.30
+- updated TUnit to 1.0.48
 
 ## 0.2.9
 - minor `SpanParsableGenerator` fixes
