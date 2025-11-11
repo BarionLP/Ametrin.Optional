@@ -83,7 +83,7 @@ partial struct ErrorState
         (false, false) => Success(),
         (true, false) => a._error,
         (false, true) => b._error,
-        (true, true) => new AggregateException(a._error, b._error),
+        (true, true) => new AggregateException(a._error , b._error).Flatten(),
     };
 
     public static ErrorState<E> CombineErrors<E>(ErrorState<E> a, ErrorState<E> b, Func<E, E, E> errorCombiner) => (a._isError, b._isError) switch
@@ -108,9 +108,9 @@ partial struct ErrorState
         (true, false, false) => a._error,
         (false, true, false) => b._error,
         (false, false, true) => c._error,
-        (true, true, false) => new AggregateException(a._error, b._error),
-        (true, false, true) => new AggregateException(a._error, c._error),
-        (false, true, true) => new AggregateException(b._error, c._error),
-        (true, true, true) => new AggregateException(a._error, b._error, c._error),
+        (true, true, false) => new AggregateException(a._error, b._error).Flatten(),
+        (true, false, true) => new AggregateException(a._error, c._error).Flatten(),
+        (false, true, true) => new AggregateException(b._error, c._error).Flatten(),
+        (true, true, true) => new AggregateException(a._error, b._error, c._error).Flatten(),
     };
 }
