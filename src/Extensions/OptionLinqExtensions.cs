@@ -14,8 +14,12 @@ public static class OptionLinqExtensions
         => option.RejectEmpty(static source => new ArgumentException("Sequence was empty"));
     public static Result<IEnumerable<T>> RejectEmpty<T>(this Result<IEnumerable<T>> option, Func<IEnumerable<T>, Exception> error)
         => option.Require(Enumerable.Any, error);
+    public static Result<IEnumerable<T>, E> RejectEmpty<T, E>(this Result<IEnumerable<T>, E> option, E error)
+        => option.Require(Enumerable.Any, error);
+    public static Result<IEnumerable<T>, E> RejectEmpty<T, E>(this Result<IEnumerable<T>, E> option, Func<IEnumerable<T>, E> error)
+        => option.Require(Enumerable.Any, error);
 
-    public static Option<T> FirstOrError<T>(this IEnumerable<T> source)
+    public static Option<T> TryFirst<T>(this IEnumerable<T> source)
     {
         using var enumerator = source.GetEnumerator();
         return enumerator.MoveNext() ? Option.Success(enumerator.Current) : default;
@@ -37,13 +41,35 @@ public static class OptionLinqExtensions
     public static IEnumerable<E> WhereError<T, E>(this IEnumerable<ErrorState<E>> source)
         => source.Where(static option => option._isError).Select(static option => option._error);
 
-    public static Result<IReadOnlyList<T>> ValuesOrFirstError<T>(this IEnumerable<Result<T>> results)
+    public static Option<IReadOnlyList<T>> ValuesOrError<T>(this IEnumerable<Option<T>> source)
     {
-        var count = results.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        if (count is 0) return Option.Success<IReadOnlyList<T>>([]);
+        var values = CreateBag<T>(count);
+
+        foreach (var result in source)
+        {
+            if (result.Branch(out var value))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                values.Clear();
+                return default;
+            }
+        }
+
+        return values;
+    }
+    
+    public static Result<IReadOnlyList<T>> ValuesOrFirstError<T>(this IEnumerable<Result<T>> source)
+    {
+        var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
         if (count is 0) return Result.Success<IReadOnlyList<T>>([]);
         var values = CreateBag<T>(count);
 
-        foreach (var result in results)
+        foreach (var result in source)
         {
             if (result.Branch(out var value, out var error))
             {
@@ -59,7 +85,29 @@ public static class OptionLinqExtensions
         return values;
     }
 
-    public static void Split<T>(this IEnumerable<Result<T>> results, IList<T> values, IList<Exception> errors)
+    public static Result<IReadOnlyList<T>, E> ValuesOrFirstError<T, E>(this IEnumerable<Result<T, E>> source)
+    {
+        var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        if (count is 0) return Result.Success<IReadOnlyList<T>, E>([]);
+        var values = CreateBag<T>(count);
+
+        foreach (var result in source)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                values.Clear();
+                return error;
+            }
+        }
+
+        return values;
+    }
+
+    public static void BranchInto<T>(this IEnumerable<Result<T>> results, IList<T> values, IList<Exception> errors)
     {
         foreach (var result in results)
         {
@@ -74,7 +122,7 @@ public static class OptionLinqExtensions
         }
     }
 
-    public static void Split<T, E>(this IEnumerable<Result<T, E>> results, IList<T> values, IList<E> errors)
+    public static void BranchInto<T, E>(this IEnumerable<Result<T, E>> results, IList<T> values, IList<E> errors)
     {
         foreach (var result in results)
         {
@@ -89,7 +137,7 @@ public static class OptionLinqExtensions
         }
     }
 
-    public static (IReadOnlyList<T> values, IReadOnlyList<Exception> errors) Split<T>(this IEnumerable<Result<T>> results)
+    public static (IReadOnlyList<T> values, IReadOnlyList<Exception> errors) Branch<T>(this IEnumerable<Result<T>> results)
     {
         ArgumentNullException.ThrowIfNull(results);
 
@@ -97,12 +145,12 @@ public static class OptionLinqExtensions
         if (count is 0) return ([], []);
 
         var (values, errors) = CreateBags<T, Exception>(count);
-        results.Split(values, errors);
+        results.BranchInto(values, errors);
 
         return (values, errors);
     }
 
-    public static (IReadOnlyList<T> values, IReadOnlyList<E> errors) Split<T, E>(this IEnumerable<Result<T, E>> results)
+    public static (IReadOnlyList<T> values, IReadOnlyList<E> errors) Branch<T, E>(this IEnumerable<Result<T, E>> results)
     {
         ArgumentNullException.ThrowIfNull(results);
 
@@ -110,7 +158,7 @@ public static class OptionLinqExtensions
         if (count is 0) return ([], []);
 
         var (values, errors) = CreateBags<T, E>(count);
-        results.Split(values, errors);
+        results.BranchInto(values, errors);
 
         return (values, errors);
     }

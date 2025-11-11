@@ -25,13 +25,13 @@ public class TestBenchmarks
     [Benchmark]
     public void Split_Array()
     {
-        var r = array.Split();
+        var r = array.Branch();
     }
 
     [Benchmark]
     public void Split_List()
     {
-        var r = list.Split();
+        var r = list.Branch();
     }
 }
 
