@@ -1,6 +1,6 @@
 using Ametrin.Optional.Exceptions;
 
-namespace Ametrin.Optional.Test;
+namespace Ametrin.Optional.Test.Operations;
 
 public sealed class OrTests
 {

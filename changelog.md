@@ -1,3 +1,6 @@
+## 0.3.1
+- `TryLastIndexOf` for `ReadOnlySpan<T>`
+
 ## 0.3.0
 - improved Option joining (#37)
   - `Join` API for `Option<T>`, `Result<T>` and `Result<T, E>` up to 4 elements (after that it starts nesting)

@@ -1,6 +1,4 @@
-namespace Ametrin.Optional.Test;
-
-#nullable disable
+namespace Ametrin.Optional.Test.Operations;
 
 public sealed class MatchAsyncTests
 {
