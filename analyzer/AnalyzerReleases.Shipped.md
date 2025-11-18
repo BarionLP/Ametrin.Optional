@@ -23,3 +23,12 @@ AmOptional007 | Usage | Warning | AmetrinOptionalAnalyzer
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 AmOptional008 | Usage | Error | AmetrinOptionalAnalyzer
+
+
+## Release 0.3.0
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+AmOptional009 | Usage | Warning | AmetrinOptionalAnalyzer

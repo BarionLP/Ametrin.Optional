@@ -4,4 +4,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-AmOptional009 | Usage | Warning | AmetrinOptionalAnalyzer
+AmOptional010 | Usage | Info | AmetrinOptionalAnalyzer

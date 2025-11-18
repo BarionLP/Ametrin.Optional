@@ -14,6 +14,7 @@ internal static class Helper
     internal static bool IsExtensionConsumeMethod(IMethodSymbol method) => method is { Name: "Consume", ContainingType.ContainingAssembly.Name: "Ametrin.Optional", Parameters.Length: 3, IsExtensionMethod: true };
     internal static bool IsExtensionArgsConsumeMethod(IMethodSymbol method) => method is { Name: "Consume", ContainingType.ContainingAssembly.Name: "Ametrin.Optional", Parameters.Length: 4, IsExtensionMethod: true };
     internal static bool IsOptionalType(ITypeSymbol type) => type is { Name: "Option" or "Result" or "ErrorState" or "RefOption", ContainingAssembly.Name: "Ametrin.Optional" };
+    internal static bool IsNonGenericOptionType(ITypeSymbol type) => type is INamedTypeSymbol { Name: "Option", ContainingAssembly.Name: "Ametrin.Optional", IsGenericType: false };
     internal static bool IsResultType(ITypeSymbol type) => type is { Name: "Result", ContainingAssembly.Name: "Ametrin.Optional" };
     internal static bool IsDefaultLiteral(IOperation operation) => operation.Syntax.IsKind(SyntaxKind.DefaultLiteralExpression);
     internal static bool HasAttribute(ISymbol symbol, Func<INamedTypeSymbol?, bool> predicate) => symbol.GetAttributes().Any(data => predicate(data.AttributeClass));

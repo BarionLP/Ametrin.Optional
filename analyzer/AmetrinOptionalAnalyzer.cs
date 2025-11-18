@@ -12,7 +12,7 @@ namespace Ametrin.Optional.Analyzer;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 {
-    // AmOptional000 is experimental
+    // AmOptional000 means experimental
     public static readonly DiagnosticDescriptor ImpossibleRequire
         = new(id: "AmOptional001", title: "Impossible Require call", messageFormat: "{0} can never be {1}. If a conversion exists use .Map to explicitly use it.", category: "Usage", DiagnosticSeverity.Error, isEnabledByDefault: true);
 
@@ -40,11 +40,14 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
     public static readonly DiagnosticDescriptor EmptyConsume
         = new(id: "AmOptional009", title: "Empty Consume call", messageFormat: "Your Consume call does not do anything {0}", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
+    public static readonly DiagnosticDescriptor DontUseDefaultForOption
+        = new(id: "AmOptional010", title: "Do not use default for Option", messageFormat: "Do not create Option using the default keyword, use false instead", category: "Usage", DiagnosticSeverity.Info, isEnabledByDefault: true);
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [
         ImpossibleRequire, UnnecessaryRequire,
         WrongConditionalType,
         ImpossibleAs, UnnecessaryAs, UseAsForUpCast,
-        DontUseDefaultForResult,
+        DontUseDefaultForResult, DontUseDefaultForOption,
         EmptyConsume,
         GenerateParsingRequirements,
     ];
@@ -147,6 +150,11 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
             if (IsResultType(operation.Type!))
             {
                 context.ReportDiagnostic(Diagnostic.Create(DontUseDefaultForResult, operation.Syntax.GetLocation()));
+            }
+            
+            if (IsNonGenericOptionType(operation.Type!))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(DontUseDefaultForOption, operation.Syntax.GetLocation()));
             }
         }, OperationKind.DefaultValue);
 
