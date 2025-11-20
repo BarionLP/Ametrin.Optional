@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-
 namespace Ametrin.Optional;
 
 partial struct Option<TValue>

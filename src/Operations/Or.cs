@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Ametrin.Optional.Exceptions;
 
 namespace Ametrin.Optional;

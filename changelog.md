@@ -1,9 +1,10 @@
 ## 0.3.1
 - `TryLastIndexOf` for `ReadOnlySpan<T>`
+- `ConsumeAsync` for `(Option<T>, Option<T>)` and `(Result<T>, Result<T>)`
 - improve error messages for `Result<FileSystemInfo>.RequireExists`
 - inform to not use `default` keyword to create `Option` (`AmOptional010`)
 - improve `AmOptional001` with generics
-- updated TUnit to 1.2.3
+- updated TUnit to 1.2.11
 
 ## 0.3.0
 - improved Option joining (#37)

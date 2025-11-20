@@ -176,3 +176,52 @@ partial struct ErrorState<TError>
         }
     }
 }
+
+partial class OptionTupleExtensions
+{
+    public static async Task<Option> ConsumeAsync<T1, T2>(this (Option<T1>, Option<T2>) options, Func<T1, T2, Task>? success = null, Func<Task>? error = null)
+    {
+        var (a, b) = options;
+        if (a._hasValue && b._hasValue)
+        {
+            if (success is not null)
+            {
+                await success.Invoke(a._value, b._value);
+            }
+            return true;
+        }
+        else
+        {
+            if (error is not null)
+            {
+                await error.Invoke();
+            }
+            return false;
+        }
+    }
+
+    public static async Task<ErrorState> ConsumeAsync<T1, T2>(this (Result<T1>, Result<T2>) options, Func<T1, T2, Task>? success = null, Func<Exception, Task>? error = null)
+    {
+        var (a, b) = options;
+
+        if (a._hasValue && b._hasValue)
+        {
+            if (success is not null)
+            {
+                await success.Invoke(a._value, b._value);
+            }
+            return default;
+        }
+
+        if (!ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState()).Branch(out var err))
+        {
+            if (error is not null)
+            {
+                await error.Invoke(err);
+            }
+            return err;
+        }
+
+        throw new UnreachableException();
+    }
+}
