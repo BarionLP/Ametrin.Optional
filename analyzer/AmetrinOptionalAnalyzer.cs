@@ -38,7 +38,7 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
         = new(id: "AmOptional008", title: "GenerateParsingAttribute requirements", messageFormat: "GenerateParsingAttribute requires IOptionSpanParsable to be implemented", category: "Usage", DiagnosticSeverity.Error, isEnabledByDefault: true);
 
     public static readonly DiagnosticDescriptor EmptyConsume
-        = new(id: "AmOptional009", title: "Empty Consume call", messageFormat: "Your Consume call does not do anything {0}", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+        = new(id: "AmOptional009", title: "Empty Consume call", messageFormat: "Your Consume call does not do anything", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
     public static readonly DiagnosticDescriptor DontUseDefaultForOption
         = new(id: "AmOptional010", title: "Do not use default for Option", messageFormat: "Do not create Option using the default keyword, use false instead", category: "Usage", DiagnosticSeverity.Info, isEnabledByDefault: true);
@@ -169,19 +169,19 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
             {
                 if (IsDirectConsumeMethod(targetMethod) && IsNull(invocation.Arguments[0].Value) && IsNull(invocation.Arguments[1].Value))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments[0].Value));
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation()));
                 }
                 else if (IsDirectArgsConsumeMethod(targetMethod) && IsNull(invocation.Arguments[1].Value) && IsNull(invocation.Arguments[2].Value))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments[0]));
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation()));
                 }
                 else if (IsExtensionConsumeMethod(targetMethod) && IsNull(invocation.Arguments[1].Value) && IsNull(invocation.Arguments[2].Value))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments[1].Value));
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation()));
                 }
                 else if (IsExtensionArgsConsumeMethod(targetMethod) && IsNull(invocation.Arguments[2].Value) && IsNull(invocation.Arguments[3].Value))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation(), invocation.Arguments.Length));
+                    context.ReportDiagnostic(Diagnostic.Create(EmptyConsume, invocation.Syntax.GetLocation()));
                 }
             }
 
