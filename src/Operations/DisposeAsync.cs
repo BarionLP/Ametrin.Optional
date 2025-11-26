@@ -4,7 +4,7 @@ namespace Ametrin.Optional;
 
 public static class OptionDisposeAsyncExtensions
 {
-    public static ValueTask Dispose<TValue>(this Option<TValue> option) where TValue : IAsyncDisposable
+    public static ValueTask DisposeAsync<TValue>(this Option<TValue> option) where TValue : IAsyncDisposable
     {
         return option._hasValue ? option._value.DisposeAsync() : ValueTask.CompletedTask;
     }

@@ -18,7 +18,7 @@ partial struct Option<TValue>
         => _hasValue ? _value : Result.Error<TValue>(error);
 
     [AsyncExtension]
-    [OverloadResolutionPriority(1)]
+    [OverloadResolutionPriority(1)] // so delegates returning subclasses of Exception also take this overload
     public Result<TValue> ToResult(Func<Exception> error)
         => _hasValue ? _value : error();
     public Result<TValue> ToResult<TArg>(TArg arg, Func<TArg, Exception> error)
