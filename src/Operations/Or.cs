@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Ametrin.Optional.Exceptions;
 
 namespace Ametrin.Optional;
@@ -44,7 +43,7 @@ partial struct Result<TValue>
 
     [AsyncExtension]
     [StackTraceHidden]
-    public TValue OrThrow() => OrThrow("Result is Error state");
+    public TValue OrThrow() => OrThrow("Result is error state");
 
     [AsyncExtension]
     [StackTraceHidden]
@@ -70,7 +69,7 @@ partial struct Result<TValue, TError>
 
     [AsyncExtension]
     [StackTraceHidden]
-    public TValue OrThrow() => OrThrow("Result is Error state");
+    public TValue OrThrow() => OrThrow("Result is error state");
 
     [AsyncExtension]
     [StackTraceHidden]
