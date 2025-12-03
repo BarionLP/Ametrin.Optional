@@ -4,7 +4,7 @@
 - improve error messages for `Result<FileSystemInfo>.RequireExists`
 - inform to not use `default` keyword to create `Option` (`AmOptional010`)
 - improve `AmOptional001` with generics
-- updated TUnit to 1.2.11
+- updated TUnit to 1.3.15
 
 ## 0.3.0
 - improved Option joining (#37)
