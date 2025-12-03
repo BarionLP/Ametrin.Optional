@@ -178,8 +178,4 @@ public static class OptionLinqExtensions
         // we assume most of the incoming values will be successes so we preallocate the full size
         return count > 0 ? new List<T>(capacity: count) : [];
     }
-
-    [Obsolete("use Select(option => option.Map(map)). this method made things confusing")]
-    public static IEnumerable<Option<TResult>> Select<T, TResult>(this IEnumerable<Option<T>> source, Func<T, TResult> map)
-        => source.Select(option => option.Map(map));
 }
