@@ -1,4 +1,4 @@
-namespace Ametrin.Optional.Operations;
+namespace Ametrin.Optional;
 
 public static class OptionJoinExtensions
 {
