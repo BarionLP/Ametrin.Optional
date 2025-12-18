@@ -41,11 +41,10 @@ public static class OptionLinqExtensions
     public static IEnumerable<E> WhereError<T, E>(this IEnumerable<ErrorState<E>> source)
         => source.Where(static option => option._isError).Select(static option => option._error);
 
-    public static Option<IReadOnlyList<T>> ValuesOrError<T>(this IEnumerable<Option<T>> source)
+    public static Option ValuesIntoOrError<T>(this IEnumerable<Option<T>> source, IList<T> values)
     {
         var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
-        if (count is 0) return Option.Success<IReadOnlyList<T>>([]);
-        var values = CreateBag<T>(count);
+        if (count is 0) return true;
 
         foreach (var result in source)
         {
@@ -55,9 +54,23 @@ public static class OptionLinqExtensions
             }
             else
             {
-                values.Clear();
-                return default;
+                return false;
             }
+        }
+
+        return true;
+    }
+
+    public static Option<IReadOnlyList<T>> ValuesOrError<T>(this IEnumerable<Option<T>> source)
+    {
+        var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        if (count is 0) return Option.Success<IReadOnlyList<T>>([]);
+        var values = CreateBag<T>(count);
+
+        if (!source.ValuesIntoOrError(values))
+        {
+            values.Clear();
+            return default;
         }
 
         return values;

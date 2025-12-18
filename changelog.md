@@ -1,3 +1,6 @@
+## 0.3.2
+- add `IEnumerable<Option<T>>.ValuesIntoOrError`
+
 ## 0.3.1
 - `TryLastIndexOf` for `ReadOnlySpan<T>`
 - `ConsumeAsync` for `(Option<T>, Option<T>)` and `(Result<T>, Result<T>)`
