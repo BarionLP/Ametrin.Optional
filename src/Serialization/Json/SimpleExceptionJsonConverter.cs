@@ -17,7 +17,7 @@ public sealed class SimpleExceptionJsonConverter : JsonConverter<Exception>
         string? message = null;
         List<Exception> inner = [];
 
-        var stringComparison = options.StringComparison;
+        var stringComparison = options.StringComparison();
         var messagePropertyName = options.GetPropertyName(nameof(Exception.Message));
         var innerExceptionsPropertyName = options.GetPropertyName(nameof(AggregateException.InnerExceptions));
 

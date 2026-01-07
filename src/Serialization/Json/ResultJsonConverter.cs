@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -20,7 +18,7 @@ public sealed class ResultJsonConverter<T> : JsonConverter<Result<T>>
 
         if (!reader.Read()) throw new JsonException();
 
-        var stringComparison = options.StringComparison;
+        var stringComparison = options.StringComparison();
 
         if (string.Equals(propertyName, SUCCESS_PROPERTY_NAME, stringComparison))
         {

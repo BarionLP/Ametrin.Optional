@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,31 +10,25 @@ internal static class JsonHelper
     internal const string TYPE_PROPERTY_NAME = "$type";
 
 
-    extension(JsonSerializerOptions options)
-    {
-        internal string GetPropertyName(string logicalName)
-            => options.PropertyNamingPolicy?.ConvertName(logicalName) ?? logicalName;
+    internal static string GetPropertyName(this JsonSerializerOptions options, string logicalName)
+        => options.PropertyNamingPolicy?.ConvertName(logicalName) ?? logicalName;
 
-        internal StringComparison StringComparison => options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-    }
-    
-    extension(ref Utf8JsonReader reader)
+    internal static StringComparison StringComparison(this JsonSerializerOptions options) => options.PropertyNameCaseInsensitive ? System.StringComparison.OrdinalIgnoreCase : System.StringComparison.Ordinal;
+
+    [StackTraceHidden]
+    internal static void HandleUnmappedMember(this ref Utf8JsonReader reader, JsonSerializerOptions options)
     {
-        [StackTraceHidden]
-        internal void HandleUnmappedMember(JsonSerializerOptions options)
+        switch (options.UnmappedMemberHandling)
         {
-            switch (options.UnmappedMemberHandling)
-            {
-                case JsonUnmappedMemberHandling.Skip:
-                    reader.Skip();
-                    break;
+            case JsonUnmappedMemberHandling.Skip:
+                reader.Skip();
+                break;
 
-                case JsonUnmappedMemberHandling.Disallow:
-                    throw new JsonException();
+            case JsonUnmappedMemberHandling.Disallow:
+                throw new JsonException();
 
-                default:
-                    throw new UnreachableException();
-            }
+            default:
+                throw new UnreachableException();
         }
     }
 }
