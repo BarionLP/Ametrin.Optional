@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace Ametrin.Optional;
 
+// TODO: investigate impact of TrimExcess()
+// i assume its only usefull if the result is supposed to be around for a while which i think the minority of cases
 public static class OptionLinqExtensions
 {
     // any already tries to get the non-enumerated count before calling the enumerator
@@ -73,9 +75,11 @@ public static class OptionLinqExtensions
             return default;
         }
 
+        // values.TrimExcess();
+
         return values;
     }
-    
+
     public static Result<IReadOnlyList<T>> ValuesOrFirstError<T>(this IEnumerable<Result<T>> source)
     {
         var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
@@ -94,6 +98,8 @@ public static class OptionLinqExtensions
                 return error;
             }
         }
+
+        // values.TrimExcess();
 
         return values;
     }
@@ -116,6 +122,8 @@ public static class OptionLinqExtensions
                 return error;
             }
         }
+
+        // values.TrimExcess();
 
         return values;
     }
@@ -160,6 +168,9 @@ public static class OptionLinqExtensions
         var (values, errors) = CreateBags<T, Exception>(count);
         results.BranchInto(values, errors);
 
+        // values.TrimExcess();
+        // errors.TrimExcess();
+
         return (values, errors);
     }
 
@@ -172,6 +183,9 @@ public static class OptionLinqExtensions
 
         var (values, errors) = CreateBags<T, E>(count);
         results.BranchInto(values, errors);
+
+        // values.TrimExcess();
+        // errors.TrimExcess();
 
         return (values, errors);
     }
