@@ -1,6 +1,11 @@
 # Ametrin.Optional
 
-A modern, allocation-free library providing robust optional types for .NET. It offers a flexible and efficient way to handle nullable values, errors, and exceptions with a fluent, monadic API.
+A modern, allocation-free library providing robust optional types for .NET, offering a flexible and efficient way to handle nullable values, errors, and exceptions with a fluent, monadic API.
+
+### Options vs. Exceptions
+Exceptions are relatively expensive and are best reserved for unexpected failures and programmer mistakes.  
+For expected errors (like invalid user input or parse failures), it's often better to return a lightweight value the caller must handle.  
+This makes error handling explicit, cheap, and hard to ignore without using exceptions for normal control flow.
 
 ```bash
 dotnet add package Ametrin.Optional
@@ -8,11 +13,11 @@ dotnet add package Ametrin.Optional
 
 ## Features
 
-- 🚀 **Zero Allocations** - Designed for high-performance scenarios
-- 🧩 **Monadic API** - Fluent interface for transformations and error handling
-- 🔄 **Easy Integration** - Seamless integration with existing C# code
-- 🎯 **Multiple Option Types** - Different types for various use cases
-- 💪 **Async Support** - First-class support for async operations
+- **Maximum Performance** - A zero cost abstraction (mostly)
+- **Monadic API** - Fluent interface for transformations and error handling of all kind
+- **Integration** - Seamless integration with existing C# code
+- **Variety** - Different types for various use cases
+- **Async Support** - First-class support for async operations
 
 ## Core Types
 
@@ -29,8 +34,8 @@ Option<T> d = default;                  // default results in an error state -> 
 
 ### `Result<T>` and `Result<T, E>`
 Like `Option<T>` but with error information.  
-`Result<T>` stores an Exception as error  
-`Result<T, E>` stores a custom error type
+`Result<T>` uses an Exception as error type (easy to integrate) 
+`Result<T, E>` uses a custom error type (recommended for performance)
 
 ```csharp
 Result<T> b = Result.Success(someT);            // explicit success creation (throws if someT is null)
@@ -38,13 +43,13 @@ Result<T> c = Result.Error<T>(new Exception()); // explicit error creation
 Result<T> a = Result.Of(someT);                 // returns Result.Error<T>(new NullReferenceException()) if someT is null
 Result<T> a = someT;                            // implicit conversion from T -> Result.Of(someT)
 Result<T> a = new Exception();                  // implicit conversion from Exception -> Result.Error<T>(new Exception())
-// same applies for Result<T, E> (with generic arguments)
+// same concept for Result<T, E>
 ```
 
 ### `ErrorState` and `ErrorState<E>`
 Represents a success state or an error value  
-`ErrorState` stores an Exception as error  
-`ErrorState<E>` stores a custom error type
+`ErrorState` uses an Exception as error type
+`ErrorState<E>` uses a custom error type
 ```csharp
 ErrorState success = default;           // ErrorState.Success()
 ErrorState error = new Exception();     // ErrorState.Error(new Exception())
