@@ -2,6 +2,7 @@ using Ametrin.Optional.Parsing;
 
 namespace Ametrin.Optional.Test;
 
+// just has to compile
 internal static partial class SpanParsableGeneratorTests
 {
     static void String()

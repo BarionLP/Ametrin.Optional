@@ -1,11 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace Ametrin.Optional.Serialization.Json;
 
-// [RequiresDynamicCode("JSON serialization and deserialization might require types that cannot be statically analyzed")]
-// [RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed")]
 public sealed class OptionJsonConverter<T> : JsonConverter<Option<T>>
 {
     public override Option<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -33,5 +32,20 @@ public sealed class OptionJsonConverter<T> : JsonConverter<Option<T>>
         {
             writer.WriteNullValue();
         }
+    }
+}
+
+[RequiresDynamicCode("Uses runtime generic instantiation. For NativeAOT, register closed converters or use a source-generated JsonSerializerContext.")]
+public sealed class OptionJsonConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert)
+        => typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(Option<>);
+
+    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    {
+        var innerType = typeToConvert.GetGenericArguments()[0];
+        var converterType = typeof(OptionJsonConverter<>).MakeGenericType(innerType);
+
+        return (JsonConverter)Activator.CreateInstance(converterType)!;
     }
 }

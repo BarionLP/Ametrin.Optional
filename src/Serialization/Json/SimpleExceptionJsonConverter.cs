@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static Ametrin.Optional.Serialization.Json.JsonHelper;
+using static Ametrin.Optional.Serialization.Json.OptionJsonHelper;
 
 namespace Ametrin.Optional.Serialization.Json;
 
@@ -10,8 +10,6 @@ public sealed class SimpleExceptionJsonConverter : JsonConverter<Exception>
     public override Exception? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType is not JsonTokenType.StartObject) throw new JsonException();
-
-        if (!reader.Read()) throw new JsonException();
 
         string? typeName = null;
         string? message = null;

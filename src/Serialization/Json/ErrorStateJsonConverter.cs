@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -61,5 +62,20 @@ public sealed class ErrorStateJsonConverter<T> : JsonConverter<ErrorState<T>>
             var typeInfo = (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T));
             JsonSerializer.Serialize(writer, inner, typeInfo);
         }
+    }
+}
+
+[RequiresDynamicCode("Uses runtime generic instantiation. For NativeAOT, register closed converters or use a source-generated JsonSerializerContext.")]
+public sealed class ErrorStateJsonConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert)
+        => typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(ErrorState<>);
+
+    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    {
+        var innerType = typeToConvert.GetGenericArguments()[0];
+        var converterType = typeof(ErrorStateJsonConverter<>).MakeGenericType(innerType);
+
+        return (JsonConverter)Activator.CreateInstance(converterType)!;
     }
 }

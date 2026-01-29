@@ -1,14 +1,25 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Ametrin.Optional.Serialization.Json;
 
-internal static class JsonHelper
+public static class OptionJsonHelper
 {
-    internal const string SUCCESS_PROPERTY_NAME = "$success";
-    internal const string ERROR_PROPERTY_NAME = "$error";
-    internal const string TYPE_PROPERTY_NAME = "$type";
+    public const string SUCCESS_PROPERTY_NAME = "$success";
+    public const string ERROR_PROPERTY_NAME = "$error";
+    public const string TYPE_PROPERTY_NAME = "$type";
 
+    [RequiresDynamicCode("Uses runtime generic instantiation. For NativeAOT, register closed converters or use a source-generated JsonSerializerContext.")]
+    public static JsonSerializerOptions AddOptionConvertes(this JsonSerializerOptions options)
+    {
+        options.Converters.Add(new OptionJsonConverterFactory());
+        options.Converters.Add(new ResultJsonConverterFactory());
+        options.Converters.Add(new ErrorStateJsonConverter());
+        options.Converters.Add(new ErrorStateJsonConverterFactory());
+        options.Converters.Add(new SimpleExceptionJsonConverter());
+        return options;
+    }
 
     internal static string GetPropertyName(this JsonSerializerOptions options, string logicalName)
         => options.PropertyNamingPolicy?.ConvertName(logicalName) ?? logicalName;
