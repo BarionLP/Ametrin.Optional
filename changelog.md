@@ -1,5 +1,7 @@
 ## 0.3.2
 - add `IEnumerable<Option<T>>.ValuesIntoOrError`
+- mark obsolete `OptionsMarshall.TryGetValue` and `TryGetError` as errors (will be removed after 0.3.2)
+- updated TUnit to 1.17.11
 
 ## 0.3.1
 - `TryLastIndexOf` for `ReadOnlySpan<T>`

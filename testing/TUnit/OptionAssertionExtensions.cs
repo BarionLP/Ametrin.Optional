@@ -38,7 +38,7 @@ public static class OptionAssertionExtensions
     }
     
     public static EqualsAssertion<Option> IsSuccess(this IAssertionSource<Option> valueSource)
-        => valueSource.IsEqualTo(true);
+        => valueSource.IsEqualTo(Option.Success());
     public static EqualsAssertion<Option> IsError(this IAssertionSource<Option> valueSource)
-        => valueSource.IsEqualTo(false);
+        => valueSource.IsEqualTo(Option.Error());
 }
