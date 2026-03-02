@@ -27,6 +27,19 @@ public static class OptionLinqExtensions
         return enumerator.MoveNext() ? Option.Success(enumerator.Current) : default;
     }
 
+    public static Option<T> TryFirst<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+            {
+                return item;
+            }
+        }
+
+        return default;
+    }
+
     public static IEnumerable<T> WhereSuccess<T>(this IEnumerable<Option<T>> source)
         => source.Where(static option => option._hasValue).Select(static option => option._value);
     public static IEnumerable<T> WhereSuccess<T>(this IEnumerable<Result<T>> source)
