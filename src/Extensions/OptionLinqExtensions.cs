@@ -4,7 +4,7 @@ using System.Linq;
 namespace Ametrin.Optional;
 
 // TODO: investigate impact of TrimExcess()
-// i assume its only usefull if the result is supposed to be around for a while which i think the minority of cases
+// i assume its only useful if the result is supposed to be around for a while which i think is the minority of cases
 public static class OptionLinqExtensions
 {
     // any already tries to get the non-enumerated count before calling the enumerator
@@ -219,7 +219,7 @@ public static class OptionLinqExtensions
         return count > 0 ? new List<T>(capacity: count) : [];
     }
 
-    [Obsolete("use Select(option => option.Map(map)). this method made things confusing")]
+    [Obsolete("use Select(option => option.Map(map)). this method made things confusing", error: true)]
     public static IEnumerable<Option<TResult>> Select<T, TResult>(this IEnumerable<Option<T>> source, Func<T, TResult> map)
         => source.Select(option => option.Map(map));
 }

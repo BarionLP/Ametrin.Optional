@@ -62,10 +62,10 @@ public sealed class MapTests
         await Assert.That(OptionsMarshall.IsSuccess(RefOption.Success<Span<char>>([]).Map(true, (s, a) => RefOption.Success(s)))).IsTrue();
         await Assert.That(OptionsMarshall.IsSuccess(Option.Success("").Map(true, (v, a) => v.AsSpan()))).IsTrue();
 
-        await Assert.That(new int?(1).Map(true, (v, a) => a)).IsEqualTo(true);
+        await Assert.That(new int?(1).Map(true, (v, a) => a)).IsTrue();
         await Assert.That(new int?(1).Map(true, (v, a) => a.ToString())).IsEqualTo("True");
         await Assert.That(((string?)"").Map(true, (v, a) => a.ToString())).IsEqualTo("True");
-        await Assert.That(((string?)"1").Map(true, (v, a) => a)).IsEqualTo(true);
+        await Assert.That(((string?)"1").Map(true, (v, a) => a)).IsTrue();
     }
 
     [Test]

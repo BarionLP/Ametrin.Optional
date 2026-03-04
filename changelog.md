@@ -1,11 +1,13 @@
 ## 0.3.2
 - add `IEnumerable<Option<T>>.ValuesIntoOrError`
 - add `IEnumerable<T>.TryFirst(predicate)`
+- add `ReadOnlySpan<T>.TryIndexOfAny` 
+- make `TryIndexOf` and `TryLastIndexOf` generic 
 - mark obsolete `OptionsMarshall.TryGetValue` and `TryGetError` as errors (will be removed after 0.3.2)
 - updated TUnit to 1.17.11
 
 ## 0.3.1
-- `TryLastIndexOf` for `ReadOnlySpan<T>`
+- `TryLastIndexOf` for `ReadOnlySpan<char>`
 - `ConsumeAsync` for `(Option<T>, Option<T>)` and `(Result<T>, Result<T>)`
 - improve error messages for `Result<FileSystemInfo>.RequireExists`
 - inform to not use `default` keyword to create `Option` (`AmOptional010`)
@@ -29,7 +31,7 @@
   - rename `IEnumerable<T>.FirstOrError` to `TryFirst`
 - `Or` overloads with an argument
 - `Option.ToResult` and `ErrorState.ToResult` overloads with an argument
-- `TryIndexOf` for `ReadOnlySpan<T>`
+- `TryIndexOf` for `ReadOnlySpan<char>`
 - `SpanParsableGenerator` improvements
   - improved exception message
   - fixed nesting in static classes
