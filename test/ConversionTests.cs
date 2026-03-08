@@ -97,10 +97,19 @@ public sealed class ConversionTests
 
         await Assert.That(success.ToResult(1)).IsSuccess(1);
         await Assert.That(success.ToResult(static () => 1)).IsSuccess(1);
+        await Assert.That(success.ToResult(static () => Result.Success(1))).IsSuccess(1);
+        await Assert.That(success.ToResult(static () => Result.Error<int>())).IsError();
         await Assert.That(success.ToResultAsync(static () => Task.FromResult(1))).IsSuccess(1);
+        await Assert.That(success.ToResultAsync(static () => Task.FromResult(Result.Success(1)))).IsSuccess(1);
+        await Assert.That(success.ToResultAsync(static () => Task.FromResult(Result.Error<int>()))).IsErrorNotOfType<int, InvalidOperationException>();
+
         await Assert.That(error.ToResult(1)).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(error.ToResult(static () => 1)).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResult(static () => Result.Success(1))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResult(static () => Result.Error<int>())).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(await error.ToResultAsync(static () => Task.FromResult(1))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResultAsync(static () => Task.FromResult(Result.Success(1)))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResultAsync(static () => Task.FromResult(Result.Error<int>()))).IsErrorOfType<int, InvalidOperationException>();
     }
 
     [Test]
@@ -111,10 +120,19 @@ public sealed class ConversionTests
 
         await Assert.That(success.ToResultAsync(1)).IsSuccess(1);
         await Assert.That(success.ToResultAsync(static () => 1)).IsSuccess(1);
+        await Assert.That(success.ToResultAsync(static () => Result.Success(1))).IsSuccess(1);
+        await Assert.That(success.ToResultAsync(static () => Result.Error<int>())).IsErrorNotOfType<int, InvalidOperationException>();
         await Assert.That(success.ToResultAsync(static () => Task.FromResult(1))).IsSuccess(1);
+        await Assert.That(success.ToResultAsync(static () => Task.FromResult(Result.Success(1)))).IsSuccess(1);
+        await Assert.That(success.ToResultAsync(static () => Task.FromResult(Result.Error<int>()))).IsErrorNotOfType<int, InvalidOperationException>();
+
         await Assert.That(error.ToResultAsync(1)).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(error.ToResultAsync(static () => 1)).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResultAsync(static () => Result.Success(1))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResultAsync(static () => Result.Error<int>())).IsErrorOfType<int, InvalidOperationException>();
         await Assert.That(error.ToResultAsync(static () => Task.FromResult(1))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResultAsync(static () => Task.FromResult(Result.Success(1)))).IsErrorOfType<int, InvalidOperationException>();
+        await Assert.That(error.ToResultAsync(static () => Task.FromResult(Result.Error<int>()))).IsErrorOfType<int, InvalidOperationException>();
     }
 
     [Test]
@@ -125,10 +143,19 @@ public sealed class ConversionTests
 
         await Assert.That(success.ToResult(1)).IsSuccess(1);
         await Assert.That(success.ToResult(static () => 1)).IsSuccess(1);
+        await Assert.That(success.ToResult(static () => Result.Success<int, string>(1))).IsSuccess(1);
+        await Assert.That(success.ToResult(static () => Result.Error<int, string>("oof"))).IsError("oof");
         await Assert.That(await success.ToResultAsync(static () => Task.FromResult(1))).IsSuccess(1);
+        await Assert.That(await success.ToResultAsync(static () => Task.FromResult(Result.Success<int, string>(1)))).IsSuccess(1);
+        await Assert.That(await success.ToResultAsync(static () => Task.FromResult(Result.Error<int, string>("off")))).IsError("off");
+
         await Assert.That(error.ToResult(1)).IsError("nay");
         await Assert.That(error.ToResult(static () => 1)).IsError("nay");
+        await Assert.That(error.ToResult(static () => Result.Success<int, string>(1))).IsError("nay");
+        await Assert.That(error.ToResult(static () => Result.Error<int, string>("oof"))).IsError("nay");
         await Assert.That(await error.ToResultAsync(static () => Task.FromResult(1))).IsError("nay");
+        await Assert.That(await error.ToResultAsync(static () => Task.FromResult(Result.Success<int, string>(1)))).IsError("nay");
+        await Assert.That(await error.ToResultAsync(static () => Task.FromResult(Result.Error<int, string>("oof")))).IsError("nay");
     }
 
     [Test]
@@ -139,9 +166,14 @@ public sealed class ConversionTests
 
         await Assert.That(await success.ToResultAsync(1)).IsSuccess(1);
         await Assert.That(await success.ToResultAsync(static () => 1)).IsSuccess(1);
+        await Assert.That(await success.ToResultAsync(static () => Result.Success<int, string>(1))).IsSuccess(1);
+        await Assert.That(await success.ToResultAsync(static () => Result.Error<int, string>("oof"))).IsError("oof");
         await Assert.That(await success.ToResultAsync(static () => Task.FromResult(1))).IsSuccess(1);
+
         await Assert.That(await error.ToResultAsync(1)).IsError("nay");
         await Assert.That(await error.ToResultAsync(static () => 1)).IsError("nay");
+        await Assert.That(await error.ToResultAsync(static () => Result.Success<int, string>(1))).IsError("nay");
+        await Assert.That(await error.ToResultAsync(static () => Result.Error<int, string>("oof"))).IsError("nay");
         await Assert.That(await error.ToResultAsync(static () => Task.FromResult(1))).IsError("nay");
     }
 }
