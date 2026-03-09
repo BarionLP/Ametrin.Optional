@@ -116,38 +116,32 @@ partial struct RefOption<TValue>
     public RefOption<TResult> TryMap<TResult>(Func<TValue, TResult> map)
         where TResult : struct, allows ref struct
     {
-        if (!_hasValue)
+        if (_hasValue)
         {
-            return default;
+            try
+            {
+                return map(_value);
+            }
+            catch { }
         }
 
-        try
-        {
-            return map(_value);
-        }
-        catch
-        {
-            return default;
-        }
+        return default;
     }
 
     public RefOption<TResult> TryMap<TArg, TResult>(TArg arg, Func<TValue, TArg, TResult> map)
         where TResult : struct, allows ref struct
         where TArg : allows ref struct
     {
-        if (!_hasValue)
+        if (_hasValue)
         {
-            return default;
+            try
+            {
+                return map(_value, arg);
+            }
+            catch { }
         }
 
-        try
-        {
-            return map(_value, arg);
-        }
-        catch
-        {
-            return default;
-        }
+        return default;
     }
 }
 

@@ -1,6 +1,11 @@
 ## 0.4.0
 - drop .NET 9
+- add `Join` for nullable types
+- add `Join` for 5 elements
 - remove obsolete `OptionsMarshall.TryGetValue` and `TryGetError` (use `Branch` #31)
+- mark tuple operations obsolete (use `Join` #37)
+- remove experimental `Consume` for `(Result<T, E>, Result<T, E>)` (use `Join` #37)
+
 
 ## 0.3.2
 - add `IEnumerable<Option<T>>.ValuesIntoOrError`

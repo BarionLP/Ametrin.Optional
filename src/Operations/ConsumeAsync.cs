@@ -179,6 +179,7 @@ partial struct ErrorState<TError>
 
 partial class OptionTupleExtensions
 {
+    [Obsolete("use a.Join(b).ConsumeAsync")]
     public static async Task<Option> ConsumeAsync<T1, T2>(this (Option<T1>, Option<T2>) options, Func<T1, T2, Task>? success = null, Func<Task>? error = null)
     {
         var (a, b) = options;
@@ -200,6 +201,7 @@ partial class OptionTupleExtensions
         }
     }
 
+    [Obsolete("use a.Join(b).ConsumeAsync")]
     public static async Task<ErrorState> ConsumeAsync<T1, T2>(this (Result<T1>, Result<T2>) options, Func<T1, T2, Task>? success = null, Func<Exception, Task>? error = null)
     {
         var (a, b) = options;
