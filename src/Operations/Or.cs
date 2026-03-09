@@ -25,7 +25,13 @@ partial struct Option<TValue>
 
     [AsyncExtension]
     [StackTraceHidden]
-    public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
+    public TValue OrThrow(Func<string> messageSupplier) 
+        => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
+
+    [StackTraceHidden]
+    public TValue OrThrow<TArg>(TArg arg, Func<TArg, string> messageSupplier)
+        where TArg : allows ref struct
+        => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier(arg));
 }
 
 partial struct Result<TValue>
@@ -51,7 +57,13 @@ partial struct Result<TValue>
 
     [AsyncExtension]
     [StackTraceHidden]
-    public TValue OrThrow(Func<Exception, string> messageSupplier) => _hasValue ? _value : throw new ResultIsErrorException(messageSupplier(_error), _error);
+    public TValue OrThrow(Func<Exception, string> messageSupplier)
+        => _hasValue ? _value : throw new ResultIsErrorException(messageSupplier(_error), _error);
+
+    [StackTraceHidden]
+    public TValue OrThrow<TArg>(TArg arg, Func<Exception, TArg, string> messageSupplier)
+        where TArg : allows ref struct
+        => _hasValue ? _value : throw new ResultIsErrorException(messageSupplier(_error, arg), _error);
 }
 
 partial struct Result<TValue, TError>
@@ -77,7 +89,13 @@ partial struct Result<TValue, TError>
 
     [AsyncExtension]
     [StackTraceHidden]
-    public TValue OrThrow(Func<TError, string> messageSupplier) => _hasValue ? _value : throw new ResultIsErrorException<TError>(messageSupplier(_error), _error);
+    public TValue OrThrow(Func<TError, string> messageSupplier) 
+        => _hasValue ? _value : throw new ResultIsErrorException<TError>(messageSupplier(_error), _error);
+
+    [StackTraceHidden]
+    public TValue OrThrow<TArg>(TArg arg, Func<TError, TArg, string> messageSupplier)
+        where TArg : allows ref struct
+        => _hasValue ? _value : throw new ResultIsErrorException<TError>(messageSupplier(_error, arg), _error);
 }
 
 partial struct RefOption<TValue>
@@ -98,7 +116,13 @@ partial struct RefOption<TValue>
     public TValue OrThrow(string message) => _hasValue ? _value : throw new OptionIsErrorException(message);
 
     [StackTraceHidden]
-    public TValue OrThrow(Func<string> messageSupplier) => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
+    public TValue OrThrow(Func<string> messageSupplier) 
+        => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier());
+
+    [StackTraceHidden]
+    public TValue OrThrow<TArg>(TArg arg, Func<TArg, string> messageSupplier) 
+        where TArg : allows ref struct
+        => _hasValue ? _value : throw new OptionIsErrorException(messageSupplier(arg));
 }
 
 public static class OptionReferenceOrNullExtensions

@@ -84,11 +84,20 @@ partial struct ErrorState
     [AsyncExtension]
     public Result<TValue> ToResult<TValue>(Func<TValue> value)
         => _isError ? _error : value();
+    [AsyncExtension]
+    public Result<TValue> ToResult<TValue>(Func<Result<TValue>> value)
+        => _isError ? _error : value();
     public Result<TValue> ToResult<TValue, TArg>(TArg arg, Func<TArg, TValue> value)
+        where TArg : allows ref struct
+        => _isError ? _error : value(arg);
+    public Result<TValue> ToResult<TValue, TArg>(TArg arg, Func<TArg, Result<TValue>> value)
         where TArg : allows ref struct
         => _isError ? _error : value(arg);
     [AsyncExtension]
     public async Task<Result<TValue>> ToResultAsync<TValue>(Func<Task<TValue>> value)
+        => _isError ? _error : await value();
+    [AsyncExtension]
+    public async Task<Result<TValue>> ToResultAsync<TValue>(Func<Task<Result<TValue>>> value)
         => _isError ? _error : await value();
 }
 
@@ -103,11 +112,20 @@ partial struct ErrorState<TError>
     [AsyncExtension]
     public Result<TValue, TError> ToResult<TValue>(Func<TValue> value)
         => _isError ? _error : value();
+    [AsyncExtension]
+    public Result<TValue, TError> ToResult<TValue>(Func<Result<TValue, TError>> value)
+        => _isError ? _error : value();
     public Result<TValue, TError> ToResult<TValue, TArg>(TArg arg, Func<TArg, TValue> value)
+        where TArg : allows ref struct
+        => _isError ? _error : value(arg);
+    public Result<TValue, TError> ToResult<TValue, TArg>(TArg arg, Func<TArg, Result<TValue, TError>> value)
         where TArg : allows ref struct
         => _isError ? _error : value(arg);
     [AsyncExtension]
     public async Task<Result<TValue, TError>> ToResultAsync<TValue>(Func<Task<TValue>> value)
+        => _isError ? _error : await value();
+    [AsyncExtension]
+    public async Task<Result<TValue, TError>> ToResultAsync<TValue>(Func<Task<Result<TValue, TError>>> value)
         => _isError ? _error : await value();
 }
 
