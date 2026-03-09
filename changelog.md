@@ -65,6 +65,7 @@
 - updated TUnit to 0.73.4
 
 ## 0.2.6
+- add `Branch` Operation (replaces `OptionsMarshall.TryGetValue` and `TryGetError`)
 - add `Consume/Match/Require/Reject` overloads with an argument (#26)
 - add `ErrorState.Try` (#30)
 - add `Result.Try` overload with an argument (#26, #30)
