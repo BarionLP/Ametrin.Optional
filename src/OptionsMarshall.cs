@@ -84,9 +84,4 @@ public static partial class OptionsMarshall
         => errorState.Branch(out var error) ? throw new InvalidOperationException() : error;
     public static TError? GetErrorUnsafe<TError>(ErrorState<TError> result)
         => result._error;
-    [Obsolete("use !ErrorState.Branch(out error)")]
-    public static bool TryGetError<TError>(ErrorState<TError> errorState, [MaybeNullWhen(false)] out TError error)
-    {
-        return !errorState.Branch(out error);
-    }
 }

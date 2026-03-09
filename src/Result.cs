@@ -82,7 +82,7 @@ public static class Result
     }
 
     public static Result<TValue, TError> Success<TValue, TError>(TValue value)
-        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Success with null value") : new(value);
+        => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Success with a null reference") : new(value);
     public static Result<TValue, TError> Error<TValue, TError>(TError error) => new(error);
 
     public static ErrorState CombineErrors<T1, T2>(Result<T1> a, Result<T2> b)
