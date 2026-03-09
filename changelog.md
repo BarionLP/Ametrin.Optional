@@ -1,3 +1,7 @@
+## 0.4.0
+- drop .NET 9
+- remove obsolete `OptionsMarshall.TryGetValue` and `TryGetError` (use `Branch` #31)
+
 ## 0.3.2
 - add `IEnumerable<Option<T>>.ValuesIntoOrError`
 - add `IEnumerable<T>.TryFirst(predicate)`
