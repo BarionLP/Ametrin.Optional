@@ -1,6 +1,7 @@
 using Ametrin.Optional;
 
-// A simple Authenticator to showcase the usage of Option<T> and Result<T, E> (this is not a secure auth system!)
+// A simple Authenticator to showcase the usage of Option<T> and Result<T, E> 
+// this is not a secure authentication system!
 
 file class Authentication
 {
@@ -22,9 +23,7 @@ file class Authentication
     {
         Console.WriteLine($"Attempting to log in as {username}...");
 
-        var result = await authService.AuthenticateAsync(username, password);
-
-        result.Consume(
+        await authService.AuthenticateAsync(username, password).ConsumeAsync(
             success: user => Console.WriteLine($"✅ Login successful! Welcome, {user.Name}\n"),
             error: errorMsg => Console.WriteLine($"❌ Login failed: {errorMsg}\n")
         );
@@ -49,8 +48,14 @@ file class AuthService
                         );
     }
 
+    public Result<string, string> ValidatePassword(string password)
+        => Result.Success<string, string>(password)
+            .Reject(string.IsNullOrWhiteSpace, "Password cannot be empty")
+            .Require(password => password.Length >= 8, "Password must be at least 8 characters")
+            .Require(password => password.Any(char.IsAsciiDigit), "Password contain at least 1 digit");
 
-    private Task<Option<User>> LoadUserFromDb(string username) 
+
+    private Task<Option<User>> LoadUserFromDb(string username)
         => Task.FromResult(_users.TryGetValue(username));
 
     private readonly Dictionary<string, User> _users = new()

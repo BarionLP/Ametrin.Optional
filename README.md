@@ -149,8 +149,8 @@ Example benchmark for [parsing a DateTime](./benchy/Examples/ParsingDateTimeBenc
 ```
 | Method          | Mean     | Error    | StdDev   | Allocated |
 |---------------- |---------:|---------:|---------:|----------:|
-| Default_Success | 87.31 ns | 1.696 ns | 1.666 ns |         - |
-| Option_Success  | 89.95 ns | 1.821 ns | 2.492 ns |         - |
-| Default_Error   | 73.27 ns | 1.462 ns | 2.361 ns |         - | // using TryParse
-| Option_Error    | 74.05 ns | 1.464 ns | 1.504 ns |         - |
+| Default_Success | 82.38 ns | 0.361 ns | 0.337 ns |         - |
+| Option_Success  | 83.71 ns | 0.360 ns | 0.336 ns |         - |
+| Default_Error   | 70.07 ns | 0.244 ns | 0.216 ns |         - | // using TryParse
+| Option_Error    | 69.47 ns | 0.225 ns | 0.199 ns |         - |
 ```
