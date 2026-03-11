@@ -93,114 +93,114 @@ public sealed class MapTests
     }
 
     [Test]
-    public async Task Tuple_Map_Success_Success_Test()
+    public async Task Join_Map_Success_Success_Test()
     {
-        await Assert.That((Option.Success(1), Option.Success(1)).Map((a, b) => a + b)).IsSuccess(2);
-        await Assert.That((Option.Success(1), Option.Success(1)).Map((a, b) => Option.Success(a + b))).IsSuccess(2);
-        await Assert.That((Option.Success(1), Option.Success(1)).Map((a, b) => Option.Error<int>())).IsError();
+        await Assert.That(Option.Success(1).Join(Option.Success(1)).Map((a, b) => a + b)).IsSuccess(2);
+        await Assert.That(Option.Success(1).Join(Option.Success(1)).Map((a, b) => Option.Success(a + b))).IsSuccess(2);
+        await Assert.That(Option.Success(1).Join(Option.Success(1)).Map((a, b) => Option.Error<int>())).IsError();
 
-        await Assert.That((Result.Success(1), Result.Success(1)).Map((a, b) => a + b)).IsSuccess(2);
-        await Assert.That((Result.Success(1), Result.Success(1)).Map((a, b) => Result.Success(a + b))).IsSuccess(2);
-        await Assert.That((Result.Success(1), Result.Success(1)).Map((a, b) => Result.Error<int>(new InvalidCastException()))).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Success(1).Join(Result.Success(1)).Map((a, b) => a + b)).IsSuccess(2);
+        await Assert.That(Result.Success(1).Join(Result.Success(1)).Map((a, b) => Result.Success(a + b))).IsSuccess(2);
+        await Assert.That(Result.Success(1).Join(Result.Success(1)).Map((a, b) => Result.Error<int>(new InvalidCastException()))).IsErrorOfType<int, InvalidCastException>();
 
-        await Assert.That((Result.Success<int, string>(1), Result.Success<int, string>(1)).Map((a, b) => a + b, (e1, e2) => e1 + e2)).IsSuccess(2);
-        await Assert.That((Result.Success<int, string>(1), Result.Success<int, string>(1)).Map((a, b) => Result.Success<int, string>(a + b), (e1, e2) => e1 + e2)).IsSuccess(2);
-        await Assert.That((Result.Success<int, string>(1), Result.Success<int, string>(1)).Map((a, b) => Result.Error<int, string>("C"), (e1, e2) => e1 + e2)).IsError("C");
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map((a, b) => a + b)).IsSuccess(2);
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map((a, b) => Result.Success<int, string>(a + b))).IsSuccess(2);
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map((a, b) => Result.Error<int, string>("C"))).IsError("C");
     }
 
     [Test]
-    public async Task Tuple_Map_Error_Success_Test()
+    public async Task Join_Map_Error_Success_Test()
     {
-        await Assert.That((Option.Error<int>(), Option.Success(1)).Map((a, b) => a + b)).IsError();
-        await Assert.That((Option.Error<int>(), Option.Success(1)).Map((a, b) => Option.Success(a + b))).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Success(1)).Map((a, b) => a + b)).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Success(1)).Map((a, b) => Option.Success(a + b))).IsError();
 
-        await Assert.That((Result.Error<int>(new InvalidCastException()), Result.Success(1)).Map((a, b) => a + b)).IsErrorOfType<int, InvalidCastException>();
-        await Assert.That((Result.Error<int>(new InvalidCastException()), Result.Success(1)).Map((a, b) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Error<int>(new InvalidCastException()).Join(Result.Success(1)).Map((a, b) => a + b)).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Error<int>(new InvalidCastException()).Join(Result.Success(1)).Map((a, b) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
 
-        await Assert.That((Result.Error<int, string>("A"), Result.Success<int, string>(1)).Map((a, b) => a + b, (e1, e2) => e1 + e2)).IsError("A");
-        await Assert.That((Result.Error<int, string>("A"), Result.Success<int, string>(1)).Map((a, b) => Result.Success(a + b), (e1, e2) => e1 + e2)).IsError("A");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map((a, b) => a + b)).IsError("A");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map((a, b) => Result.Success(a + b))).IsError("A");
     }
 
     [Test]
     public async Task Tuple_Map_Success_Error_Test()
     {
-        await Assert.That((Option.Success(1), Option.Error<int>()).Map((a, b) => a + b)).IsError();
-        await Assert.That((Option.Success(1), Option.Error<int>()).Map((a, b) => Option.Success(a + b))).IsError();
+        await Assert.That(Option.Success(1).Join(Option.Error<int>()).Map((a, b) => a + b)).IsError();
+        await Assert.That(Option.Success(1).Join(Option.Error<int>()).Map((a, b) => Option.Success(a + b))).IsError();
 
-        await Assert.That((Result.Success(1), Result.Error<int>(new InvalidCastException())).Map((a, b) => a + b)).IsErrorOfType<int, InvalidCastException>();
-        await Assert.That((Result.Success(1), Result.Error<int>(new InvalidCastException())).Map((a, b) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Success(1).Join(Result.Error<int>(new InvalidCastException())).Map((a, b) => a + b)).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Success(1).Join(Result.Error<int>(new InvalidCastException())).Map((a, b) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
 
-        await Assert.That((Result.Success<int, string>(1), Result.Error<int, string>("B")).Map((a, b) => a + b, (e1, e2) => e1 + e2)).IsError("B");
-        await Assert.That((Result.Success<int, string>(1), Result.Error<int, string>("B")).Map((a, b) => Result.Success(a + b), (e1, e2) => e1 + e2)).IsError("B");
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map((a, b) => a + b)).IsError("B");
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map((a, b) => Result.Success(a + b))).IsError("B");
     }
 
 
     [Test]
     public async Task Tuple_Map_Error_Error_Test()
     {
-        await Assert.That((Option.Error<int>(), Option.Error<int>()).Map((a, b) => a + b)).IsError();
-        await Assert.That((Option.Error<int>(), Option.Error<int>()).Map((a, b) => Option.Success(a + b))).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Error<int>()).Map((a, b) => a + b)).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Error<int>()).Map((a, b) => Option.Success(a + b))).IsError();
 
-        await Assert.That((Result.Error<int>(new InvalidOperationException()), Result.Error<int>(new InvalidCastException())).Map((a, b) => a + b)).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
-        await Assert.That((Result.Error<int>(new InvalidOperationException()), Result.Error<int>(new InvalidCastException())).Map((a, b) => Result.Success(a + b))).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
+        await Assert.That(Result.Error<int>(new InvalidOperationException()).Join(Result.Error<int>(new InvalidCastException())).Map((a, b) => a + b)).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
+        await Assert.That(Result.Error<int>(new InvalidOperationException()).Join(Result.Error<int>(new InvalidCastException())).Map((a, b) => Result.Success(a + b))).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
 
-        await Assert.That((Result.Error<int, string>("A"), Result.Error<int, string>("B")).Map((a, b) => a + b, (e1, e2) => e1 + e2)).IsError("AB");
-        await Assert.That((Result.Error<int, string>("A"), Result.Error<int, string>("B")).Map((a, b) => Result.Success(a + b), (e1, e2) => e1 + e2)).IsError("AB");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map((a, b) => a + b)).IsError("AB");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map((a, b) => Result.Success(a + b))).IsError("AB");
     }
 
 
     [Test]
     public async Task Tuple_Map_Arg_Success_Success_Test()
     {
-        await Assert.That((Option.Success(1), Option.Success(1)).Map(true, (a, b, arg) => a + b)).IsSuccess(2);
-        await Assert.That((Option.Success(1), Option.Success(1)).Map(true, (a, b, arg) => Option.Success(a + b))).IsSuccess(2);
-        await Assert.That((Option.Success(1), Option.Success(1)).Map(true, (a, b, arg) => Option.Error<int>())).IsError();
+        await Assert.That(Option.Success(1).Join(Option.Success(1)).Map(true, (a, b, arg) => a + b)).IsSuccess(2);
+        await Assert.That(Option.Success(1).Join(Option.Success(1)).Map(true, (a, b, arg) => Option.Success(a + b))).IsSuccess(2);
+        await Assert.That(Option.Success(1).Join(Option.Success(1)).Map(true, (a, b, arg) => Option.Error<int>())).IsError();
 
-        await Assert.That((Result.Success(1), Result.Success(1)).Map(true, (a, b, arg) => a + b)).IsSuccess(2);
-        await Assert.That((Result.Success(1), Result.Success(1)).Map(true, (a, b, arg) => Result.Success(a + b))).IsSuccess(2);
-        await Assert.That((Result.Success(1), Result.Success(1)).Map(true, (a, b, arg) => Result.Error<int>(new InvalidCastException()))).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Success(1).Join(Result.Success(1)).Map(true, (a, b, arg) => a + b)).IsSuccess(2);
+        await Assert.That(Result.Success(1).Join(Result.Success(1)).Map(true, (a, b, arg) => Result.Success(a + b))).IsSuccess(2);
+        await Assert.That(Result.Success(1).Join(Result.Success(1)).Map(true, (a, b, arg) => Result.Error<int>(new InvalidCastException()))).IsErrorOfType<int, InvalidCastException>();
 
-        await Assert.That((Result.Success<int, string>(1), Result.Success<int, string>(1)).Map(true, (a, b, arg) => a + b, (e1, e2, arg) => e1 + e2)).IsSuccess(2);
-        await Assert.That((Result.Success<int, string>(1), Result.Success<int, string>(1)).Map(true, (a, b, arg) => Result.Success<int, string>(a + b), (e1, e2, arg) => e1 + e2)).IsSuccess(2);
-        await Assert.That((Result.Success<int, string>(1), Result.Success<int, string>(1)).Map(true, (a, b, arg) => Result.Error<int, string>("C"), (e1, e2, arg) => e1 + e2)).IsError("C");
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => a + b)).IsSuccess(2);
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => Result.Success<int, string>(a + b))).IsSuccess(2);
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => Result.Error<int, string>("C"))).IsError("C");
     }
 
     [Test]
     public async Task Tuple_Map_Arg_Error_Success_Test()
     {
-        await Assert.That((Option.Error<int>(), Option.Success(1)).Map(true, (a, b, arg) => a + b)).IsError();
-        await Assert.That((Option.Error<int>(), Option.Success(1)).Map(true, (a, b, arg) => Option.Success(a + b))).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Success(1)).Map(true, (a, b, arg) => a + b)).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Success(1)).Map(true, (a, b, arg) => Option.Success(a + b))).IsError();
 
-        await Assert.That((Result.Error<int>(new InvalidCastException()), Result.Success(1)).Map(true, (a, b, arg) => a + b)).IsErrorOfType<int, InvalidCastException>();
-        await Assert.That((Result.Error<int>(new InvalidCastException()), Result.Success(1)).Map(true, (a, b, arg) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Error<int>(new InvalidCastException()).Join(Result.Success(1)).Map(true, (a, b, arg) => a + b)).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Error<int>(new InvalidCastException()).Join(Result.Success(1)).Map(true, (a, b, arg) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
 
-        await Assert.That((Result.Error<int, string>("A"), Result.Success<int, string>(1)).Map(true, (a, b, arg) => a + b, (e1, e2, arg) => e1 + e2)).IsError("A");
-        await Assert.That((Result.Error<int, string>("A"), Result.Success<int, string>(1)).Map(true, (a, b, arg) => Result.Success(a + b), (e1, e2, arg) => e1 + e2)).IsError("A");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => a + b)).IsError("A");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Success<int, string>(1), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => Result.Success(a + b))).IsError("A");
     }
 
     [Test]
     public async Task Tuple_Map_Arg_Success_Error_Test()
     {
-        await Assert.That((Option.Success(1), Option.Error<int>()).Map(true, (a, b, arg) => a + b)).IsError();
-        await Assert.That((Option.Success(1), Option.Error<int>()).Map(true, (a, b, arg) => Option.Success(a + b))).IsError();
+        await Assert.That(Option.Success(1).Join(Option.Error<int>()).Map(true, (a, b, arg) => a + b)).IsError();
+        await Assert.That(Option.Success(1).Join(Option.Error<int>()).Map(true, (a, b, arg) => Option.Success(a + b))).IsError();
 
-        await Assert.That((Result.Success(1), Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => a + b)).IsErrorOfType<int, InvalidCastException>();
-        await Assert.That((Result.Success(1), Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Success(1).Join(Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => a + b)).IsErrorOfType<int, InvalidCastException>();
+        await Assert.That(Result.Success(1).Join(Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => Result.Success(a + b))).IsErrorOfType<int, InvalidCastException>();
 
-        await Assert.That((Result.Success<int, string>(1), Result.Error<int, string>("B")).Map(true, (a, b, arg) => a + b, (e1, e2, arg) => e1 + e2)).IsError("B");
-        await Assert.That((Result.Success<int, string>(1), Result.Error<int, string>("B")).Map(true, (a, b, arg) => Result.Success(a + b), (e1, e2, arg) => e1 + e2)).IsError("B");
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => a + b)).IsError("B");
+        await Assert.That(Result.Success<int, string>(1).Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => Result.Success(a + b))).IsError("B");
     }
 
     [Test]
     public async Task Tuple_Map_Arg_Error_Error_Test()
     {
-        await Assert.That((Option.Error<int>(), Option.Error<int>()).Map(true, (a, b, arg) => a + b)).IsError();
-        await Assert.That((Option.Error<int>(), Option.Error<int>()).Map(true, (a, b, arg) => Option.Success(a + b))).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Error<int>()).Map(true, (a, b, arg) => a + b)).IsError();
+        await Assert.That(Option.Error<int>().Join(Option.Error<int>()).Map(true, (a, b, arg) => Option.Success(a + b))).IsError();
 
-        await Assert.That((Result.Error<int>(new InvalidOperationException()), Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => a + b)).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
-        await Assert.That((Result.Error<int>(new InvalidOperationException()), Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => Result.Success(a + b))).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
+        await Assert.That(Result.Error<int>(new InvalidOperationException()).Join(Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => a + b)).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
+        await Assert.That(Result.Error<int>(new InvalidOperationException()).Join(Result.Error<int>(new InvalidCastException())).Map(true, (a, b, arg) => Result.Success(a + b))).IsError(e => e is AggregateException { InnerExceptions: [InvalidOperationException, InvalidCastException] });
 
-        await Assert.That((Result.Error<int, string>("A"), Result.Error<int, string>("B")).Map(true, (a, b, arg) => a + b, (e1, e2, arg) => e1 + e2)).IsError("AB");
-        await Assert.That((Result.Error<int, string>("A"), Result.Error<int, string>("B")).Map(true, (a, b, arg) => Result.Success(a + b), (e1, e2, arg) => e1 + e2)).IsError("AB");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => a + b)).IsError("AB");
+        await Assert.That(Result.Error<int, string>("A").Join(Result.Error<int, string>("B"), (e1, e2) => e1 + e2).Map(true, (a, b, arg) => Result.Success(a + b))).IsError("AB");
     }
 }

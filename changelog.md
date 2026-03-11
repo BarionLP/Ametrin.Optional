@@ -1,10 +1,20 @@
+## 0.4.0
+- drop .NET 9
+- add `Join` for nullable types
+- add `Join` for 5 elements
+- add `Map` and `Consume` for `Option<(T1, T2)>` and `Result<(T1, T2){, T}>` with a nicer delegate (for up to 5 elements in the tuple)
+- remove obsolete `OptionsMarshall.TryGetValue` and `TryGetError` (use `Branch` #31)
+- mark tuple operations obsolete (use `Join` #37)
+- remove experimental `Consume` for `(Result<T, E>, Result<T, E>)` (use `Join` #37)
+
+
 ## 0.3.2
 - add `IEnumerable<Option<T>>.ValuesIntoOrError`
 - add `IEnumerable<T>.TryFirst(predicate)`
 - add `ReadOnlySpan<T>.TryIndexOfAny` 
 - add `OrThrow(arg, messageSupplier)`
-- add `ErrorState(<E>).ToResult(Func<Result<T(, E)>>)`
-- add `ErrorState(<E>).ToResultAsync(Func<Task<Result<T(, E)>>>)`
+- add `ErrorState{<E>}.ToResult(Func<Result<T{, E}>>)`
+- add `ErrorState{<E>}.ToResultAsync(Func<Task<Result<T{, E}>>>)`
 - make `TryIndexOf` and `TryLastIndexOf` generic 
 - mark obsolete `OptionsMarshall.TryGetValue` and `TryGetError` as errors (will be removed after 0.3.2)
 - updated TUnit to 1.19.16
@@ -75,22 +85,22 @@
 - updated TUnit to 0.57.24
 
 ## 0.2.5
-- added `Or(Throw)Async` (#24)
+- added `Or{Throw}Async` (#24)
 - added `OrThrow` with custom message (#23)
 - added `Option<T>.ToResultAsync`
-- added `Result<T(, E)>.To(Option|ErrorState)Async`
-- added `ErrorState(<E>).ToResult(Async)`
+- added `Result<T{, E}>.To{Option|ErrorState}Async`
+- added `ErrorState{<E>}.ToResult(Async)`
 - added `DisposeAsync` extension methods
 - made `Result<TValue>` to `Result<TValue, Exception>` explicit to prevent accidential conversions
 - marked all custom exceptions as `System.Serializable` (#22)
 - deprecated `ToOption` and `ToResult` on arbitary objects (they are more annoying than helpful)
-- removed obsolete `(Try)Map(Async)` overloads that took an error map
+- removed obsolete `{Try}Map{Async}` overloads that took an error map
   - replaced by `MapError` (#19)
 - introduced a generator for some async extension methods. please report any breaking changes you encounter with async!  
 - updated TUnit to 0.25.21
 
 ## 0.2.4
-- added `(Try)Map(Error)` overloads with one argument (#21)
+- added `{Try}Map{Error}` overloads with one argument (#21)
 - added `RequireExists` for `Result<FileSystemInfo, Error>`
 - added `RequireExists` overload with custom error for `Result<FileSystemInfo>`
 - added `ZipArchive.TryGetEntry` returning an option
@@ -99,13 +109,13 @@
 ## 0.2.3
 - added `.MapError()` (#19) 
   - (replaces `.Map(map, errorMap)` overloads)
-- added `Match(Async)` API (#18)
+- added `Match{Async}` API (#18)
   - (replaces `Map` for `Option`, `ErrorState<T>` and `ErrorState`)
 - added custom exceptions for `.OrThrow()`
-- removed obsolete `Where(Not)`. Use `Require`/`Reject` instead.
+- removed obsolete `Where{Not}`. Use `Require`/`Reject` instead.
 - updated TUnit to 0.19.148
 
 ## 0.2.2
 - moved nullable extensions to `Ametrin.Optional.Numerics`
 - updated TUnit to 0.18.9
-- removed obsolete `(Try)Select` use `(Try)Map` instead
+- removed obsolete `{Try}Select` use `{Try}Map` instead
