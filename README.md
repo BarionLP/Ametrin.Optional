@@ -88,9 +88,9 @@ option.Consume(                         // handle success and error
 
 ```csharp
 // Combine multiple options
-optionA.Join(optionB).Map(pair => pair.Item1 + pair.Item2);
+optionA.Join(optionB).Map((a, b) => a + b);
 optionA.Join(optionB).Consume(
-    success: pair => Console.WriteLine($"{pair.Item1} + {pair.Item2} = {pair.Item1 + pair.Item2}"),
+    success: (a, b) => Console.WriteLine($"{a} + {b} = {a + b}"),
     error: () => Console.WriteLine("One of the values was missing")
 );
 ```

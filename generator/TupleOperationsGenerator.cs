@@ -59,9 +59,9 @@ public sealed class TupleOperationsGenerator : IIncrementalGenerator
 
     private static void Consume(StringBuilder sb, int genericCount)
     {
-        var generics = string.Join(", ", Enumerable.Range(0, genericCount).Select(i => $"T{i}"));
-        var genericOptionValues = string.Join(", ", Enumerable.Range(0, genericCount).Select(i => $"option._value.Item{i}"));
-        var genericResultValues = string.Join(", ", Enumerable.Range(0, genericCount).Select(i => $"result._value.Item{i}"));
+        var generics = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"T{i}"));
+        var genericOptionValues = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"option._value.Item{i}"));
+        var genericResultValues = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"result._value.Item{i}"));
 
         sb.AppendLine($$"""
             extension<{{generics}}>(Option<({{generics}})> option)
@@ -164,9 +164,9 @@ public sealed class TupleOperationsGenerator : IIncrementalGenerator
     
     private static void Map(StringBuilder sb, int genericCount)
     {
-        var generics = string.Join(", ", Enumerable.Range(0, genericCount).Select(i => $"T{i}"));
-        var genericOptionValues = string.Join(", ", Enumerable.Range(0, genericCount).Select(i => $"option._value.Item{i}"));
-        var genericResultValues = string.Join(", ", Enumerable.Range(0, genericCount).Select(i => $"result._value.Item{i}"));
+        var generics = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"T{i}"));
+        var genericOptionValues = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"option._value.Item{i}"));
+        var genericResultValues = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"result._value.Item{i}"));
 
         sb.AppendLine($$"""
             extension<{{generics}}>(Option<({{generics}})> option)
