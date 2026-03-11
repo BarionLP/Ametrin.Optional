@@ -16,6 +16,7 @@ public sealed class OptionJsonConverter<T> : JsonConverter<Option<T>>
         }
         else
         {
+            // TODO: use generic TryGetTypeInfo in .NET 11 (in all converters)
             var typeInfo = (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T));
             return JsonSerializer.Deserialize(ref reader, typeInfo);
         }
