@@ -4,7 +4,7 @@ using Ametrin.Optional.Nullable;
 BasicOptionsExample();
 ResultTypesExample();
 await AsyncOperationsExample();
-TupleOperationsExample();
+JoinOperationsExample();
 NullableIntegrationExample();
 
 /// <summary>
@@ -79,31 +79,38 @@ static async Task AsyncOperationsExample()
 }
 
 /// <summary>
-/// Shows how to work with multiple options using tuple operations
+/// Shows how to work with multiple options using join operations
 /// </summary>
-static void TupleOperationsExample()
+static void JoinOperationsExample()
 {
-    Console.WriteLine("\n=== Tuple Operations Example ===\n");
+    Console.WriteLine("\n=== Join Operations Example ===\n");
 
+    // available on Option<T>, Result<T> and Result<T, E> 
     Option<int> first = Option.Success(10);
     Option<int> second = Option.Success(20);
+    Option<int> third = Option.Success(20);
 
     // Combine multiple options
-    var combined = (first, second).Map((a, b) => a + b);
+    Option<(int a, int b)> combined = first.Join(second);
+    Option<(int, int, int)> combined3 = combined.Join(third); // supports up to 5 options, after that it starts nesting
 
-    // Handle both success and error cases
-    (first, second).Consume(
-        success: (a, b) => Console.WriteLine($"Sum: {a + b}"),
+    // use like any other option
+    combined.Consume(
+        success: pair => Console.WriteLine($"Sum: {pair.a + pair.b}"),
         error: () => Console.WriteLine("One or both values were missing")
     );
 
-    // Chain multiple operations
-    var result = (first, second)
-        .Map((a, b) => a * b)                 // Multiply values
+    var result = combined
+        .Map(pair => pair.a * pair.b)         // Multiply values
         .Require(x => x != 0)                 // Ensure non-zero
         .Map(x => Math.Sqrt(x));              // Calculate square root
 
     Console.WriteLine($"Final result: {result.Or(-1)}");
+
+    Result<int, string> a = 10;
+    Result<int, string> b = 20;
+    // Result<T, E> requires a custom error merge strategy  
+    a.Join(b, (e1, e2) => e1 + e2); 
 }
 
 /// <summary>

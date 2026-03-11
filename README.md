@@ -88,9 +88,9 @@ option.Consume(                         // handle success and error
 
 ```csharp
 // Combine multiple options
-(optionA, optionB).Map((a, b) => a + b);
-(optionA, optionB).Consume(
-    success: (a, b) => Console.WriteLine($"{a} + {b} = {a + b}"),
+optionA.Join(optionB).Map(pair => pair.Item1 + pair.Item2);
+optionA.Join(optionB).Consume(
+    success: pair => Console.WriteLine($"{pair.Item1} + {pair.Item2} = {pair.Item1 + pair.Item2}"),
     error: () => Console.WriteLine("One of the values was missing")
 );
 ```
@@ -98,7 +98,7 @@ option.Consume(                         // handle success and error
 ### Async Support
 
 ```csharp
-// Async operations with full option support
+// Async operations 
 var text = await new FileInfo("file.txt")
     .RequireExists()
     .MapAsync(f => File.ReadAllTextAsync(f.FullName))
