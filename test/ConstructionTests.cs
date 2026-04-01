@@ -6,6 +6,7 @@ public sealed class ConstructionTests
     [Test]
     public async Task Option_Test()
     {
+        await Assert.That(default(Option)).IsError();
         await Assert.That(new Option()).IsError();
         await Assert.That(Option.Success() == true).IsTrue();
         await Assert.That(Option.Success()).IsSuccess();
@@ -21,10 +22,12 @@ public sealed class ConstructionTests
     [Test]
     public async Task Option_Generic_Test()
     {
+        await Assert.That(default(Option<string>)).IsError();
         await Assert.That(new Option<string>()).IsError();
         await Assert.That(Option.Of<string>(null) == Option.Error<string>()).IsTrue();
         await Assert.That(Option.Of<int>(null) == Option.Error<int>()).IsTrue();
         await Assert.That(Option.Of(1)).IsSuccess(1);
+        await Assert.That(Option.Success(int.MinValue)).IsSuccess(int.MinValue);
         await Assert.That(Option.Error<int>() == default(Option<int>)).IsTrue();
         await Assert.That(() => Option.Success<string>(null!)).Throws<ArgumentNullException>();
 

@@ -9,14 +9,12 @@ namespace Ametrin.Optional.Testing.TUnit;
 
 public static class ErrorStateAssertionExtensions
 {
-    public const string EXPECTED_SUCCESS_MESSAGE = "to be Success";
-    public const string EXPECTED_ERROR_MESSAGE = "to be Error";
     /// <summary>
     /// Asserts the ErrorState is Success
     /// </summary>
     /// <typeparam name="TError">type parameter of <see cref="ErrorState{TError}"/></typeparam>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_SUCCESS_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ResultAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
     public static bool IsSuccess<TError>(this ErrorState<TError> errorState)
     {
         return OptionsMarshall.IsSuccess(errorState);
@@ -26,7 +24,7 @@ public static class ErrorStateAssertionExtensions
     /// Asserts the ErrorState is Success
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_SUCCESS_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ResultAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
     public static bool IsSuccess(this ErrorState errorState)
     {
         return OptionsMarshall.IsSuccess(errorState);
@@ -37,7 +35,7 @@ public static class ErrorStateAssertionExtensions
     /// </summary>
     /// <typeparam name="TError">type parameter of <see cref="ErrorState{TError}"/></typeparam>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ResultAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsError<TError>(this ErrorState<TError> errorState)
     {
         return !OptionsMarshall.IsSuccess(errorState);
@@ -47,7 +45,7 @@ public static class ErrorStateAssertionExtensions
     /// Asserts the ErrorState is Error
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ResultAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsError(this ErrorState errorState)
     {
         return !OptionsMarshall.IsSuccess(errorState);
@@ -57,7 +55,7 @@ public static class ErrorStateAssertionExtensions
     /// Asserts the ErrorState is an Error state matching the <paramref name="condition"/>
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ResultAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsError<TError>(this ErrorState<TError> result, Func<TError, bool> condition)
     {
         return !result.Branch(out var error) && condition(error);
@@ -67,7 +65,7 @@ public static class ErrorStateAssertionExtensions
     /// Asserts the ErrorState is an Error state matching the <paramref name="condition"/>
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ResultAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsError(this ErrorState result, Func<Exception, bool> condition)
     {
         return !result.Branch(out var error) && condition(error);
@@ -86,7 +84,7 @@ public static class ErrorStateAssertionExtensions
     /// </summary>
     /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = $"{ResultAssertionExtensions.EXPECTED_ERROR_MESSAGE} of type")]
     public static bool IsErrorOfType<TError>(this ErrorState errorState) where TError : Exception
     {
         return errorState.Branch(out var error) ? false : error is TError;
@@ -97,7 +95,7 @@ public static class ErrorStateAssertionExtensions
     /// </summary>
     /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = EXPECTED_ERROR_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = $"{ResultAssertionExtensions.EXPECTED_ERROR_MESSAGE} not of type")]
     public static bool IsErrorNotOfType<TError>(this ErrorState errorState) where TError : Exception
     {
         return errorState.Branch(out var error) ? false : error is not null and not TError;
