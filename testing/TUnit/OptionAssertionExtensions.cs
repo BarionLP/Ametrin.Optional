@@ -31,7 +31,7 @@ public static class OptionAssertionExtensions
     }
     
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_SUCCESS_MESSAGE)]
+    [GenerateAssertion(ExpectationMessage = ErrorStateAssertionExtensions.EXPECTED_ERROR_MESSAGE)]
     public static bool IsError<TValue>(this Option<TValue> option)
     {
         return !OptionsMarshall.IsSuccess(option);
