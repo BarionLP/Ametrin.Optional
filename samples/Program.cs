@@ -91,17 +91,17 @@ static void JoinOperationsExample()
     Option<int> third = Option.Success(20);
 
     // Combine multiple options
-    Option<(int a, int b)> combined = first.Join(second);
+    Option<(int, int)> combined = first.Join(second);
     Option<(int, int, int)> combined3 = combined.Join(third); // supports up to 5 options, after that it starts nesting
 
     // use like any other option
     combined.Consume(
-        success: pair => Console.WriteLine($"Sum: {pair.a + pair.b}"),
+        success: (a, b) => Console.WriteLine($"Sum: {a + b}"),
         error: () => Console.WriteLine("One or both values were missing")
     );
 
     var result = combined
-        .Map(pair => pair.a * pair.b)         // Multiply values
+        .Map((a, b) => a * b)                 // Multiply values
         .Require(x => x != 0)                 // Ensure non-zero
         .Map(x => Math.Sqrt(x));              // Calculate square root
 

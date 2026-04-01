@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Ametrin.Optional;
 
 partial struct Option
@@ -220,8 +218,10 @@ partial struct RefOption<TValue>
     }
 }
 
+[Obsolete("use a.Join(b)")]
 partial class OptionTupleExtensions
 {
+    [Obsolete("use a.Join(b).Consume")]
     public static Option Consume<T1, T2>(this (Option<T1>, Option<T2>) options, Action<T1, T2>? success = null, Action? error = null)
     {
         var (a, b) = options;
@@ -237,6 +237,7 @@ partial class OptionTupleExtensions
         }
     }
 
+    [Obsolete("use a.Join(b).Consume")]
     public static Option Consume<T1, T2, TArg>(this (Option<T1>, Option<T2>) options, TArg arg, Action<T1, T2, TArg>? success = null, Action<TArg>? error = null)
         where TArg : allows ref struct
     {
@@ -253,6 +254,7 @@ partial class OptionTupleExtensions
         }
     }
 
+    [Obsolete("use a.Join(b).Consume")]
     public static ErrorState Consume<T1, T2>(this (Result<T1>, Result<T2>) options, Action<T1, T2>? success = null, Action<Exception>? error = null)
     {
         var (a, b) = options;
@@ -272,6 +274,7 @@ partial class OptionTupleExtensions
         throw new UnreachableException();
     }
 
+    [Obsolete("use a.Join(b).Consume")]
     public static ErrorState Consume<T1, T2, TArg>(this (Result<T1>, Result<T2>) options, TArg arg, Action<T1, T2, TArg>? success = null, Action<Exception, TArg>? error = null)
         where TArg : allows ref struct
     {
@@ -284,47 +287,6 @@ partial class OptionTupleExtensions
         }
 
         if (!Result.CombineErrors(a, b).Branch(out var err))
-        {
-            error?.Invoke(err, arg);
-            return err;
-        }
-
-        throw new UnreachableException();
-    }
-
-    [Experimental("AmOptional000")]
-    public static ErrorState<E> Consume<T1, T2, E>(this (Result<T1, E>, Result<T2, E>) options, Func<E, E, E> errorCombiner, Action<T1, T2>? success = null, Action<E>? error = null)
-    {
-        var (a, b) = options;
-
-        if (a._hasValue && b._hasValue)
-        {
-            success?.Invoke(a._value, b._value);
-            return default;
-        }
-
-        if (!Result.CombineErrors(a, b, errorCombiner).Branch(out var err))
-        {
-            error?.Invoke(err);
-            return err;
-        }
-
-        throw new UnreachableException();
-    }
-
-    [Experimental("AmOptional000")]
-    public static ErrorState<E> Consume<T1, T2, E, TArg>(this (Result<T1, E>, Result<T2, E>) options, TArg arg, Func<E, E, TArg, E> errorCombiner, Action<T1, T2, TArg>? success = null, Action<E, TArg>? error = null)
-        where TArg : allows ref struct
-    {
-        var (a, b) = options;
-
-        if (a._hasValue && b._hasValue)
-        {
-            success?.Invoke(a._value, b._value, arg);
-            return default;
-        }
-
-        if (!Result.CombineErrors(a, b, arg, errorCombiner).Branch(out var err))
         {
             error?.Invoke(err, arg);
             return err;

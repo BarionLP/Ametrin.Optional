@@ -53,57 +53,57 @@ public sealed class ConsumeTests
     [Test]
     public void Consume_Success_Success_Test()
     {
-        Assert.Throws<SuccessE>(static () => (Option.Success(1), Option.Success(1)).Consume(Success, Error));
-        Assert.Throws<SuccessE>(static () => (Result.Success(1), Result.Success(1)).Consume(Success, Error));
+        Assert.Throws<SuccessE>(static () => Option.Success(1).Join(Option.Success(1)).Consume((a, b) => throw new SuccessE(), Error));
+        Assert.Throws<SuccessE>(static () => Result.Success(1).Join(Result.Success(1)).Consume((a, b) => throw new SuccessE(), Error));
     }
 
     [Test]
     public void Consume_Success_Error_Test()
     {
-        Assert.Throws<ErrorE>(static () => (Option.Success(1), Option.Error<int>()).Consume(Success, Error));
-        Assert.Throws<ErrorE>(static () => (Result.Success(1), Result.Error<int>()).Consume(Success, Error));
+        Assert.Throws<ErrorE>(static () => Option.Success(1).Join(Option.Error<int>()).Consume((a, b) => throw new SuccessE(), Error));
+        Assert.Throws<ErrorE>(static () => Result.Success(1).Join(Result.Error<int>()).Consume((a, b) => throw new SuccessE(), Error));
     }
 
     [Test]
     public void Consume_Error_Success_Test()
     {
-        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Success(1)).Consume(Success, Error));
-        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Success(1)).Consume(Success, Error));
+        Assert.Throws<ErrorE>(static () => Option.Error<int>().Join(Option.Success(1)).Consume((a, b) => throw new SuccessE(), Error));
+        Assert.Throws<ErrorE>(static () => Result.Error<int>().Join(Result.Success(1)).Consume((a, b) => throw new SuccessE(), Error));
     }
 
     [Test]
     public void Consume_Error_Error_Test()
     {
-        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Error<int>()).Consume(Success, Error));
-        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Error<int>()).Consume(Success, Error));
+        Assert.Throws<ErrorE>(static () => Option.Error<int>().Join(Option.Error<int>()).Consume((a, b) => throw new SuccessE(), Error));
+        Assert.Throws<ErrorE>(static () => Result.Error<int>().Join(Result.Error<int>()).Consume((a, b) => throw new SuccessE(), Error));
     }
 
     [Test]
     public void Consume_Arg_Success_Success_Test()
     {
-        Assert.Throws<SuccessE>(static () => (Option.Success(1), Option.Success(1)).Consume(true, Success, Error));
-        Assert.Throws<SuccessE>(static () => (Result.Success(1), Result.Success(1)).Consume(true, Success, Error));
+        Assert.Throws<SuccessE>(static () => Option.Success(1).Join(Option.Success(1)).Consume(true, Success<int, int, bool>, Error));
+        Assert.Throws<SuccessE>(static () => Result.Success(1).Join(Result.Success(1)).Consume(true, Success<int, int, bool>, Error));
     }
 
     [Test]
     public void Consume_Arg_Success_Error_Test()
     {
-        Assert.Throws<ErrorE>(static () => (Option.Success(1), Option.Error<int>()).Consume(true, Success, Error));
-        Assert.Throws<ErrorE>(static () => (Result.Success(1), Result.Error<int>()).Consume(true, Success, Error));
+        Assert.Throws<ErrorE>(static () => Option.Success(1).Join(Option.Error<int>()).Consume(true, Success<int, int, bool>, Error));
+        Assert.Throws<ErrorE>(static () => Result.Success(1).Join(Result.Error<int>()).Consume(true, Success<int, int, bool>, Error));
     }
 
     [Test]
     public void Consume_Arg_Error_Success_Test()
     {
-        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Success(1)).Consume(true, Success, Error));
-        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Success(1)).Consume(true, Success, Error));
+        Assert.Throws<ErrorE>(static () => Option.Error<int>().Join(Option.Success(1)).Consume(true, Success<int, int, bool>, Error));
+        Assert.Throws<ErrorE>(static () => Result.Error<int>().Join(Result.Success(1)).Consume(true, Success<int, int, bool>, Error));
     }
 
     [Test]
     public void Consume_Arg_Error_Error_Test()
     {
-        Assert.Throws<ErrorE>(static () => (Option.Error<int>(), Option.Error<int>()).Consume(true, Success, Error));
-        Assert.Throws<ErrorE>(static () => (Result.Error<int>(), Result.Error<int>()).Consume(true, Success, Error));
+        Assert.Throws<ErrorE>(static () => Option.Error<int>().Join(Option.Error<int>()).Consume(true, Success<int, int, bool>, Error));
+        Assert.Throws<ErrorE>(static () => Result.Error<int>().Join(Result.Error<int>()).Consume(true, Success<int, int, bool>, Error));
     }
 
     private static void Success() => throw new SuccessE();
