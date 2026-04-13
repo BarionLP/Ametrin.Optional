@@ -1,3 +1,8 @@
+## 0.4.1
+- add `ValuesIntoOrFirstError` (#45)
+- loosen `ValuesInto...` linq extensions from `IList<T>` to `ICollection<T>`
+- updated TUnit to 1.33.0
+
 ## 0.4.0
 - drop .NET 9
 - add `Join` for nullable types

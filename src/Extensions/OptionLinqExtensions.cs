@@ -56,7 +56,7 @@ public static class OptionLinqExtensions
     public static IEnumerable<E> WhereError<T, E>(this IEnumerable<ErrorState<E>> source)
         => source.Where(static option => option._isError).Select(static option => option._error);
 
-    public static Option ValuesIntoOrError<T>(this IEnumerable<Option<T>> source, IList<T> values)
+    public static Option ValuesIntoOrError<T>(this IEnumerable<Option<T>> source, ICollection<T> values)
     {
         var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
         if (count is 0) return true;
@@ -93,12 +93,8 @@ public static class OptionLinqExtensions
         return values;
     }
 
-    public static Result<IReadOnlyList<T>> ValuesOrFirstError<T>(this IEnumerable<Result<T>> source)
+    public static ErrorState ValuesIntoOrFirstError<T>(this IEnumerable<Result<T>> source, ICollection<T> values)
     {
-        var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
-        if (count is 0) return Result.Success<IReadOnlyList<T>>([]);
-        var values = CreateBag<T>(count);
-
         foreach (var result in source)
         {
             if (result.Branch(out var value, out var error))
@@ -107,13 +103,43 @@ public static class OptionLinqExtensions
             }
             else
             {
-                values.Clear();
                 return error;
             }
         }
 
-        // values.TrimExcess();
+        return default;
+    }
 
+    public static ErrorState<E> ValuesIntoOrFirstError<T, E>(this IEnumerable<Result<T, E>> source, ICollection<T> values)
+    {
+        foreach (var result in source)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                return error;
+            }
+        }
+
+        return default;
+    }
+
+    public static Result<IReadOnlyList<T>> ValuesOrFirstError<T>(this IEnumerable<Result<T>> source)
+    {
+        var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
+        if (count is 0) return Result.Success<IReadOnlyList<T>>([]);
+
+        var values = CreateBag<T>(count);
+        if (!source.ValuesIntoOrFirstError(values).Branch(out var error))
+        {
+            values.Clear();
+            return error;
+        }
+
+        // values.TrimExcess();
         return values;
     }
 
@@ -121,27 +147,19 @@ public static class OptionLinqExtensions
     {
         var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
         if (count is 0) return Result.Success<IReadOnlyList<T>, E>([]);
-        var values = CreateBag<T>(count);
 
-        foreach (var result in source)
+        var values = CreateBag<T>(count);
+        if (!source.ValuesIntoOrFirstError(values).Branch(out var error))
         {
-            if (result.Branch(out var value, out var error))
-            {
-                values.Add(value);
-            }
-            else
-            {
-                values.Clear();
-                return error;
-            }
+            values.Clear();
+            return error;
         }
 
         // values.TrimExcess();
-
         return values;
     }
 
-    public static void BranchInto<T>(this IEnumerable<Result<T>> results, IList<T> values, IList<Exception> errors)
+    public static void BranchInto<T>(this IEnumerable<Result<T>> results, ICollection<T> values, ICollection<Exception> errors)
     {
         foreach (var result in results)
         {
@@ -156,7 +174,7 @@ public static class OptionLinqExtensions
         }
     }
 
-    public static void BranchInto<T, E>(this IEnumerable<Result<T, E>> results, IList<T> values, IList<E> errors)
+    public static void BranchInto<T, E>(this IEnumerable<Result<T, E>> results, ICollection<T> values, ICollection<E> errors)
     {
         foreach (var result in results)
         {
