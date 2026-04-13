@@ -42,4 +42,12 @@ public static partial class OptionsMarshall
         => errorState.Branch(out var error) ? throw new InvalidOperationException() : error;
     public static TError? GetErrorUnsafe<TError>(ErrorState<TError> result)
         => result._error;
+
+    public static Option<TValue> MakeOptionSuccessUnsafe<TValue>(TValue value) => new(value, true);
+    public static Result<TValue> MakeResultSuccessUnsafe<TValue>(TValue value) => new(value);
+    public static Result<TValue> MakeResultErrorUnsafe<TValue>(Exception error) => new(default!, error, false);
+    public static Result<TValue, TError> MakeResultSuccessUnsafe<TValue, TError>(TValue value) => new(value);
+    public static Result<TValue, TError> MakeResultErrorUnsafe<TValue, TError>(TError error) => new(default!, error, false);
+    public static ErrorState MakeErrorStateErrorUnsafe(Exception error) => new(true, error);
+    public static ErrorState<TError> MakeErrorStateErrorUnsafe<TError>(TError error) => new(true, error);
 }

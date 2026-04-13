@@ -54,6 +54,27 @@ public sealed class TupleOperationsGenerator : IIncrementalGenerator
 
 
             ctx.AddSource("OptionTuples.Map.g.cs", sb.ToString());
+
+
+            sb.Clear();
+            sb.Append(header);
+
+            sb.AppendLine("""
+            public static class OptionTupleMatchExtensions
+            {
+            """);
+
+            Match(sb, 2);
+            Match(sb, 3);
+            Match(sb, 4);
+            Match(sb, 5);
+
+            sb.AppendLine("""
+            }
+            """);
+
+
+            ctx.AddSource("OptionTuples.Match.g.cs", sb.ToString());
         });
     }
 
@@ -161,7 +182,7 @@ public sealed class TupleOperationsGenerator : IIncrementalGenerator
             }
         """);
     }
-    
+
     private static void Map(StringBuilder sb, int genericCount)
     {
         var generics = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"T{i}"));
@@ -212,6 +233,45 @@ public sealed class TupleOperationsGenerator : IIncrementalGenerator
                 public Result<R, E> Map<TArg, R>(TArg arg, Func<{{generics}}, TArg, Result<R, E>> selector)
                     where TArg : allows ref struct
                     => result._hasValue ? selector({{genericResultValues}}, arg) : result._error;
+            }
+        """);
+    }
+    
+    private static void Match(StringBuilder sb, int genericCount)
+    {
+        var generics = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"T{i}"));
+        var genericOptionValues = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"option._value.Item{i}"));
+        var genericResultValues = string.Join(", ", Enumerable.Range(1, genericCount).Select(i => $"result._value.Item{i}"));
+
+        sb.AppendLine($$"""
+            extension<{{generics}}>(Option<({{generics}})> option)
+            {
+                public TResult Match<TResult>(Func<{{generics}}, TResult> success, Func<TResult> error)
+                    => option._hasValue ? success({{genericOptionValues}}) : error();
+
+                public TResult Match<TArg, TResult>(TArg arg, Func<{{generics}}, TArg, TResult> success, Func<TArg, TResult> error)
+                    where TArg : allows ref struct
+                    => option._hasValue ? success({{genericOptionValues}}, arg) : error(arg);
+            }
+
+            extension<{{generics}}>(Result<({{generics}})> result)
+            {
+                public TResult Match<TResult>(Func<{{generics}}, TResult> success, Func<Exception, TResult> error)
+                    => result._hasValue ? success({{genericResultValues}}) : error(result._error);
+
+                public TResult Match<TArg, TResult>(TArg arg, Func<{{generics}}, TArg, TResult> success, Func<Exception, TArg, TResult> error)
+                    where TArg : allows ref struct
+                    => result._hasValue ? success({{genericResultValues}}, arg) : error(result._error, arg);
+            }
+
+            extension<{{generics}}, TError>(Result<({{generics}}), TError> result)
+            {
+                public TResult Match<TResult>(Func<{{generics}}, TResult> success, Func<TError, TResult> error)
+                    => result._hasValue ? success({{genericResultValues}}) : error(result._error);
+
+                public TResult Match<TArg, TResult>(TArg arg, Func<{{generics}}, TArg, TResult> success, Func<TError, TArg, TResult> error)
+                    where TArg : allows ref struct
+                    => result._hasValue ? success({{genericResultValues}}, arg) : error(result._error, arg);
             }
         """);
     }

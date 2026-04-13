@@ -22,14 +22,14 @@ public sealed class OptionLinqExtensionsTests
         yield return new Error();
     }
 
-    public static IEnumerable<ICollection<Value>> GetBags()
+    public static IEnumerable<Func<ICollection<Value>>> GetBags()
     {
-        yield return [];
-        yield return new List<Value>();
-        yield return new HashSet<Value>();
-        yield return ImmutableArray.CreateBuilder<Value>();
-        yield return ImmutableArray.CreateBuilder<Value>();
-        yield return ImmutableHashSet.CreateBuilder<Value>();
+        yield return () => [];
+        yield return () => new List<Value>();
+        yield return () => new HashSet<Value>();
+        yield return () => ImmutableArray.CreateBuilder<Value>();
+        yield return () => ImmutableArray.CreateBuilder<Value>();
+        yield return () => ImmutableHashSet.CreateBuilder<Value>();
     }
     public sealed class Error;
     public sealed class Value;
