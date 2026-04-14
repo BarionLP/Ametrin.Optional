@@ -20,7 +20,7 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
         = new(id: "AmOptional002", title: "Unnecessary Require call", messageFormat: "type already is {0}", category: "Usage", DiagnosticSeverity.Warning, isEnabledByDefault: true);
 
     public static readonly DiagnosticDescriptor WrongConditionalType
-        = new(id: "AmOptional003", title: "Wrong conditional return type", messageFormat: "default means {0} instead of {1}", category: "Usage", DiagnosticSeverity.Info, isEnabledByDefault: true);
+        = new(id: "AmOptional003", title: "Potentially wrong return type", messageFormat: "default means {0} instead of {1}", category: "Usage", DiagnosticSeverity.Info, isEnabledByDefault: true);
 
     public static readonly DiagnosticDescriptor ImpossibleAs
         = new(id: "AmOptional004", title: "Impossible As call", messageFormat: "Cannot safely up-cast {0} to {1}. Use Require<T>.", category: "Usage", DiagnosticSeverity.Error, isEnabledByDefault: true);
@@ -195,18 +195,28 @@ public sealed class AmetrinOptionalAnalyzer : DiagnosticAnalyzer
 
             if (conversion.Type is not INamedTypeSymbol target || !IsOptionalType(target)) return;
 
-            if (conversion.Operand is not IConditionalOperation condition || IsOptionalType(condition.Type!)) return;
-
-            if (IsDefaultLiteral(condition.WhenTrue))
+            if (conversion.Operand is IConditionalOperation condition && !IsOptionalType(condition.Type!))
             {
-                context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.WhenTrue.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
-            }
+                if (IsDefaultLiteral(condition.WhenTrue))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.WhenTrue.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+                }
 
-            if (condition.WhenFalse is not null && IsDefaultLiteral(condition.WhenFalse))
+                if (condition.WhenFalse is not null && IsDefaultLiteral(condition.WhenFalse))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.WhenFalse.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+                }
+            }
+            else if (conversion.Operand is ISwitchExpressionOperation switchExpression && !IsOptionalType(switchExpression.Type!))
             {
-                context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, condition.WhenFalse.Syntax.GetLocation(), condition.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+                foreach (var arm in switchExpression.Arms)
+                {
+                    if (IsDefaultLiteral(arm.Value))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(WrongConditionalType, arm.Value.Syntax.GetLocation(), switchExpression.Type!.ToDisplayString(), conversion.Type.ToDisplayString()));
+                    }
+                }
             }
-
         }, OperationKind.Conversion);
 
         context.RegisterOperationAction(static context =>
