@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(SupportedFrameworks)</TargetFrameworks>
-    <IsAotCompatible>true</IsAotCompatible>
+    <IsAotCompatible>true</IsAotCompatible> <!-- implies IsTrimmable true -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
