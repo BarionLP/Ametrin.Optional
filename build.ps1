@@ -2,8 +2,8 @@
 Remove-Item "$env:USERPROFILE\.nuget\packages\ametrin.optional.analyzer" -Recurse
 Remove-Item "$env:USERPROFILE\.nuget\packages\ametrin.optional" -Recurse
 # Remove-Item "$env:USERPROFILE\.nuget\packages\ametrin.optional.testing.tunit" -Recurse
-dotnet pack .\analyzer\ -c release
-dotnet pack .\src\ -c release
-dotnet pack .\testing\TUnit\ -c release
+dotnet pack .\analyzer\ -c Release
+dotnet pack .\src\ -c Release
+dotnet pack .\testing\TUnit\ -c Release
 dotnet build
 dotnet test
