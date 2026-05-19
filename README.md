@@ -13,9 +13,9 @@ dotnet add package Ametrin.Optional
 
 ## Features
 
-- **Maximum Performance** - A zero cost abstraction (mostly)
+- **Maximum Performance** - An aot-compatible and (mostly) zero-cost abstraction
 - **Monadic API** - Fluent interface for transformations and error handling of all kind
-- **Integration** - Seamless integration with existing C# code
+- **Integration** - Seamless integration with existing exception-based C# code
 - **Variety** - Different types for various use cases
 - **Async Support** - First-class support for async operations
 
