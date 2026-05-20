@@ -1,6 +1,7 @@
 ## 0.4.2
 - generalize `AmOptional003` to switch expressions (#44)
 - updated TUnit to 1.41.0
+- remove obsolete tuple operations (use `Join` #37)
 
 ## 0.4.1
 - `OptionsMarshall` unsafe creation API
@@ -18,7 +19,6 @@
 - add `Map` and `Consume` for `Option<(T1, T2)>` and `Result<(T1, T2){, T}>` with a nicer delegate (for up to 5 elements in the tuple) (#37)
   - if this concept works more operations will follow in the 0.4 release cycle
 - remove obsolete `OptionsMarshall.TryGetValue` and `TryGetError` (use `Branch` #31)
-- mark tuple operations obsolete (use `Join` #37)
 - remove experimental `Consume` for `(Result<T, E>, Result<T, E>)` (use `Join` #37)
 - updated TUnit to 1.24.13
 
