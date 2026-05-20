@@ -42,12 +42,6 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
                     sb.AppendLine($"    [{attribute}]");
                 }
 
-                var generics = string.Join(", ", type.TypeParameters.Concat(method.TypeParameters));
-                if (!string.IsNullOrEmpty(generics))
-                {
-                    generics = $"<{generics}>";
-                }
-
                 var format = new SymbolDisplayFormat(
                     typeQualificationStyle:
                         SymbolDisplayTypeQualificationStyle.NameOnly,
@@ -64,10 +58,19 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
                         SymbolDisplayMiscellaneousOptions.UseSpecialTypes
                 );
 
+                var typeParameters = type.TypeParameters.Concat(method.TypeParameters).ToArray();
+                var generics = string.Join(", ", typeParameters.AsEnumerable());
+                if (!string.IsNullOrEmpty(generics))
+                {
+                    generics = $"<{generics}>";
+                }
+                var constraints = GetConstraints(typeParameters, format);
+
+
                 if (IsTask(method.ReturnType))
                 {
                     sb.AppendLine($$"""
-                    public static async {{method.ReturnType}} {{method.Name}}{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters.Select(p => p.ToDisplayString(format)))}})
+                    public static async {{method.ReturnType}} {{method.Name}}{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters.Select(p => p.ToDisplayString(format)))}}){{constraints}}
                     {
                         {{(method.ReturnType is INamedTypeSymbol { TypeParameters.Length: > 0 } ? "return " : "")}}await (await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
                     }
@@ -75,9 +78,9 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
                 }
                 else
                 {
-                    // ContinueWith is 42x slower and uses 2.7x memory (.NET 9)
+                    // ContinueWith is 42x slower and uses 2.7x memory (meassured on .NET 9)
                     sb.AppendLine($$"""
-                    public static async {{(method.ReturnsVoid ? "Task" : $"Task<{method.ReturnType}>")}} {{method.Name}}Async{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters.Select(p => p.ToDisplayString(format)))}})
+                    public static async {{(method.ReturnsVoid ? "Task" : $"Task<{method.ReturnType}>")}} {{method.Name}}Async{{generics}}(this Task<{{type}}> task{{(method.Parameters.Length > 0 ? ", " : "")}}{{string.Join(", ", method.Parameters.Select(p => p.ToDisplayString(format)))}}){{constraints}}
                     {
                         {{(method.ReturnsVoid ? "" : "return ")}}(await task).{{method.Name}}({{string.Join(", ", method.Parameters.Select(p => p.Name))}});
                     }
@@ -95,4 +98,59 @@ public sealed class AsyncExtensionsGenerator : IIncrementalGenerator
     internal static bool HasAttribute(ISymbol symbol, Func<INamedTypeSymbol?, bool> predicate) => symbol.GetAttributes().Any(data => predicate(data.AttributeClass));
     internal static bool IsAsyncExtensionAttribute(INamedTypeSymbol? attribute) => attribute is { Name: "AsyncExtensionAttribute", ContainingAssembly.Name: "Ametrin.Optional" };
     internal static bool IsTask(ITypeSymbol? attribute) => attribute is { Name: "Task", ContainingAssembly.Name: "System.Runtime", ContainingNamespace: { Name: "Tasks", ContainingNamespace: { Name: "Threading", ContainingNamespace.Name: "System" } } };
+
+    static string GetConstraints(IEnumerable<ITypeParameterSymbol> typeParameters, SymbolDisplayFormat format)
+    {
+        var clauses = new List<string>();
+        foreach (var tp in typeParameters)
+        {
+            if (GetConstraints(tp, format) is string constraints)
+            {
+                clauses.Add(constraints);
+            }
+        }
+
+        return clauses.Count == 0 ? "" : " " + string.Join(" ", clauses);
+    }
+
+    static string? GetConstraints(ITypeParameterSymbol symbol, SymbolDisplayFormat format)
+    {
+        var parts = new List<string>();
+
+        if (symbol.HasReferenceTypeConstraint)
+        {
+            parts.Add(symbol.ReferenceTypeConstraintNullableAnnotation is NullableAnnotation.Annotated ? "class?" : "class");
+        }
+        if (symbol.HasUnmanagedTypeConstraint)
+        {
+            parts.Add("unmanaged");
+        }
+        else if (symbol.HasValueTypeConstraint)
+        {
+            parts.Add("struct");
+        }
+
+        if (symbol.HasNotNullConstraint)
+        {
+            parts.Add("notnull");
+        }
+
+        for (int i = 0; i < symbol.ConstraintTypes.Length; i++)
+        {
+            var ct = symbol.ConstraintTypes[i];
+            var annotation = symbol.ConstraintNullableAnnotations[i];
+            var s = ct.ToDisplayString(format);
+            if (annotation is NullableAnnotation.Annotated && !s.EndsWith("?"))
+            {
+                s += "?";
+            }
+
+            parts.Add(s);
+        }
+
+        // new() must be last
+        if (symbol.HasConstructorConstraint) parts.Add("new()");
+
+        return parts.Count is 0 ? null : $"where {symbol.Name} : {string.Join(", ", parts)}";
+    }
 }
