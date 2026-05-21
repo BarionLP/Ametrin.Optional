@@ -31,4 +31,4 @@ jobs:
     - name: Complete Build
       run: dotnet build
     - name: Run Tests
-      run: dotnet run ./test/ --no-build --verbosity normal
+      run: dotnet run --project ./test/ --no-build --verbosity normal
