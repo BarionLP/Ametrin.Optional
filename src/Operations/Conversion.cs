@@ -50,11 +50,11 @@ partial struct Result<TValue>
 
     [AsyncExtension]
     public Option<TValue> ToOption()
-        => _hasValue ? Option.Success(_value) : default;
+        => _hasValue ? OptionsMarshall.MakeOptionSuccessUnsafe(_value) : default;
 
     [AsyncExtension]
     public ErrorState ToErrorState()
-        => _hasValue ? default : ErrorState.Error(_error);
+        => _hasValue ? default : OptionsMarshall.MakeErrorStateErrorUnsafe(_error);
 }
 
 partial struct Result<TValue, TError>
@@ -67,7 +67,7 @@ partial struct Result<TValue, TError>
 
     [AsyncExtension]
     public Option<TValue> ToOption()
-        => _hasValue ? Option.Success(_value) : default;
+        => _hasValue ? OptionsMarshall.MakeOptionSuccessUnsafe(_value) : default;
     [AsyncExtension]
     public ErrorState<TError> ToErrorState()
         => _hasValue ? default : ErrorState.Error(_error);
