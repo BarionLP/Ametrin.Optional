@@ -92,6 +92,6 @@ public static class Result
     public static ErrorState<E> CombineErrors<T1, T2, E, TArg>(Result<T1, E> a, Result<T2, E> b, TArg arg, Func<E, E, TArg, E> errorCombiner)
         where TArg : allows ref struct
         => ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState(), arg, errorCombiner);
-    public static ErrorState CombineErrors<T1, T2>(Result<T1> a, Result<T2> b, Result<T2> c)
+    public static ErrorState CombineErrors<T1, T2, T3>(Result<T1> a, Result<T2> b, Result<T3> c)
         => ErrorState.CombineErrors(a.ToErrorState(), b.ToErrorState(), c.ToErrorState());
 }
