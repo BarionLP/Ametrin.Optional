@@ -46,7 +46,7 @@ partial struct ErrorState
     public static ErrorState Success() => new();
 
     [OverloadResolutionPriority(1)] // to avoid ambiguity with Error(TError) with subclasses of Exception
-    public static ErrorState Error(Exception? error = null) => new(true, error ?? new Exception());
+    public static ErrorState Error(Exception? error = null) => new(true, error ?? Sentinel.Error);
 
     public static ErrorState Try(Action action)
     {

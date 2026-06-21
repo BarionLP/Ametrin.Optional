@@ -15,7 +15,7 @@ public readonly partial struct Result<TValue>
     internal Result(TValue value)
         : this(value, default!, true) { }
     internal Result(Exception? error = null)
-        : this(default!, error ?? new Exception(), false) { }
+        : this(default!, error ?? Sentinel.Error, false) { }
     internal Result(TValue value, Exception error, bool hasValue)
         => (_value, _error, _hasValue) = (value, error, hasValue);
     public Result(Result<TValue> other)
@@ -51,10 +51,10 @@ public static class Result
         => value is null ? throw new ArgumentNullException(nameof(value), "Cannot create Success with null value") : new(value);
     public static Result<T> Error<T>(Exception? error = null) => new(error);
 
-    public static Result<T> Of<T>(T? value, Exception? error = null) => value is null ? (error ?? new NullReferenceException()) : value;
+    public static Result<T> Of<T>(T? value, Exception? error = null) => value is null ? (error ?? Sentinel.Null) : value;
     public static Result<T> Of<T>(T? value, Func<Exception> error) => value is null ? error() : value;
     public static Result<T> Of<T>(T? value, Exception? error = null) where T : struct
-        => value.HasValue ? value.Value : (error ?? new NullReferenceException());
+        => value.HasValue ? value.Value : (error ?? Sentinel.Null);
 
     public static Result<T> Try<T>(Func<T> action)
     {

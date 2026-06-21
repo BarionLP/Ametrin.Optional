@@ -1,7 +1,8 @@
 ## 0.4.2
 - generalize `AmOptional003` to switch expressions (#44)
-- updated TUnit to 1.41.0
 - remove obsolete tuple operations (use `Join` #37)
+- reuse default exceptions for `Result<T>` and `ErrorState`
+- updated TUnit to 1.41.0
 
 ## 0.4.1
 - `OptionsMarshall` unsafe creation API
