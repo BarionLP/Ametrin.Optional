@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Ametrin.Optional;
 
@@ -23,12 +25,26 @@ public static class OptionLinqExtensions
 
     public static Option<T> TryFirst<T>(this IEnumerable<T> source)
     {
+        if (source is IList<T> list) return list.Count > 0 ? Option.Success(list[0]) : default;
         using var enumerator = source.GetEnumerator();
         return enumerator.MoveNext() ? Option.Success(enumerator.Current) : default;
     }
 
     public static Option<T> TryFirst<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
+        if (TryGetSpan(source, out var span))
+        {
+            foreach (ref readonly var item in span)
+            {
+                if (predicate(item))
+                {
+                    return item;
+                }
+            }
+
+            return default;
+        }
+
         foreach (var item in source)
         {
             if (predicate(item))
@@ -58,6 +74,23 @@ public static class OptionLinqExtensions
 
     public static Option ValuesIntoOrError<T>(this IEnumerable<Option<T>> source, ICollection<T> values)
     {
+        if (TryGetSpan(source, out var span))
+        {
+            foreach (ref readonly var result in span)
+            {
+                if (result.Branch(out var value))
+                {
+                    values.Add(value);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
         if (count is 0) return true;
 
@@ -95,6 +128,23 @@ public static class OptionLinqExtensions
 
     public static ErrorState ValuesIntoOrFirstError<T>(this IEnumerable<Result<T>> source, ICollection<T> values)
     {
+        if (TryGetSpan(source, out var span))
+        {
+            foreach (ref readonly var result in span)
+            {
+                if (result.Branch(out var value, out var error))
+                {
+                    values.Add(value);
+                }
+                else
+                {
+                    return error;
+                }
+            }
+
+            return default;
+        }
+
         foreach (var result in source)
         {
             if (result.Branch(out var value, out var error))
@@ -112,6 +162,23 @@ public static class OptionLinqExtensions
 
     public static ErrorState<E> ValuesIntoOrFirstError<T, E>(this IEnumerable<Result<T, E>> source, ICollection<T> values)
     {
+        if (TryGetSpan(source, out var span))
+        {
+            foreach (ref readonly var result in span)
+            {
+                if (result.Branch(out var value, out var error))
+                {
+                    values.Add(value);
+                }
+                else
+                {
+                    return error;
+                }
+            }
+
+            return default;
+        }
+
         foreach (var result in source)
         {
             if (result.Branch(out var value, out var error))
@@ -161,6 +228,23 @@ public static class OptionLinqExtensions
 
     public static void BranchInto<T>(this IEnumerable<Result<T>> results, ICollection<T> values, ICollection<Exception> errors)
     {
+        if (TryGetSpan(results, out var span))
+        {
+            foreach (ref readonly var result in span)
+            {
+                if (result.Branch(out var value, out var error))
+                {
+                    values.Add(value);
+                }
+                else
+                {
+                    errors.Add(error);
+                }
+            }
+
+            return;
+        }
+
         foreach (var result in results)
         {
             if (result.Branch(out var value, out var error))
@@ -176,6 +260,23 @@ public static class OptionLinqExtensions
 
     public static void BranchInto<T, E>(this IEnumerable<Result<T, E>> results, ICollection<T> values, ICollection<E> errors)
     {
+        if (TryGetSpan(results, out var span))
+        {
+            foreach (ref readonly var result in span)
+            {
+                if (result.Branch(out var value, out var error))
+                {
+                    values.Add(value);
+                }
+                else
+                {
+                    errors.Add(error);
+                }
+            }
+
+            return;
+        }
+
         foreach (var result in results)
         {
             if (result.Branch(out var value, out var error))
@@ -219,6 +320,25 @@ public static class OptionLinqExtensions
         // errors.TrimExcess();
 
         return (values, errors);
+    }
+
+    private static bool TryGetSpan<TItem>(IEnumerable<TItem> source, out ReadOnlySpan<TItem> span)
+    {
+        switch (source)
+        {
+            case TItem[] array:
+                span = array;
+                return true;
+            case List<TItem> list:
+                span = CollectionsMarshal.AsSpan(list);
+                return true;
+            case ImmutableArray<TItem> imarray:
+                span = imarray.AsSpan();
+                return true;
+            default:
+                span = default;
+                return false;
+        }
     }
 
     private static (List<T> values, List<E> errors) CreateBags<T, E>(int count, double expectedErrorRate = 0.01)

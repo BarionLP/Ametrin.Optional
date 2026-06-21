@@ -2,6 +2,7 @@
 - generalize `AmOptional003` to switch expressions (#44)
 - remove obsolete tuple operations (use `Join` #37)
 - reuse default exceptions for `Result<T>` and `ErrorState`
+- add span fast path to many `OptionLinqExtensions`
 - updated TUnit to 1.41.0
 
 ## 0.4.1
