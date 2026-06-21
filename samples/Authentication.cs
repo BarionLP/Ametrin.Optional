@@ -52,7 +52,7 @@ file class AuthService
         => Result.Success<string, string>(password)
             .Reject(string.IsNullOrWhiteSpace, "Password cannot be empty")
             .Require(password => password.Length >= 8, "Password must be at least 8 characters")
-            .Require(password => password.Any(char.IsAsciiDigit), "Password contain at least 1 digit");
+            .Require(password => password.Any(char.IsAsciiDigit), "Password must contain at least 1 digit");
 
 
     private Task<Option<User>> LoadUserFromDb(string username)

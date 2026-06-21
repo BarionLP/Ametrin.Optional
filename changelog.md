@@ -3,7 +3,7 @@
 - remove obsolete tuple operations (use `Join` #37)
 - reuse default exceptions for `Result<T>` and `ErrorState`
 - add span fast path to many `OptionLinqExtensions`
-- updated TUnit to 1.41.0
+- updated TUnit to 1.56.18
 
 ## 0.4.1
 - `OptionsMarshall` unsafe creation API
