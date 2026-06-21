@@ -1,3 +1,6 @@
+## 0.4.3
+- fix over-advance in `ErrorState-` and `OptionJsonConverter`
+
 ## 0.4.2
 - generalize `AmOptional003` to switch expressions (#44)
 - remove obsolete tuple operations (use `Join` #37)

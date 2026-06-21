@@ -11,7 +11,6 @@ public sealed class OptionJsonConverter<T> : JsonConverter<Option<T>>
     {
         if (reader.TokenType is JsonTokenType.Null)
         {
-            reader.Read();
             return default;
         }
         else

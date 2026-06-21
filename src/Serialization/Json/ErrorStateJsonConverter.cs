@@ -11,7 +11,6 @@ public sealed class ErrorStateJsonConverter : JsonConverter<ErrorState>
     {
         if (reader.TokenType is JsonTokenType.Null)
         {
-            reader.Read();
             return default;
         }
         else
@@ -41,7 +40,6 @@ public sealed class ErrorStateJsonConverter<T> : JsonConverter<ErrorState<T>>
     {
         if (reader.TokenType is JsonTokenType.Null)
         {
-            reader.Read();
             return default;
         }
         else
