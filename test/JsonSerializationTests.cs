@@ -65,4 +65,74 @@ public sealed class JsonSerializationTests
         await Assert.That(JsonSerializer.Deserialize<ErrorState<string>>(success, options)).IsSuccess();
         await Assert.That(JsonSerializer.Deserialize<ErrorState<string>>(error, options)).IsError("custom error message");
     }
+
+    private sealed class Holder
+    {
+        public Option<int> Option { get; set; }
+        public Result<int> Result { get; set; }
+        public Result<int, string> Result2 { get; set; }
+        public ErrorState ErrorState { get; set; }
+        public ErrorState<string> ErrorState2 { get; set; }
+        public int After { get; set; }
+    }
+
+    [Test]
+    public async Task Nested_AllSuccess_PreservesTrailingProperty()
+    {
+        var holder = new Holder
+        {
+            Option = Option.Success(1),
+            Result = Result.Success(2),
+            Result2 = Result.Success<int, string>(3),
+            ErrorState = ErrorState.Success(),
+            ErrorState2 = ErrorState.Success<string>(),
+            After = 42,
+        };
+
+        var json = JsonSerializer.Serialize(holder, options);
+        var back = JsonSerializer.Deserialize<Holder>(json, options)!;
+
+        await Assert.That(back.Option).IsSuccess(1);
+        await Assert.That(back.Result).IsSuccess(2);
+        await Assert.That(back.Result2).IsSuccess(3);
+        await Assert.That(back.ErrorState).IsSuccess();
+        await Assert.That(back.ErrorState2).IsSuccess();
+        await Assert.That(back.After).IsEqualTo(42);
+    }
+
+    [Test]
+    public async Task Nested_AllError_PreservesTrailingProperty()
+    {
+        var holder = new Holder
+        {
+            Option = Option.Error<int>(),
+            Result = Result.Error<int>(new InvalidOperationException("r")),
+            Result2 = Result.Error<int, string>("r2"),
+            ErrorState = ErrorState.Error(new InvalidOperationException("e")),
+            ErrorState2 = ErrorState.Error("e2"),
+            After = 99,
+        };
+
+        var json = JsonSerializer.Serialize(holder, options);
+        var back = JsonSerializer.Deserialize<Holder>(json, options)!;
+
+        await Assert.That(back.Option).IsError();
+        await Assert.That(back.Result).IsError(e => e is InvalidOperationException { Message: "r" });
+        await Assert.That(back.Result2).IsError("r2");
+        await Assert.That(back.ErrorState).IsError(e => e is InvalidOperationException { Message: "e" });
+        await Assert.That(back.ErrorState2).IsError("e2");
+        await Assert.That(back.After).IsEqualTo(99);
+    }
+
+    [Test]
+    public async Task Nested_Option_Null_PreservesTrailingProperty()
+    {
+        // regression: an error-state Option<int> (serialized as null) used to over-advance
+        // the reader and skip the following property.
+        var json = """{"Option":null,"After":7}""";
+        var back = JsonSerializer.Deserialize<Holder>(json, options)!;
+
+        await Assert.That(back.Option).IsError();
+        await Assert.That(back.After).IsEqualTo(7);
+    }
 }
