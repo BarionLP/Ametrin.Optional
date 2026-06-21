@@ -6,4 +6,4 @@ dotnet pack .\analyzer\ -c Release
 dotnet pack .\src\ -c Release
 dotnet pack .\testing\TUnit\ -c Release
 dotnet build
-dotnet run .\test\
+dotnet run --project .\test\
