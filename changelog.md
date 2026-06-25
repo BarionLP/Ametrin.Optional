@@ -1,5 +1,7 @@
 ## 0.4.3
 - fix over-advance in `ErrorState-` and `OptionJsonConverter`
+- add `ArraySegment` fast path to `OptionLinqExtensions`
+- exclude custom `List` implementations from the span fast path in `OptionLinqExtensions`
 
 ## 0.4.2
 - generalize `AmOptional003` to switch expressions (#44)

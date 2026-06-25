@@ -76,19 +76,7 @@ public static class OptionLinqExtensions
     {
         if (TryGetSpan(source, out var span))
         {
-            foreach (ref readonly var result in span)
-            {
-                if (result.Branch(out var value))
-                {
-                    values.Add(value);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return span.ValuesIntoOrError(values);
         }
 
         var count = source.TryGetNonEnumeratedCount(out var c) ? c : -1;
@@ -97,6 +85,23 @@ public static class OptionLinqExtensions
         foreach (var result in source)
         {
             if (result.Branch(out var value))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static Option ValuesIntoOrError<T>(this ReadOnlySpan<Option<T>> source, ICollection<T> values)
+    {
+        foreach (ref readonly var option in source)
+        {
+            if (option.Branch(out var value))
             {
                 values.Add(value);
             }
@@ -130,19 +135,7 @@ public static class OptionLinqExtensions
     {
         if (TryGetSpan(source, out var span))
         {
-            foreach (ref readonly var result in span)
-            {
-                if (result.Branch(out var value, out var error))
-                {
-                    values.Add(value);
-                }
-                else
-                {
-                    return error;
-                }
-            }
-
-            return default;
+            return span.ValuesIntoOrFirstError(values);
         }
 
         foreach (var result in source)
@@ -164,22 +157,44 @@ public static class OptionLinqExtensions
     {
         if (TryGetSpan(source, out var span))
         {
-            foreach (ref readonly var result in span)
-            {
-                if (result.Branch(out var value, out var error))
-                {
-                    values.Add(value);
-                }
-                else
-                {
-                    return error;
-                }
-            }
-
-            return default;
+            return span.ValuesIntoOrFirstError(values);
         }
 
         foreach (var result in source)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                return error;
+            }
+        }
+
+        return default;
+    }
+
+    public static ErrorState ValuesIntoOrFirstError<T>(this ReadOnlySpan<Result<T>> source, ICollection<T> values)
+    {
+        foreach (ref readonly var result in source)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                return error;
+            }
+        }
+
+        return default;
+    }
+
+    public static ErrorState<E> ValuesIntoOrFirstError<T, E>(this ReadOnlySpan<Result<T, E>> source, ICollection<T> values)
+    {
+        foreach (ref readonly var result in source)
         {
             if (result.Branch(out var value, out var error))
             {
@@ -206,7 +221,6 @@ public static class OptionLinqExtensions
             return error;
         }
 
-        // values.TrimExcess();
         return values;
     }
 
@@ -222,7 +236,6 @@ public static class OptionLinqExtensions
             return error;
         }
 
-        // values.TrimExcess();
         return values;
     }
 
@@ -230,18 +243,7 @@ public static class OptionLinqExtensions
     {
         if (TryGetSpan(results, out var span))
         {
-            foreach (ref readonly var result in span)
-            {
-                if (result.Branch(out var value, out var error))
-                {
-                    values.Add(value);
-                }
-                else
-                {
-                    errors.Add(error);
-                }
-            }
-
+            span.BranchInto(values, errors);
             return;
         }
 
@@ -262,22 +264,41 @@ public static class OptionLinqExtensions
     {
         if (TryGetSpan(results, out var span))
         {
-            foreach (ref readonly var result in span)
-            {
-                if (result.Branch(out var value, out var error))
-                {
-                    values.Add(value);
-                }
-                else
-                {
-                    errors.Add(error);
-                }
-            }
-
+            span.BranchInto(values, errors);
             return;
         }
 
         foreach (var result in results)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                errors.Add(error);
+            }
+        }
+    }
+
+    public static void BranchInto<T>(this ReadOnlySpan<Result<T>> results, ICollection<T> values, ICollection<Exception> errors)
+    {
+        foreach (ref readonly var result in results)
+        {
+            if (result.Branch(out var value, out var error))
+            {
+                values.Add(value);
+            }
+            else
+            {
+                errors.Add(error);
+            }
+        }
+    }
+
+    public static void BranchInto<T, E>(this ReadOnlySpan<Result<T, E>> results, ICollection<T> values, ICollection<E> errors)
+    {
+        foreach (ref readonly var result in results)
         {
             if (result.Branch(out var value, out var error))
             {
@@ -329,10 +350,13 @@ public static class OptionLinqExtensions
             case TItem[] array:
                 span = array;
                 return true;
-            case List<TItem> list:
+            case List<TItem> list when list.GetType() == typeof(List<TItem>): // make sure list is not a subclass since the subclass may change the enumerator
                 span = CollectionsMarshal.AsSpan(list);
                 return true;
             case ImmutableArray<TItem> imarray:
+                span = imarray.AsSpan();
+                return true;
+            case ArraySegment<TItem> imarray:
                 span = imarray.AsSpan();
                 return true;
             default:
