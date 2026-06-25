@@ -5,7 +5,8 @@ A modern, allocation-free library providing robust optional types for .NET, offe
 ### Options vs. Exceptions
 Exceptions are relatively expensive and are best reserved for unexpected failures and programmer mistakes.  
 For expected errors (like invalid user input or parse failures), it's often better to return a lightweight value the caller must handle.  
-This makes error handling explicit, cheap, and hard to ignore without using exceptions for normal control flow.
+This makes error handling explicit, cheap, and hard to ignore.  
+All without using exceptions for normal control flow.
 
 ```bash
 dotnet add package Ametrin.Optional
