@@ -7,6 +7,14 @@ await AsyncOperationsExample();
 JoinOperationsExample();
 NullableIntegrationExample();
 
+
+Option<int> op = 1;
+
+int hi = op switch
+{
+    int i => i,
+};
+
 /// <summary>
 /// Demonstrates basic Option<T> usage with parsing and validation
 /// </summary>
