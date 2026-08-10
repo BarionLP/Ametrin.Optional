@@ -1,19 +1,20 @@
 ﻿using Ametrin.Optional;
 using Ametrin.Optional.Nullable;
 
+Result<int, string> op = "";
+
+int hi = op switch
+{
+    int i => 1,
+    string e => -1
+};
+Console.WriteLine(hi);
+
 BasicOptionsExample();
 ResultTypesExample();
 await AsyncOperationsExample();
 JoinOperationsExample();
 NullableIntegrationExample();
-
-
-Option<int> op = 1;
-
-int hi = op switch
-{
-    int i => i,
-};
 
 /// <summary>
 /// Demonstrates basic Option<T> usage with parsing and validation
