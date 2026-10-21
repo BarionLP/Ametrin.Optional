@@ -1,3 +1,5 @@
+migrated to https://codeberg.org/Barion/Ametrin.Optional
+
 # Ametrin.Optional
 
 A modern, allocation-free library providing robust optional types for .NET, offering a flexible and efficient way to handle nullable values, errors, and exceptions with a fluent, monadic API.
